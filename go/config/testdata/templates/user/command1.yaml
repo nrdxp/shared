@@ -1,0 +1,3 @@
+  - exec: {{ .exec }}
+    path: {{ (index .path 0).something }}
+{{ template_file "./command2.yaml" . }}

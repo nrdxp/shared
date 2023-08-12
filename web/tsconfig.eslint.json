@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"allowJs": true
+	},
+	"extends": "./tsconfig.json",
+	"include": [
+		".eslintrc.cjs",
+		"puppeteer/*.ts",
+		"src/manifest.js",
+		"src/**/*.ts",
+		"src/**/*.d.ts",
+		"stylelint.config.cjs",
+		"vite-default.config.ts",
+		"vite-homechart.config.ts",
+		"vitest.config.ts"
+	]
+}

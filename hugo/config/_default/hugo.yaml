@@ -1,0 +1,41 @@
+enableRobotsTXT: true
+defaultContentLanguage: en
+defaultContentLanguageInSubdir: true
+languages:
+  ar:
+    contentDir: content/
+    languageCode: ar
+    languageDirection: rtl
+    languageName: عربي
+  de:
+    contentDir: content/
+    languageCode: de
+    languageName: Deutsch
+  en:
+    contentDir: content/
+    languageCode: en
+    languageName: English
+  es:
+    contentDir: content/
+    languageCode: es
+    languageName: Español
+  fr:
+    contentDir: content/
+    languageCode: fr
+    languageName: Francais
+  hi:
+    contentDir: content/
+    languageCode: hi
+    languageName: हिन्दी
+  nl:
+    contentDir: content/
+    languageCode: nl
+    languageName: Nederlands
+  zh:
+    contentdir: content/
+    languageCode: zh
+    languageName: 中文
+markup:
+  goldmark:
+    renderer:
+      unsafe: true

@@ -1,0 +1,79 @@
+name: Integration
+
+concurrency:
+  group: integration_${{ github.ref_name }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read  # This is required for actions/checkout
+  id-token: write # This is required for requesting the JWT
+  pull-requests: read # This is required for paths-filter
+
+jobs:
+  dependencies:
+    name: Update Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup
+        uses: ./github/setup
+
+  lint:
+    name: Lint
+    needs:
+      - dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup
+        id: setup
+        uses: ./github/setup
+      - name: Lint Go
+        if: steps.setup.outputs.change_go == 'true' || github.ref_name == 'main'
+        run: ./m lint-go
+      - name: Lint Shell
+        if: steps.setup.outputs.change_shell == 'true' || github.ref_name == 'main'
+        run: ./m lint-shell
+      - name: Lint Web
+        if: steps.setup.outputs.change_web == 'true' || github.ref_name == 'main'
+        run: ./m lint-web
+
+  test_go:
+    name: Test - Go
+    needs:
+      - dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup
+        id: setup
+        uses: ./github/setup
+      - name: Test Go
+        if: steps.setup.outputs.change_go == 'true' || github.ref_name == 'main'
+        run: ./m test-go
+
+  test_web:
+    name: Test - Web
+    needs:
+      - dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup
+        id: setup
+        uses: ./github/setup
+      - name: Test Web
+        if: steps.setup.outputs.change_web == 'true' || github.ref_name == 'main'
+        run: ./m test-web

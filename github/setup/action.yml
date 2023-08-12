@@ -1,0 +1,85 @@
+name: Setup
+description: Setup cache, get changes, authenticate to vault
+inputs:
+  install_commands:
+    description: Install commands to run before caching
+    default: ./m install
+  vault_address:
+    description: Vault address.
+    default: ''
+  vault_role:
+    description: Vault role.
+    default: ''
+outputs:
+  change_etcha:
+    description: Change - Etcha
+    value: ${{ steps.changes.outputs.etcha }}
+  change_go:
+    description: Change - Go
+    value: ${{ steps.changes.outputs.go }}
+  change_shell:
+    description: Change - Shell
+    value: ${{ steps.changes.outputs.shell }}
+  change_terraform:
+    description: Change - Terraform
+    value: ${{ steps.changes.outputs.terraform }}
+  change_yaml8n:
+    description: Change - YAML8n
+    value: ${{ steps.changes.outputs.yaml8n }}
+  change_web:
+    description: Change - Web
+    value: ${{ steps.changes.outputs.web }}
+runs:
+  using: composite
+  steps:
+    - name: Cache
+      id: cache
+      uses: actions/cache@v3
+      with:
+        key: ${{ runner.os }}-${{ hashFiles('shell/lib/**', 'web/package-lock.json') }}
+        path: |
+          .bin
+          web/node_modules
+        restore-keys: |
+          ${{ runner.os }}-
+    - if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+      name: Refresh cache
+      run: ${{ inputs.install_commands }}
+      shell: bash
+    - name: Get Vault Token
+      if: inputs.vault_address != '' && inputs.vault_role != ''
+      uses: hashicorp/vault-action@v2.4.3
+      with:
+        url: ${{ inputs.vault_address }}
+        exportToken: true
+        method: jwt
+        path: github
+        role: ${{ inputs.vault_role }}
+        secrets: |
+          auth/token/lookup-self type
+    - uses: dorny/paths-filter@v2
+      id: changes
+      with:
+        filters: |
+          etcha:
+            - 'go/etcha/**'
+            - 'go/lib/**'
+            - 'etcha/**'
+            - 'shell/**'
+          go:
+            - 'go/**'
+            - 'shell/**'
+          shell:
+            - 'shell/**'
+          terraform:
+            - 'shell/**'
+            - 'terraform/**'
+          yaml8n:
+            - 'go/lib/**'
+            - 'go/yaml8n/**'
+            - 'shell/**'
+            - 'yaml8n/**'
+          web:
+            - 'go/**'
+            - 'shell/**'
+            - 'web/**'

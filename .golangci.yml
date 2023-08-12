@@ -1,0 +1,128 @@
+issues:
+  exclude-rules:
+    - linters:
+        - errcheck
+      text: Error return value of `\S+.Close` is not checked
+    - path: _test\.go
+      linters:
+        - bodyclose
+        - dupl
+        - errcheck
+        - errchkjson
+        - forcetypeassert
+        - gochecknoglobals
+        - goconst
+        - gosec
+        - noctx
+        - paralleltest
+    - text: "ST1000:"
+      linters:
+        - stylecheck
+    - source: "WriteResponse\\("
+      linters:
+        - errcheck
+        - gosec
+    - source: "(var Err)|((CLIConfig|Default|GetRegisteredClaims|MarshalJSON|Parse|PrivateKey|PublicKey|Scan|SliceString|String|UnmarshalJSON|Type|Value)\\()"
+      linters:
+        - revive
+      text: "exported: "
+    - source: "(Decrypt|Encrypt|Type)\\("
+      linters:
+        - revive
+      path: crypto
+      text: "exported: "
+  exclude-use-default: false
+linters:
+  disable:
+    - contextcheck # redundant
+    - cyclop # too intense
+    - depguard # may use someday but too difficult now
+    - dupl # may be useful with generics
+    - dupword # don't care
+    - errorlint # use messages instead of errors
+    - exhaustruct # don't need to check fields for structs
+    - exhaustivestruct # don't need to check fields for structs
+    - forcetypeassert # type assertions are OK
+    - funlen # too intense
+    - gci # conflicts with auto formatting
+    - godox # either ignore the errors or disable this for todo fixes
+    - goerr113 # don't wrap errors
+    - gofumpt # conflicts with auto formatting
+    - gomnd # annoying
+    - gomoddirectives # need local replacement
+    - gosmopolitan # annoying/breaks yaml8n
+    - interfacer # deprecated
+    - ireturn # interfaces can be returned
+    - lll # too intense
+    - maligned # deprecated
+    - maintidx # too intense
+    - musttag # we don't tag all structs with JSON
+    - nakedret # annoying
+    - nestif # annoying
+    - nonamedreturns # nothing wrong with named returns
+    - nosnakecase # use snake case for unused arguments
+    - scopelint # deprecated
+    - sqlclosecheck # breaks tests, only flags migrations
+    - tagalign # no autofix
+    - testpackage # some tests target unexported functions
+    - varnamelen # don't care
+    - wrapcheck # we don't wrap errors
+  presets:
+    - bugs
+    - comment
+    - complexity
+    - error
+    - format
+    - import
+    - metalinter
+    - module
+    - performance
+    - sql
+    - style
+    - test
+    - unused
+linters-settings:
+  godot:
+    exclude:
+      - '@Tags'
+  gosec:
+    excludes:
+      - G104 # already checking errors using errcheck
+      - G204 
+      - G304
+  revive:
+    enable-all-rules: true
+    rules:
+      - name: add-constant
+        disabled: true # annoying
+      - name: argument-limit
+        arguments: [5]
+      - name: banned-characters
+        disabled: true
+      - name: cognitive-complexity
+        arguments: [7]
+        disabled: true # already checked using other linters
+      - name: cyclomatic
+        arguments: [3]
+        disabled: true # already checked using other linters
+      - name: unhandled-error
+        disabled: true # already checked using other linters
+      - name: flag-parameter
+        disabled: true # someday, maybe
+      - name: file-header
+        disabled: true
+      - name: function-result-limit
+        arguments: [3]
+      - name: function-length
+        arguments: [10, 0]
+        disabled: true # annoying
+      - name: line-length-limit
+        disabled: true # annoying
+        arguments: [80]
+      - name: max-public-structs
+        arguments: [3]
+        disabled: true # annoying
+  tagliatelle:
+    case:
+      rules:
+        json: goCamel

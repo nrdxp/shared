@@ -1,0 +1,27 @@
+{
+  "[json]": {
+    "editor.insertSpaces": true
+  },
+  "[shellscript]": {
+    "editor.insertSpaces": false,
+    "editor.formatOnSave": true
+  },
+  "editor.tabSize": 2,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.workingDirectories": ["web"],
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "go.alternateTools": {
+    "go": "${workspaceFolder}/.bin/go/lib/bin/go"
+  },
+  "go.formatTool": "goimports",
+  "go.gopath": "${workspaceFolder}/.bin/go/local",
+  "go.lintOnSave": "workspace",
+  "go.lintTool": "golangci-lint",
+  "go.showWelcome": false,
+  "go.survey.prompt": false,
+  "go.vetOnSave": "off",
+  "shellcheck.customArgs": ["-x"]
+}

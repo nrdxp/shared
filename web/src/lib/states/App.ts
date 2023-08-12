@@ -1,0 +1,826 @@
+import type { DropdownMenuAttrsItem } from "@lib/components/DropdownMenu";
+import type { FormItemAutocompleteParseOutput, FormItemAutocompleteParser } from "@lib/components/FormItem";
+import type { FormOverlayComponentAttrs } from "@lib/components/FormOverlay";
+import type { MarkdownParseOutput, MarkdownParser } from "@lib/components/Markdown";
+import type { AppAlert } from "@lib/layout/AppAlerts";
+import type { AppFormSettings } from "@lib/layout/AppForm";
+import type { AppBreadcrumb } from "@lib/layout/AppToolbar";
+import { Log } from "@lib/services/Log";
+import type { TelemetryOptions } from "@lib/services/Telemetry";
+import { Telemetry } from "@lib/services/Telemetry";
+import { CivilDate, CivilDateOrderEnum, CivilDateSeparatorEnum } from "@lib/types/CivilDate";
+import { Color, ColorEnum } from "@lib/types/Color";
+import { DisplayEnum } from "@lib/types/Display";
+import type { Timestamp } from "@lib/types/Timestamp";
+import { Clone } from "@lib/utilities/Clone";
+import m from "mithril";
+import Stream from "mithril/stream";
+import nosleep from "nosleep.js";
+
+// These are all flat so it's easy to merge changes.
+export interface App {
+	/** Current active loading button. */
+	componentsButtonLoading: string,
+
+	/** Current active DropdownMenu. */
+	componentsDropdownMenu: string,
+
+	/** If the DropdownMenu opens above. */
+	componentsDropdownMenuAbove: boolean,
+
+	/** A list of alerts. */
+	layoutAppAlerts: AppAlert[],
+
+	/** List of breadcrumbs to display. */
+	layoutAppBreadCrumbs: AppBreadcrumb[],
+
+	/** AppForm settings. */
+	layoutAppForm: AppFormSettings,
+
+	/** AppHelpLink is the iFrame link for AppHelp. */
+	layoutAppHelpLink: string,
+
+	/** AppHelp is open. */
+	layoutAppHelpOpen: boolean,
+
+	/** AppMenu is open. */
+	layoutAppMenuOpen: boolean,
+
+	/** Current navPath, should be set on route changes. */
+	layoutAppMenuPath: string,
+
+	/** A list of extra AppToolbarAction Buttons to always show, typically relevant for the current page. */
+	layoutAppToolbarActionButtons: DropdownMenuAttrsItem[],
+
+	/** Current user has admin privileges. */
+	sessionAdmin: boolean,
+
+	/** Current user is authenticated. */
+	sessionAuthenticated: boolean,
+
+	/** Whether or not debug mode is turned on. */
+	sessionDebug: boolean,
+
+	/** The current display setting. */
+	sessionDisplay: DisplayEnum,
+
+	/** Enable/disable the MOTD. */
+	sessionHideMOTD: boolean,
+
+	/** InstallPrompt event data for PWA. */
+	sessionInstallPrompt: BeforeInstallPromptEvent | null,
+
+	/** Whether the PWA InstallPrompt has been dismissed. */
+	sessionInstallPromptDismissed: boolean,
+
+	/** Determines whether the app is online or offline. */
+	sessionOnline: boolean,
+
+	/** A list of redirects that have been set.  Calling AppState.redirect() will pop them. */
+	sessionRedirects: string[],
+
+	/** The ServiceWorkerRegistration, if available. */
+	sessionServiceWorkerRegistration: ServiceWorkerRegistration | null,
+
+	/** Sleep is disabled. */
+	sessionSleepDisabled: boolean,
+}
+
+interface AppPreferencesTranslationsFormItemSelectColorValue {
+	color: number,
+	id: string,
+	name: string,
+}
+
+export interface AppPreferences {
+	/** Accent color. */
+	colorAccent: ColorEnum,
+
+	/** Negative color. */
+	colorNegative: ColorEnum,
+
+	/** Positive color. */
+	colorPositive: ColorEnum,
+
+	/** Primary color. */
+	colorPrimary: ColorEnum,
+
+	/** Secondary color. */
+	colorSecondary: ColorEnum,
+
+	/** Dark mode. */
+	darkMode: boolean,
+
+	/** CivilDate order format. */
+	formatDateOrder: CivilDateOrderEnum,
+
+	/** CivilDate separator format. */
+	formatDateSeparator: CivilDateSeparatorEnum,
+
+	/** Time format. */
+	formatTime24: boolean,
+
+	/** Translations to use within the app. */
+	translations: {
+		/* eslint-disable jsdoc/require-jsdoc */
+		actionAdd: string,
+		actionCancel: string,
+		actionClose: string,
+		actionConfirm: string,
+		actionDelete: string,
+		actionDeleteConfirm: string,
+		actionDeselectAll: string,
+		actionDismiss: string,
+		actionEdit: string,
+		actionImport: string,
+		actionKeepAwake: string,
+		actionNew: string,
+		actionPreview: string,
+		actionSearch: string,
+		actionShow: string,
+		actionUpdate: string,
+		alertNewVersion: string,
+		appToolbarActionsOnThisPage: string,
+		formCreated: string,
+		formImageSelect: string,
+		formImportCSVField: string,
+		formImportCSVSelectCSV: string,
+		formImportCSVTooltip: string,
+		formItemDurationHour: string,
+		formItemDurationHours: string,
+		formItemDurationMinute: string,
+		formItemDurationMinutes: string,
+		formItemInputIconName: string,
+		formItemInputIconTooltip: string,
+		formItemNewPasswordPassword: string,
+		formItemNewPasswordTooltip: string,
+		formItemSelectColorName: string,
+		formItemSelectColorTooltip: string,
+		formItemSelectColorValues: AppPreferencesTranslationsFormItemSelectColorValue[],
+		formItemSelectCurrencyFormat: string,
+		formItemSelectCurrencyFormatTooltip: string,
+		formItemTextAreaScanText: string,
+		formLastUpdated: string,
+		formPermissionTypes: string[],
+		formRecurrenceDays: string,
+		formRecurrenceEnd: string,
+		formRecurrenceEndTooltip: string,
+		formRecurrenceFirst: string,
+		formRecurrenceFourth: string,
+		formRecurrenceFourthToLast: string,
+		formRecurrenceLabel: string,
+		formRecurrenceLast: string,
+		formRecurrenceMonths: string,
+		formRecurrenceNextDate: string,
+		formRecurrenceSecond: string,
+		formRecurrenceSecondToLast: string,
+		formRecurrenceSpecificDate: string,
+		formRecurrenceThird: string,
+		formRecurrenceThirdToLast: string,
+		formRecurrenceTooltip: string,
+		formRecurrenceWeekdays: string[],
+		formRecurrenceWeeks: string,
+		formRecurrenceYears: string,
+		help: string,
+		noImage: string,
+		or: string,
+		tableHeaderFilterTooltip: string,
+		tableNothingFound: string,
+		tableShowColumns: string,
+		tooltipMarkdown: string,
+		undo: string,
+		/* eslint-enable jsdoc/require-jsdoc */
+	},
+}
+
+interface appPreferencesMap extends AppPreferences {
+	styleAccent: string,
+	styleMode: string,
+	styleModeInvert: string,
+	styleNegative: string,
+	stylePositive: string,
+	stylePrimary: string,
+	styleSecondary: string,
+}
+
+let noSleep: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+
+if (typeof document !== "undefined") {
+	noSleep = new nosleep();
+}
+
+function New (): App {
+	return {
+		componentsButtonLoading: "",
+		componentsDropdownMenu: "",
+		componentsDropdownMenuAbove: false,
+		layoutAppAlerts: [],
+		layoutAppBreadCrumbs: [],
+		layoutAppForm: {
+			component: null,
+			data: {},
+		},
+		layoutAppHelpLink: "",
+		layoutAppHelpOpen: false,
+		layoutAppMenuOpen: false,
+		layoutAppMenuPath: "",
+		layoutAppToolbarActionButtons: [],
+		sessionAdmin: false,
+		sessionAuthenticated: false,
+		sessionDebug: false,
+		sessionDisplay: DisplayEnum.XLarge,
+		sessionHideMOTD: false,
+		sessionInstallPrompt: null,
+		sessionInstallPromptDismissed: false,
+		sessionOnline: true,
+		sessionRedirects: [],
+		sessionServiceWorkerRegistration: null,
+		sessionSleepDisabled: false,
+	};
+}
+
+export const AppState = {
+	clearLayoutAppAlert: (message: string): void => {
+		const alerts = AppState.data.layoutAppAlerts;
+
+		const i = alerts.findIndex((alert) => {
+			return alert.message === message;
+		});
+
+		if (i >= 0) {
+			alerts.splice(i, 1);
+		}
+
+		AppState.set({
+			layoutAppAlerts: alerts,
+		});
+		m.redraw();
+	},
+	data: New(),
+	formatCivilDate: (date: CivilDate | NullCivilDate): string => {
+		if (typeof date === "object" && date !== null) {
+			return date.toString(
+				AppState.preferences().formatDateOrder,
+				AppState.preferences().formatDateSeparator,
+			);
+		}
+
+		return CivilDate.fromString(date!) // eslint-disable-line @typescript-eslint/no-non-null-assertion
+			.toString(
+				AppState.preferences().formatDateOrder,
+				AppState.preferences().formatDateSeparator,
+			);
+	},
+	formatTimestamp: (timestamp: Timestamp): string => {
+		return timestamp.toPrettyString(
+			AppState.preferences().formatDateOrder,
+			AppState.preferences().formatDateSeparator,
+			AppState.preferences().formatTime24,
+		);
+	},
+	getComponentsButtonLoading: (): string => {
+		return AppState.data.componentsButtonLoading;
+	},
+	getComponentsDropdownMenu: (): string => {
+		return AppState.data.componentsDropdownMenu;
+	},
+	getComponentsDropdownMenuAbove: (): boolean => {
+		return AppState.data.componentsDropdownMenuAbove;
+	},
+	getLayoutAppAlerts: (): AppAlert[] => {
+		return AppState.data.layoutAppAlerts;
+	},
+	getLayoutAppBreadcrumbs: (): AppBreadcrumb[] => {
+		return AppState.data.layoutAppBreadCrumbs;
+	},
+	getLayoutAppForm: (): AppFormSettings => {
+		return AppState.data.layoutAppForm;
+	},
+	getLayoutAppMenuPath: (): string => {
+		return AppState.data.layoutAppMenuPath;
+	},
+	getLayoutAppToolbarActionButtons: (): DropdownMenuAttrsItem[] => {
+		return AppState.data.layoutAppToolbarActionButtons;
+	},
+	getSessionDisplay: (): DisplayEnum => {
+		return AppState.data.sessionDisplay;
+	},
+	getSessionInstallPrompt: (): BeforeInstallPromptEvent | null => {
+		return AppState.data.sessionInstallPrompt;
+	},
+	getSessionRedirects: (): string[] => {
+		return AppState.data.sessionRedirects;
+	},
+	getSessionServiceWorkerRegistration: (): ServiceWorkerRegistration | null => {
+		return AppState.data.sessionServiceWorkerRegistration;
+	},
+	init: (
+		motd: () => string | undefined,
+		oncreate: () => Promise<void>,
+		ondebug: () => TelemetryOptions,
+		parserFormItemAutocomplete: FormItemAutocompleteParser,
+		parserMarkdown: MarkdownParser,
+		preferences: Stream<AppPreferences>,
+		product: string,
+	): void => {
+		AppState.motd = motd;
+		AppState.oncreate = oncreate;
+		AppState.ondebug = ondebug;
+		AppState.parserFormItemAutocomplete = parserFormItemAutocomplete;
+		AppState.parserMarkdown = parserMarkdown;
+		AppState.preferences.end(true);
+		AppState.preferences = preferences.map((preferences) => {
+			return {
+				...preferences,
+				...{
+					styleAccent: `_${Color.getValue(preferences.colorAccent)
+						.toLowerCase()}`,
+					styleMode: `-${preferences.darkMode ?
+						"dark" :
+						"light"}`,
+					styleModeInvert: `-${preferences.darkMode ?
+						"light" :
+						"dark"}`,
+					styleNegative: `_${preferences.colorNegative === 0 ?
+						"pink" :
+						Color.getValue(preferences.colorNegative)
+							.toLowerCase()}`,
+					stylePositive: `_${preferences.colorPositive === 0 ?
+						"teal" :
+						Color.getValue(preferences.colorPositive)
+							.toLowerCase()}`,
+					stylePrimary: `_${Color.getValue(preferences.colorPrimary)
+						.toLowerCase()}`,
+					styleSecondary: `_${Color.getValue(preferences.colorSecondary)
+						.toLowerCase()}`,
+				},
+			};
+		});
+		AppState.product = product;
+		AppState.updateSize();
+
+		m.route.prefix = "";
+
+		// Handle resize and setup initial size
+		window.addEventListener("resize", () => {
+			AppState.updateSize();
+		});
+	},
+	isLayoutAppHelpOpen: (): boolean => {
+		return AppState.data.layoutAppHelpOpen;
+	},
+	isLayoutAppMenuOpen: (): boolean => {
+		return AppState.data.layoutAppMenuOpen;
+	},
+	isSessionAdmin: (): boolean => {
+		return AppState.data.sessionAdmin;
+	},
+	isSessionAuthenticated: (): boolean => {
+		return AppState.data.sessionAuthenticated;
+	},
+	isSessionDebug: (): boolean => {
+		return AppState.data.sessionDebug;
+	},
+	isSessionHideMOTD: (): boolean => {
+		return AppState.data.sessionHideMOTD;
+	},
+	isSessionOnline: (): boolean => {
+		return AppState.data.sessionOnline;
+	},
+	isSessionSleepDisabled: (): boolean => {
+		return AppState.data.sessionSleepDisabled;
+	},
+	motd: (): string | undefined => {
+		return;
+	},
+	oncreate: async (): Promise<void> => {},
+	ondebug: (): TelemetryOptions => {
+		return {
+			endpoint: "",
+			path: "",
+			serviceName: "",
+		};
+	},
+	parserFormItemAutocomplete: {
+		options: Stream([] as string[]),
+		parse: (): FormItemAutocompleteParseOutput => {
+			return {
+				options: [],
+				splice: "",
+				visible: false,
+			};
+		},
+	} as FormItemAutocompleteParser,
+	parserMarkdown: {
+		match: /a^/,
+		parse: (): MarkdownParseOutput => {
+			return {
+				link: "",
+				name: "",
+			};
+		},
+	} as MarkdownParser,
+	preferences: Stream({
+		colorAccent: ColorEnum.Default,
+		colorNegative: ColorEnum.Default,
+		colorPositive: ColorEnum.Default,
+		colorPrimary: ColorEnum.Default,
+		colorSecondary: ColorEnum.Default,
+		darkMode: false,
+		formatDateOrder: CivilDateOrderEnum.MDY,
+		formatDateSeparator: CivilDateSeparatorEnum.ForwardSlash,
+		formatTime24: false,
+		styleAccent: "",
+		styleMode: "",
+		styleModeInvert: "",
+		styleNegative: "",
+		stylePositive: "",
+		stylePrimary: "",
+		styleSecondary: "",
+		translations: {
+			actionAdd: "Add",
+			actionCancel: "Cancel",
+			actionClose: "Close",
+			actionConfirm: "Confirm",
+			actionDelete: "Delete",
+			actionDeleteConfirm: "Confirm Delete",
+			actionDeselectAll: "Deselect All",
+			actionDismiss: "Dismiss",
+			actionEdit: "Edit",
+			actionImport: "Import",
+			actionKeepAwake: "Keep Awake",
+			actionNew: "New",
+			actionPreview: "Preview",
+			actionSearch: "Search",
+			actionShow: "Show",
+			actionUpdate: "Update",
+			alertNewVersion: "",
+			appToolbarActionsOnThisPage: "On this page",
+			formCreated: "Created",
+			formImageSelect: "Select",
+			formImportCSVField: "",
+			formImportCSVSelectCSV: "Select CSV",
+			formImportCSVTooltip: "",
+			formItemDurationHour: "Hour",
+			formItemDurationHours: "Hours",
+			formItemDurationMinute: "Minute",
+			formItemDurationMinutes: "Minutes",
+			formItemInputIconName: "Icon",
+			formItemInputIconTooltip: "tooltip",
+			formItemNewPasswordPassword: "Password",
+			formItemNewPasswordTooltip: "",
+			formItemSelectColorName: "Color",
+			formItemSelectColorTooltip: "",
+			formItemSelectColorValues: Color.values.map((color, i) => {
+				return {
+					color: i,
+					id: `${i}`,
+					key: i,
+					name: color,
+				};
+			}),
+			formItemSelectCurrencyFormat: "Currency Format",
+			formItemSelectCurrencyFormatTooltip: "",
+			formItemTextAreaScanText: "Scan Text From Picture",
+			formLastUpdated: "Last Updated",
+			formPermissionTypes: [
+				"Edit",
+				"View",
+				"None",
+			],
+			formRecurrenceDays: "Days",
+			formRecurrenceEnd: "End Recurrence on",
+			formRecurrenceEndTooltip: "",
+			formRecurrenceFirst: "First",
+			formRecurrenceFourth: "Fourth",
+			formRecurrenceFourthToLast: "Fourth To Last",
+			formRecurrenceLabel: "Repeat every...",
+			formRecurrenceLast: "Last",
+			formRecurrenceMonths: "Months",
+			formRecurrenceNextDate: "Next Date",
+			formRecurrenceSecond: "Second",
+			formRecurrenceSecondToLast: "Second To Last",
+			formRecurrenceSpecificDate: "Specific Date",
+			formRecurrenceThird: "Third",
+			formRecurrenceThirdToLast: "Third To Last",
+			formRecurrenceTooltip: "",
+			formRecurrenceWeekdays: [
+				"Monday",
+				"Tuesday",
+				"Wednesday",
+				"Thursday",
+				"Friday",
+				"Saturday",
+				"Sunday",
+			],
+			formRecurrenceWeeks: "Weeks",
+			formRecurrenceYears: "Years",
+			help: "Help",
+			noImage: "No Image",
+			or: "Or",
+			tableHeaderFilterTooltip: "",
+			tableNothingFound: "Nothing Found",
+			tableShowColumns: "SHow Columns",
+			tooltipMarkdown: "markdown",
+			undo: "Undo",
+		},
+	} as appPreferencesMap) ,
+	product: "",
+	redirect: (): void => {
+		const redirects = AppState.data.sessionRedirects;
+
+		if (redirects.length > 0) {
+			Log.debug(`Redirect: ${redirects[0]} from ${m.route.get()}`);
+
+			m.route.set(redirects[0], {}, {
+				replace: true,
+				state: {
+					key: Date.now(),
+				},
+			});
+
+			redirects.shift();
+
+			AppState.set({
+				sessionRedirects: redirects,
+			});
+		} else if (m.route.get() === undefined || m.route.get() !== "/home"
+			&& !m.route.get()
+				.includes("/about")
+			&& !m.route.get()
+				.includes("/cook/recipes/")
+			&& !m.route.get()
+				.includes("/payment")
+		) {
+			m.route.set("/home", {}, {
+				replace: true,
+				state: {
+					key: Date.now(),
+				},
+			});
+		}
+	},
+	reset: (): void => {
+		AppState.data = New();
+		AppState.updateSize();
+	},
+	set: (state: Partial<App>): void => {
+		Log.debug(`App state change: ${JSON.stringify(state)}`);
+		AppState.data = {
+			...AppState.data,
+			...state,
+		};
+	},
+	setComponentsButtonLoading: (name: string): void => {
+		AppState.set({
+			componentsButtonLoading: name,
+		});
+	},
+	setComponentsDropdownMenu: (id: string, x: number): void => {
+		AppState.set({
+			componentsDropdownMenu: id === AppState.data.componentsDropdownMenu ?
+				"" :
+				id,
+			componentsDropdownMenuAbove: x > window.innerHeight * 0.75,
+		});
+	},
+	setLayoutApp: (data: {
+		/* eslint-disable jsdoc/require-jsdoc */
+		breadcrumbs: AppBreadcrumb[],
+		helpLink: string,
+		toolbarActionButtons: DropdownMenuAttrsItem[],
+		/* eslint-enable jsdoc/require-jsdoc */
+	}): void => {
+		AppState.set({
+			layoutAppBreadCrumbs: data.breadcrumbs,
+			layoutAppHelpLink: data.helpLink,
+			layoutAppToolbarActionButtons: data.toolbarActionButtons,
+		});
+
+		if (data.breadcrumbs.length === 0) {
+			document.title = AppState.product;
+		} else {
+			document.title = `${AppState.product} - ${data.breadcrumbs.map((breadcrumb) => {
+				return breadcrumb.name;
+			})
+				.join(" - ")}`;
+		}
+
+		m.redraw();
+	},
+	setLayoutAppAlert: (alert: AppAlert, hidden?: boolean): void => {
+		if (typeof window === "undefined") {
+			return;
+		}
+
+		Log.debug(alert.message);
+
+		if (alert.message === "" || hidden === true) {
+			return;
+		}
+
+		const alerts = Clone(AppState.data.layoutAppAlerts);
+
+		const i = alerts.findIndex((a) => {
+			return a.message === alert.message;
+		});
+
+		if (i >= 0) {
+			return;
+		}
+
+		if (alert.actions === undefined) {
+			alert.actions = [];
+		}
+
+		alert.actions.unshift({
+			name: AppState.preferences().translations.actionDismiss,
+			onclick: async (): Promise<void> => {
+				AppState.clearLayoutAppAlert(alert.message);
+			},
+		});
+
+		alerts.push(alert);
+
+		if (alert.persist !== true) {
+			setTimeout(
+				() => {
+					AppState.clearLayoutAppAlert(alert.message);
+				},
+				process.env.NODE_ENV === "test"
+					? 500
+					: 3000,
+			);
+		}
+
+		AppState.set({
+			layoutAppAlerts: alerts,
+		});
+
+		m.redraw();
+	},
+	setLayoutAppAlertNewVersion: (): void => {
+		const msg = AppState.preferences().translations.alertNewVersion;
+
+		AppState.setLayoutAppAlert(
+			{
+				actions: [
+					{
+						name: "Activate",
+						onclick: async (): Promise<void> => {
+							AppState.clearLayoutAppAlert(msg);
+							window.location.reload();
+						},
+					},
+				],
+				message: msg,
+				persist: true,
+			},
+		);
+	},
+	setLayoutAppForm: (component?: () => m.Component<FormOverlayComponentAttrs<any>>, data?: any): void => { // eslint-disable-line @typescript-eslint/no-explicit-any
+		AppState.set({
+			layoutAppForm: {
+				component: component === undefined ?
+					null :
+					component,
+				data: data === undefined ?
+					AppState.data.layoutAppForm.data :
+					Clone(data),
+			},
+		});
+		m.redraw();
+	},
+	setLayoutAppMenuPath: (path: string): void => {
+		AppState.set({
+			layoutAppMenuPath: path,
+		});
+	},
+	setSessionAdmin: (admin: boolean): void => {
+		AppState.set({
+			sessionAdmin: admin,
+		});
+	},
+	setSessionAuthenticated: (authenticated: boolean): void => {
+		AppState.set({
+			sessionAuthenticated: authenticated,
+		});
+	},
+	setSessionHideMOTD: (): void => {
+		AppState.set({
+			sessionHideMOTD: true,
+		});
+	},
+	setSessionInstallPrompt: (e: BeforeInstallPromptEvent | null): void => {
+		if (!AppState.data.sessionInstallPromptDismissed) {
+			AppState.set({
+				sessionInstallPrompt: e,
+			});
+		}
+
+		if (e === null) {
+			AppState.set({
+				sessionInstallPromptDismissed: true,
+			});
+		}
+	},
+	setSessionRedirect: (redirect: string | string[]): void => {
+		if (Array.isArray(redirect)) {
+			AppState.set({
+				sessionRedirects: redirect,
+			});
+
+			return;
+		}
+
+		if (AppState.data.sessionRedirects.includes(redirect)) {
+			return;
+		}
+
+		Log.debug(`Redirect set: ${redirect} from ${m.route.get()}`);
+		if (redirect.includes("/reset")
+			&& redirect.includes("/signin")
+			&& redirect.includes("/signup")) {
+
+			return;
+		}
+
+		const redirects = Clone(AppState.data.sessionRedirects);
+		redirects.unshift(redirect);
+
+		AppState.set({
+			sessionRedirects: redirects,
+		});
+	},
+	setSessionServiceWorkerRegistration: (r: ServiceWorkerRegistration): void => {
+		AppState.set({
+			sessionServiceWorkerRegistration: r,
+		});
+	},
+	toggleLayoutAppHelpOpen: (open?: boolean): void => {
+		if (open === true || open === false) {
+			AppState.set({
+				layoutAppHelpOpen: open,
+			});
+		} else {
+			AppState.set({
+				layoutAppHelpOpen: !AppState.data.layoutAppHelpOpen,
+			});
+		}
+	},
+	toggleLayoutAppMenuOpen: (open?: boolean): void => {
+		if (open === true || open === false) {
+			AppState.set({
+				layoutAppMenuOpen: open,
+			});
+		} else {
+			AppState.set({
+				layoutAppMenuOpen: !AppState.data.layoutAppMenuOpen,
+			});
+		}
+	},
+	toggleSessionDebug: (): void => {
+		Telemetry.state = AppState.ondebug();
+
+		AppState.set({
+			sessionDebug: true,
+		});
+	},
+	toggleSessionSleepDisabled: (): void => {
+		AppState.set({
+			sessionSleepDisabled: !AppState.data.sessionSleepDisabled,
+		});
+
+		if (AppState.data.sessionSleepDisabled) {
+			noSleep.enable();
+		} else {
+			noSleep.disable();
+		}
+	},
+	updateSize: (): void => {
+		let display = DisplayEnum.XSmall;
+
+		if (window.matchMedia("(min-width: 1280px)").matches) {
+			display = DisplayEnum.XLarge;
+
+			if (AppState.data.sessionAuthenticated) {
+				AppState.toggleLayoutAppMenuOpen(true);
+				m.redraw();
+			}
+		} else if (window.matchMedia("(min-width: 1024px)").matches) {
+			display = DisplayEnum.Large;
+		} else if (window.matchMedia("(min-width: 768px)").matches) {
+			display = DisplayEnum.Medium;
+		} else if (window.matchMedia("(min-width: 640px)").matches) {
+			display = DisplayEnum.Small;
+		}
+
+		if (display !== AppState.data.sessionDisplay) {
+			AppState.set({
+				sessionDisplay: display,
+			});
+
+			m.redraw();
+		}
+	},
+};

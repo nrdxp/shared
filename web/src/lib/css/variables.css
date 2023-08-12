@@ -1,0 +1,240 @@
+/* X-Small-Phones */
+:root {
+	--animation: 200ms;
+	--border_dark: 1px solid rgba(255, 255, 255, 0.2);
+	--border_light: 1px solid rgba(0, 0, 0, 0.2);
+	--border-radius: 8px;
+	--box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
+	--box-shadow-inset: inset 0 2px 4px 0 rgb(0 0 0 / 0.2);
+	--color_base-dark-1: #111827;
+	--color_base-dark-2: #1f2937;
+	--color_base-dark-3: #374151;
+	--color_base-light-1: #ffffff;
+	--color_base-light-2: #eceff1;
+	--color_base-light-3: #cfd8dc;
+	--color_black-dark: #c7c7c7;
+	--color_black-dark-content: var(--color_black-light);
+	--color_black-light: #101010;
+	--color_black-light-content: var(--color_white-dark);
+	--color_blue-dark: #448aff;
+	--color_blue-dark-content: var(--color_white-dark);
+	--color_blue-light: #2962ff;
+	--color_blue-light-content: var(--color_white-dark);
+	--color_brown-dark: #795548;
+	--color_brown-dark-content: var(--color_white-dark);
+	--color_brown-light: #5d4037;
+	--color_brown-light-content: var(--color_white-dark);
+	--color_content-dark: #ebecf0;
+	--color_content-light: #1f2937;
+	--color_gray-dark: #dfe6e9;
+	--color_gray-dark-content: var(--color_black-light);
+	--color_gray-light: #b2bec3;
+	--color_gray-light-content: var(--color_black-light);
+	--color_green-dark: #69f0ae;
+	--color_green-dark-content: var(--color_black-light);
+	--color_green-light: #00c853;
+	--color_green-light-content: var(--color_black-light);
+	--color_indigo-dark: #536dfe;
+	--color_indigo-dark-content: var(--color_black-light);
+	--color_indigo-light: #6366f1;
+	--color_indigo-light-content: var(--color_white-dark);
+	--color_orange-dark: #ffab40;
+	--color_orange-dark-content: var(--color_black-light);
+	--color_orange-light: #ff6d00;
+	--color_orange-light-content: var(--color_black-light);
+	--color_pink-dark: #ff4081;
+	--color_pink-dark-content: var(--color_black-light);
+	--color_pink-light: #f50057;
+	--color_pink-light-content: var(--color_white-dark);
+	--color_purple-dark: #7c4dff;
+	--color_purple-dark-content: var(--color_white-dark);
+	--color_purple-light: #6200ea;
+	--color_purple-light-content: var(--color_white-dark);
+	--color_red-dark: #ff5252;
+	--color_red-dark-content: var(--color_black-light);
+	--color_red-light: #d50000;
+	--color_red-light-content: var(--color_white-dark);
+	--color_teal-dark: #64ffda;
+	--color_teal-dark-content: var(--color_black-light);
+	--color_teal-light: #00bfa5;
+	--color_teal-light-content: var(--color_black-light);
+	--color_yellow-dark: #ffd740;
+	--color_yellow-dark-content: var(--color_black-light);
+	--color_yellow-light: #ffab00;
+	--color_yellow-light-content: var(--color_black-light);
+	--color_white-dark: #ffffff;
+	--color_white-dark-content: var(--color_black-light);
+	--color_white-light: #636363;
+	--color_white-light-content: var(--color_white-dark);
+	--display_AppHeaderAppLogo: flex;
+	--display_AppMenuAppLogo__toggles: none;
+	--display_CalendarDay__container--day: none;
+	--filter_focus: brightness(0.85);
+	--filter_light: opacity(0.6);
+	--font-family_icon: "Material Icons Outlined";
+	--font-size_1: 1rem;
+	--font-size_2: 1.25rem;
+	--font-size_3: 1.5rem;
+	--font-size_4: 2.25rem;
+	--font-weight_bold: 600;
+	--font-weight_normal: 400;
+	--grid-columns_Calendar: 2;
+	--grid-template-areas_App:
+		"header"
+		"section";
+	--grid-template-areas_Table__container:
+		"title"
+		"subtitle"
+		"toolbar"
+		"search"
+		"table";
+	--grid-template-columns_Table__container: 1fr;
+	--grid-template-rows_Table__container: auto auto auto auto 1fr;
+	--height_AppHeader: 60px;
+	--padding: 15px;
+	--padding_App__children: 0;
+	--position_AppMenu: absolute;
+	--width_AppMenu: 100%;
+	--width_Form: 100%;
+	--width_input: 350px;
+	--z-index_Alerts: 10;
+	--z-index_AppHeader: 5;
+	--z-index_AppMenu: 5;
+	--z-index_AppMenu--open: 5;
+	--z-index_AppToolbar: 4;
+	--z-index_CalendarDay__date--day: 2;
+	--z-index_DropdownMenu__menu: 10;
+	--z-index_Form--overlay: 5;
+	--z-index_FormItem__autocomplete: 10;
+	--z-index_Loading: 3;
+	--z-index_Table-thead: 1;
+	--z-index_Title: 2;
+	--z-index_Tooltips__text: 10;
+}
+
+/* Small-Big Phones */
+@media (min-width: 640px) {
+	:root {
+		--grid-columns_calendar: 2;
+	}
+}
+
+/* Medium-Tablets */ 
+@media (min-width: 768px) {
+	:root {
+		--grid-columns_Calendar: 3;
+		--width_input: 400px;
+	}
+}
+
+/* Large-Desktops */
+@media (min-width: 1024px) {
+	:root {
+		--grid-template-areas_Table__container:
+			"title title"
+			"subtitle toolbar"
+			"search search"
+			"table table";
+		--grid-template-columns_Table__container: min-content 1fr;
+		--grid-template-rows_Table__container: auto auto auto 1fr;
+		--grid-columns_Calendar: 5;
+		--padding_App__children: 20px;
+		--width_Form: 800px;
+	}
+}
+
+/* X-Large-Big Desktops */
+@media (min-width: 1280px) {
+	:root {
+		--display_AppHeaderAppLogo: none;
+		--display_AppMenuAppLogo__toggles: flex;
+		--display_CalendarDay__container--day: flex;
+		--grid-columns_Calendar: 7;
+		--height_AppHeader: 0px;
+		--position_AppMenu: sticky;
+		--width_AppMenu: 400px;
+		--z-index_AppMenu--open: 4;
+	}
+}
+
+/* Print view */
+@media print {
+	:root {
+		--border: 1px solid rgba(0, 0, 0, 0.3);
+		--box-shadow: none;
+		--color_black-1: white;
+		--color_black-2: white;
+		--color_blue-light: black;
+		--color_blue-dark: black;
+		--color_white-1: white;
+		--color_white-2: white;
+		--grid-columns_Calendar: 7;
+	}
+
+	main {
+		--color_accent: black !important;
+		--color_accent-content: white !important;
+		--color_primary: black !important;
+		--color_primary-content: white !important;
+		--color_secondary: black !important;
+		--color_secondary-content: white !important;
+	}
+
+	footer,
+	header,
+	nav,
+	.App__buttons,
+	.Alerts,
+	.Button,
+	.Calendar__picker,
+	.CalendarEventsDay__details,
+	.CalendarEventsDay__event > *:not(:last-child),
+	.PlanTasks__actions,
+	.PlanTasks__button--drag,
+	.Table-search,
+	.Title__tabs {
+		display: none !important;
+	}
+
+	.App,
+	.App__children {
+		max-height: none;
+	}
+
+	.App,
+	.App__children,
+	.Table__container,
+	.Table {
+		overflow: visible !important;
+		overflow-x: visible !important;
+		overflow-y: visible !important;
+	}
+
+	.PlanTasks__label,
+	.PlanTasks__button {
+		color: black !important;
+	}
+
+	.CalendarEventsDay__event,
+	.FormItem__array > a,
+	.Title {
+		background-color: white !important;
+		box-shadow: none !important;
+		color: black !important;
+	}
+
+	.Calendar__calendar {
+		grid-gap: 0 !important;
+	}
+
+	.CalendarEventsDay__item {
+		border-left: 0 !important;
+		border-right: 0 !important;
+		box-shadow: none !important;
+	}
+
+	.CalendarDay__items,
+	.CalendarEventsDay__time {
+		padding: 0 !important;
+	}
+}

@@ -1,0 +1,6 @@
+.bin
+.cache/go
+
+go/coverage.out
+hugo/resources
+web/node_modules
