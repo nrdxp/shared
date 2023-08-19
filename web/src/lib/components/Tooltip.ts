@@ -45,7 +45,7 @@ export function Tooltip (): m.Component<TooltipAttrs> {
 							}),
 						]),
 						m("div.Tooltips__text", m(Markdown, {
-							value: `[${AppState.preferences().translations.tooltipMarkdown}](/help/markdown)`,
+							value: `[${AppState.data.translations.tooltipMarkdown}](/help/markdown)`,
 						})),
 					]) :
 					[],

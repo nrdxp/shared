@@ -1,5 +1,6 @@
 .bin
 .cache/go
+.gcp
 
 go/coverage.out
 hugo/resources

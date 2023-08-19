@@ -22,17 +22,17 @@ export function FormItemSelectColor (): m.Component<FormItemSelectColorAttrs> {
 		view: (vnode): m.Children => {
 			return m(FormItem, {
 				name: vnode.attrs.name === undefined ?
-					AppState.preferences().translations.formItemSelectColorName :
+					AppState.data.translations.formItemSelectColorName :
 					vnode.attrs.name,
 				select: {
 					disabled: vnode.attrs.disabled,
 					oninput: (e: string): void => {
 						vnode.attrs.oninput(parseInt(e, 10));
 					},
-					options: AppState.preferences().translations.formItemSelectColorValues,
+					options: AppState.data.translations.formItemSelectColorValues,
 					value: vnode.attrs.value,
 				},
-				tooltip: AppState.preferences().translations.formItemSelectColorTooltip,
+				tooltip: AppState.data.translations.formItemSelectColorTooltip,
 			});
 		},
 	};

@@ -59,6 +59,7 @@ export CR_REGISTRY=ghcr.io
 export CR_REPOSITORY=${CR_REPOSITORY:-}
 CR_USER="-u $(id -u):$(id -g)"
 export CR_USER
+export CR_VOLUME="-v ${DIR}:/work -w /work"
 
 export CUSTOMGOROOT=${CUSTOMGOROOT:-${BINDIR}/go/lib}
 export DEBUG=${DEBUG:-}
@@ -73,7 +74,7 @@ export EXEC_NODE=${BINDIR}/node/bin/node
 export EXEC_RCLONE=${BINDIR}/rclone
 export EXEC_SHELLCHECK=${BINDIR}/shellcheck
 export EXEC_VAULT=${BINDIR}/vault
-export EXEC_YAML8N=${BINDIR}/yaml8n
+export EXEC_YAML8N="${CR} run -it --rm ${CR_USER} --pull always ${CR_VOLUME} ${CR_REGISTRY}/candiddev/yaml8n:latest"
 
 export GITHUB_PATH="/repos/candiddev/${APP_NAME}"
 export GITHUB_TOKEN=${GITHUB_TOKEN:-}

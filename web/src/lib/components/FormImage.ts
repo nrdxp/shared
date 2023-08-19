@@ -110,7 +110,7 @@ export function FormImage (): m.Component<FormImageAttrs> {
 								}),
 								m(Button, {
 									for: `form-image-input${StringToID(vnode.attrs.name)}`,
-									name: AppState.preferences().translations.formImageSelect,
+									name: AppState.data.translations.formImageSelect,
 									permitted: true,
 									requireOnline: true,
 								}),

@@ -80,7 +80,7 @@ export function FormItemIcons (): m.Component<FormItemIconsAttrs> {
 								vnode.attrs.onclick(0);
 							}
 						},
-					}, AppState.preferences().translations.actionDeselectAll),
+					}, AppState.data.translations.actionDeselectAll),
 					),
 			]);
 		},

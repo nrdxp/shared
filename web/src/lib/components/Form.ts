@@ -142,7 +142,7 @@ export function Form (): m.Component<FormAttrs> {
 										m("span", {
 											id: "updated",
 										}, [
-											`${AppState.preferences().translations.formLastUpdated}: ${AppState.formatCivilDate(Timestamp.fromString(vnode.attrs.lastModified!) // eslint-disable-line @typescript-eslint/no-non-null-assertion
+											`${AppState.data.translations.formLastUpdated}: ${AppState.formatCivilDate(Timestamp.fromString(vnode.attrs.lastModified!) // eslint-disable-line @typescript-eslint/no-non-null-assertion
 												.toCivilDate())}`,
 										]),
 									]),

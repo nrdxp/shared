@@ -23,8 +23,8 @@ export function FormItemInputIcon (): m.Component<FormItemInputIconAttrs> {
 					type: "text",
 					value: vnode.attrs.value,
 				},
-				name: AppState.preferences().translations.formItemInputIconName,
-				tooltip: `${AppState.preferences().translations.formItemInputIconTooltip} [Google Fonts](https://fonts.google.com/icons?selected=Material)`,
+				name: AppState.data.translations.formItemInputIconName,
+				tooltip: `${AppState.data.translations.formItemInputIconTooltip} [Google Fonts](https://fonts.google.com/icons?selected=Material)`,
 			});
 		},
 	};

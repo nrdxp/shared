@@ -47,7 +47,7 @@ export function FormOverlay (): m.Component<FormOverlayAttrs<any>> { // eslint-d
 						...[
 							{
 								accent: true,
-								name: AppState.preferences().translations.actionDelete,
+								name: AppState.data.translations.actionDelete,
 								onclick: async (): Promise<void> => {
 									return new Promise((resolve) => {
 										deleteConfirm = true;
@@ -59,7 +59,7 @@ export function FormOverlay (): m.Component<FormOverlayAttrs<any>> { // eslint-d
 								requireOnline: true,
 							},
 							{
-								name: AppState.preferences().translations.actionCancel,
+								name: AppState.data.translations.actionCancel,
 								onclick: async (): Promise<void> => {
 									return new Promise((resolve) => {
 										if (deleteConfirm) {
@@ -77,15 +77,15 @@ export function FormOverlay (): m.Component<FormOverlayAttrs<any>> { // eslint-d
 							},
 							{
 								name: vnode.attrs.data.id === null ?
-									AppState.preferences().translations.actionAdd :
-									AppState.preferences().translations.actionUpdate,
+									AppState.data.translations.actionAdd :
+									AppState.data.translations.actionUpdate,
 								permitted: !deleteConfirm && vnode.attrs.permitted,
 								requireOnline: true,
 								submit: true,
 							},
 							{
 								accent: true,
-								name: AppState.preferences().translations.actionDeleteConfirm,
+								name: AppState.data.translations.actionDeleteConfirm,
 								onclick: async (): Promise<void> => {
 									return vnode.attrs.onDelete()
 										.then(async () => {
@@ -113,8 +113,8 @@ export function FormOverlay (): m.Component<FormOverlayAttrs<any>> { // eslint-d
 					overlay: true,
 					title: {
 						name: `${vnode.attrs.data.id === null ?
-							AppState.preferences().translations.actionNew :
-							AppState.preferences().translations.actionUpdate} ${vnode.attrs.name}`,
+							AppState.data.translations.actionNew :
+							AppState.data.translations.actionUpdate} ${vnode.attrs.name}`,
 					},
 				}, [
 					vnode.children,
@@ -128,7 +128,7 @@ export function FormOverlay (): m.Component<FormOverlayAttrs<any>> { // eslint-d
 								value: Timestamp.fromString(vnode.attrs.data.created)
 									.toPrettyString(AppState.preferences().formatDateOrder, AppState.preferences().formatDateSeparator, AppState.preferences().formatTime24),
 							},
-							name: AppState.preferences().translations.formCreated,
+							name: AppState.data.translations.formCreated,
 							tooltip: "",
 						}),
 					vnode.attrs.data.updated === undefined || vnode.attrs.data.updated === null ?
@@ -141,7 +141,7 @@ export function FormOverlay (): m.Component<FormOverlayAttrs<any>> { // eslint-d
 								value: Timestamp.fromString(vnode.attrs.data.updated)
 									.toPrettyString(AppState.preferences().formatDateOrder, AppState.preferences().formatDateSeparator, AppState.preferences().formatTime24),
 							},
-							name: AppState.preferences().translations.formLastUpdated,
+							name: AppState.data.translations.formLastUpdated,
 							tooltip: "",
 						}),
 				]);

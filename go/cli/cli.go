@@ -122,6 +122,8 @@ Commands:
 
 	var paths string
 
+	configArgs := ""
+
 	if !a.NoParse {
 		flag.StringVar(&paths, "c", "", "Path to JSON/YAML configuration files separated by a comma")
 
@@ -131,6 +133,8 @@ Commands:
 			},
 			Usage: "Print the current configuration",
 		}
+
+		flag.StringVar(&configArgs, "x", configArgs, "Comma separated list of config key=value pairs")
 	}
 
 	a.Commands["version"] = Command[T]{
@@ -143,12 +147,9 @@ Commands:
 		Usage: "Print version information",
 	}
 
-	configArgs := ""
-
 	flag.BoolVar(&a.Config.CLIConfig().Debug, "d", a.Config.CLIConfig().Debug, "Enable debug logging")
 	flag.BoolVar(&a.Config.CLIConfig().OutputJSON, "j", a.Config.CLIConfig().OutputJSON, "Output JSON instead of YAML")
 	flag.BoolVar(&a.Config.CLIConfig().NoColor, "n", a.Config.CLIConfig().NoColor, "Disable colored logging")
-	flag.StringVar(&configArgs, "x", configArgs, "Comma separated list of config key=value pairs")
 
 	flag.Parse()
 

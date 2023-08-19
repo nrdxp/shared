@@ -29,11 +29,11 @@ export function FormItemNewPassword (): m.Component<FormItemNewPasswordAttrs> {
 	return {
 		view: (vnode): m.Children => {
 			const name = vnode.attrs.name === undefined ?
-				AppState.preferences().translations.formItemNewPasswordPassword :
+				AppState.data.translations.formItemNewPasswordPassword :
 				vnode.attrs.name;
 			const n = vnode.attrs.noNew === true ?
 				"":
-				`${AppState.preferences().translations.actionNew} `;
+				`${AppState.data.translations.actionNew} `;
 
 			return [
 				m(FormItem, {
@@ -55,7 +55,7 @@ export function FormItemNewPassword (): m.Component<FormItemNewPasswordAttrs> {
 						value: state.password,
 					},
 					name: `${n}${name}`,
-					tooltip: AppState.preferences().translations.formItemNewPasswordTooltip,
+					tooltip: AppState.data.translations.formItemNewPasswordTooltip,
 				}),
 				vnode.attrs.noConfirm === true ?
 					[] :
@@ -77,11 +77,11 @@ export function FormItemNewPassword (): m.Component<FormItemNewPasswordAttrs> {
 							},
 							value: vnode.attrs.value(),
 						},
-						name: `${AppState.preferences().translations.actionConfirm} ${n}${name}`,
-						tooltip: AppState.preferences().translations.formItemNewPasswordTooltip,
+						name: `${AppState.data.translations.actionConfirm} ${n}${name}`,
+						tooltip: AppState.data.translations.formItemNewPasswordTooltip,
 					}),
 				m(FormCheckbox, {
-					name: `${AppState.preferences().translations.actionShow} ${name}`,
+					name: `${AppState.data.translations.actionShow} ${name}`,
 					onclick: () => {
 						state.visible = !state.visible;
 					},

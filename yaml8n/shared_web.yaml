@@ -1,0 +1,878 @@
+defaultCode: en
+iso639Codes:
+  ar: عربي
+  de: Deutsch
+  en: English
+  es: Español
+  fr: Francais
+  hi: हिन्दी
+  nl: Nederlands
+  zh: 中文
+outputs:
+- format: typescript
+  package: index
+  path: ../web/src/lib/yaml8n
+translations:
+  ActionAdd:
+    ar: يضيف
+    context: Add something
+    de: Hinzufügen
+    en: Add
+    es: Agregar
+    fr: Ajouter
+    hi: जोड़ना
+    nl: Toevoegen
+    zh: 添加
+  ActionCancel:
+    ar: يلغي
+    context: Cancel something
+    de: Stornieren
+    en: Cancel
+    es: Cancelar
+    fr: Annuler
+    hi: रद्द करना
+    nl: Annuleren
+    zh: 取消
+  ActionClose:
+    ar: يغلق
+    context: Close something
+    de: Schließen
+    en: Close
+    es: Cerca
+    fr: Fermer
+    hi: बंद करना
+    nl: Dichtbij
+    zh: 关闭
+  ActionConfirm:
+    ar: يتأكد
+    context: Acknowledge that something will happen
+    de: Bestätigen
+    en: Confirm
+    es: Confirmar
+    fr: Confirmer
+    hi: पुष्टि करना
+    nl: Bevestigen
+    zh: 确认
+  ActionDelete:
+    ar: يمسح
+    context: Delete something
+    de: Löschen
+    en: Delete
+    es: Borrar
+    fr: Supprimer
+    hi: मिटाना
+    nl: Verwijderen
+    zh: 删除
+  ActionDeleteConfirm:
+    ar: تأكيد الحذف
+    context: Acknowledge that something will be deleted
+    de: Löschen bestätigen
+    en: Confirm Delete
+    es: Confirmar eliminación
+    fr: Confirmation de la suppression
+    hi: हटाने की पुष्टि करें
+    nl: Bevestig verwijderen
+    zh: 确认删除
+  ActionDeselectAll:
+    ar: الغاء تحديد الكل
+    context: Unselect all items
+    de: Alle abwählen
+    en: Deselect All
+    es: Deseleccionar todo
+    fr: Tout déselectionner
+    hi: सबको अचयनित करो
+    nl: Deselecteer alles
+    zh: 取消全选
+  ActionDismiss:
+    ar: رفض
+    context: Dismiss an alert
+    de: Verwerfen
+    en: Dismiss
+    es: Despedir
+    fr: Rejeter
+    hi: नकार देना
+    nl: Afwijzen
+    zh: 解雇
+  ActionEdit:
+    ar: يحرر
+    context: Button to toggle edit mode
+    de: Bearbeiten
+    en: Edit
+    es: Editar
+    fr: Modifier
+    hi: संपादन करना
+    nl: Bewerking
+    zh: 编辑
+  ActionImport:
+    ar: يستورد
+    context: Bring someting into Homechart
+    de: Importieren
+    en: Import
+    es: Importar
+    fr: Importer
+    hi: आयात
+    nl: Importeren
+    zh: 进口
+  ActionKeepAwake:
+    ar: ابقى يقظا
+    context: Button to keep a phone from sleeping
+    de: Bleib wach
+    en: Keep Awake
+    es: Mantenerse despierto
+    fr: Reste éveillé
+    hi: जागते रहना
+    nl: Blijf wakker
+    zh: 保持清醒
+  ActionNew:
+    ar: جديد
+    context: A new iteration of an object
+    de: Neu
+    en: New
+    es: Nuevo
+    fr: Nouveau
+    hi: नया
+    nl: Nieuw
+    zh: 新的
+  ActionNone:
+    ar: لا أحد
+    context: No action available/taken
+    de: Keiner
+    en: None
+    es: Ninguno
+    fr: Aucun
+    hi: कोई नहीं
+    nl: Geen
+    zh: 没有任何
+  ActionPreview:
+    ar: معاينة
+    context: View content before you save it
+    de: Vorschau
+    en: Preview
+    es: Avance
+    fr: Aperçu
+    hi: पूर्व दर्शन
+    nl: Voorbeeld
+    zh: 预览
+  ActionSearch:
+    ar: يبحث
+    context: Find something
+    de: Suchen
+    en: Search
+    es: Buscar
+    fr: Recherche
+    hi: खोज
+    nl: Zoekopdracht
+    zh: 搜索
+  ActionShow:
+    ar: يعرض
+    context: Show something
+    de: Zeigen
+    en: Show
+    es: Espectáculo
+    fr: Montrer
+    hi: दिखाना
+    nl: Show
+    zh: 展示
+  ActionUpdate:
+    ar: تحديث
+    context: Update something
+    de: Aktualisieren
+    en: Update
+    es: Actualizar
+    fr: Mise à jour
+    hi: अद्यतन
+    nl: Update
+    zh: 更新
+  ActionView:
+    ar: منظر
+    context: The ability to view something
+    de: Ansehen
+    en: View
+    es: Vista
+    fr: Voir
+    hi: देखना
+    nl: Weergave
+    zh: 看法
+  AlertNewVersion:
+    ar: نسخة جديدة متاحة
+    context: Message when a new version of Homechart is available
+    de: Neue Version ist verfügbar
+    en: New version is available
+    es: La nueva versión está disponible
+    fr: Une nouvelle version est disponible
+    hi: नया संस्करण उपलब्ध है
+    nl: Nieuwe versie is beschikbaar
+    zh: 新版本可用
+  AppToolbarActionsOnThisPage:
+    ar: على هذه الصفحة
+    context: Header in app toolbar for actions relevant to the current page
+    de: Auf dieser Seite
+    en: On This Page
+    es: En esta página
+    fr: Sur cette page
+    hi: इस पृष्ठ पर
+    nl: Op deze pagina
+    zh: 在本页
+  ColorBlack:
+    ar: أسود
+    context: Black color
+    de: Schwarz
+    en: Black
+    es: Negro
+    fr: Noir
+    hi: काला
+    nl: Zwart
+    zh: 黑色的
+  ColorBlue:
+    ar: أزرق
+    context: Blue color
+    de: Blau
+    en: Blue
+    es: Azul
+    fr: Bleu
+    hi: नीला
+    nl: Blauw
+    zh: 蓝色的
+  ColorBrown:
+    ar: بني
+    context: Brown color
+    de: Braun
+    en: Brown
+    es: Marrón
+    fr: Brun
+    hi: भूरा
+    nl: Bruin
+    zh: 棕色的
+  ColorGray:
+    ar: رمادي
+    context: Gray color
+    de: Grau
+    en: Gray
+    es: Gris
+    fr: Gris
+    hi: स्लेटी
+    nl: Grijs
+    zh: 灰色的
+  ColorGreen:
+    ar: أخضر
+    context: Green color
+    de: Grün
+    en: Green
+    es: Verde
+    fr: Vert
+    hi: हरा
+    nl: Groente
+    zh: 绿色的
+  ColorIndigo:
+    ar: نيلي
+    context: Indigo color
+    de: Indigo
+    en: Indigo
+    es: Índigo
+    fr: Indigo
+    hi: नील
+    nl: Indigo
+    zh: 靛青
+  ColorOrange:
+    ar: البرتقالي
+    context: Orange color
+    de: Orange
+    en: Orange
+    es: Naranja
+    fr: Orange
+    hi: नारंगी
+    nl: Oranje
+    zh: 橙子
+  ColorPink:
+    ar: لون القرنفل
+    context: Pink color
+    de: Rosa
+    en: Pink
+    es: Rosa
+    fr: Rose
+    hi: गुलाबी
+    nl: Roze
+    zh: 粉色的
+  ColorPurple:
+    ar: أرجواني
+    context: Purple color
+    de: Lila
+    en: Purple
+    es: Púrpura
+    fr: Violet
+    hi: बैंगनी
+    nl: Paars
+    zh: 紫色的
+  ColorRed:
+    ar: أحمر
+    context: Red color
+    de: Rot
+    en: Red
+    es: Rojo
+    fr: Rouge
+    hi: लाल
+    nl: Rood
+    zh: 红色的
+  ColorTeal:
+    ar: بط نهري صغير
+    context: Teal color
+    de: Blaugrün
+    en: Teal
+    es: verde azulado
+    fr: Sarcelle
+    hi: टील
+    nl: Wintertaling
+    zh: 蓝绿色
+  ColorWhite:
+    ar: أبيض
+    context: White color
+    de: Weiss
+    en: White
+    es: Blanco
+    fr: Blanc
+    hi: सफ़ेद
+    nl: Wit
+    zh: 白色的
+  ColorYellow:
+    ar: أصفر
+    context: Yellow color
+    de: Gelb
+    en: Yellow
+    es: Amarillo
+    fr: Jaune
+    hi: पीला
+    nl: Geel
+    zh: 黄色的
+  Default:
+    ar: تقصير
+    context: Default value
+    de: Standard
+    en: Default
+    es: Por defecto
+    fr: Défaut
+    hi: गलती करना
+    nl: Standaard
+    zh: 默认
+  FormCreated:
+    ar: مخلوق
+    context: Date when something was added
+    de: Erstellt
+    en: Created
+    es: Creado
+    fr: Créé
+    hi: बनाया था
+    nl: Gemaakt
+    zh: 已创建
+  FormImageSelect:
+    ar: يختار
+    context: Choose something
+    de: Wählen
+    en: Select
+    es: Seleccionar
+    fr: Sélectionner
+    hi: चुनना
+    nl: Selecteer
+    zh: 选择
+  FormImportCSVField:
+    ar: تعيين حقل CSV
+    context: Field name for select CSV
+    de: CSV-Feldzuordnung
+    en: CSV Field Mapping
+    es: Asignación de campos CSV
+    fr: Cartographie des champs CSV
+    hi: सीएसवी फील्ड मैपिंग
+    nl: CSV-veldtoewijzing
+    zh: CSV 字段映射
+  FormImportCSVSelectCSV:
+    ar: حدد CSV
+    context: Button to select a CSV file
+    de: Wählen Sie CSV-Datei aus
+    en: Select CSV
+    es: Seleccionar CSV
+    fr: Sélectionnez CSV
+    hi: सीएसवी का चयन करें
+    nl: Selecteer CSV
+    zh: 选择 CSV
+  FormImportCSVTooltip:
+    ar: الخصائص المراد استخدامها لتصفية عناصر المخزون
+    context: Tooltip for select CSV
+    de: Eigenschaften zum Filtern von Inventarelementen
+    en: Properties to use for filtering inventory items
+    es: Propiedades a usar para filtrar artículos de inventario
+    fr: Propriétés à utiliser pour filtrer les éléments d'inventaire
+    hi: इन्वेंट्री आइटम को फ़िल्टर करने के लिए उपयोग करने के लिए गुण
+    nl: Eigenschappen om te gebruiken voor het filteren van inventarisitems
+    zh: 用于过滤库存项目的属性
+  FormItemDurationHour:
+    ar: ساعة
+    context: An hour
+    de: Stunde
+    en: Hour
+    es: Hora
+    fr: Heure
+    hi: घंटा
+    nl: Uur
+    zh: 小时
+  FormItemDurationHours:
+    ar: ساعات
+    context: Multiple hour
+    de: Std
+    en: Hours
+    es: Horas
+    fr: Heures
+    hi: घंटे
+    nl: Uur
+    zh: 小时
+  FormItemDurationMinute:
+    ar: دقيقة
+    context: A minute
+    de: Minute
+    en: Minute
+    es: Minuto
+    fr: Minute
+    hi: मिनट
+    nl: Minuut
+    zh: 分钟
+  FormItemDurationMinutes:
+    ar: دقائق
+    context: Multiple minute
+    de: Protokoll
+    en: Minutes
+    es: Minutos
+    fr: Minutes
+    hi: मिनट
+    nl: Minuten
+    zh: 分钟
+  FormItemInputIconName:
+    ar: أيقونة
+    context: Icon/glyph used to represent something via text
+    de: Symbol
+    en: Icon
+    es: Icono
+    fr: Icône
+    hi: आइकन
+    nl: Icoon
+    zh: 图标
+  FormItemInputIconTooltip:
+    ar: يتم عرض الرمز مع العنصر. استخدم هذا الارتباط للبحث عن الرموز الموجودة على
+    context: Tooltip for icon field
+    de: Symbol, das mit dem Element angezeigt werden soll. Verwenden Sie diesen Link,
+      um nach Symbolen zu suchen
+    en: Icon to be displayed with the item.  Use this link to search for icons on
+    es: Icono que se mostrará con el elemento. Utilice este enlace para buscar iconos
+      en
+    fr: Icône à afficher avec l'élément. Utilisez ce lien pour rechercher des icônes
+      sur
+    hi: आइटम के साथ प्रदर्शित किया जाने वाला चिह्न। आइकन खोजने के लिए इस लिंक का उपयोग
+      करें
+    nl: Pictogram dat bij het item moet worden weergegeven. Gebruik deze link om iconen
+      op te zoeken
+    zh: 与项目一起显示的图标。使用此链接搜索图标
+  FormItemNewPasswordPassword:
+    ar: كلمة المرور
+    context: Login credential for something
+    de: Passwort
+    en: Password
+    es: Contraseña
+    fr: Mot de passe
+    hi: पासवर्ड
+    nl: Wachtwoord
+    zh: 密码
+  FormItemNewPasswordTooltip:
+    ar: ثمانية أحرف على الأقل
+    context: Tooltip for a password field
+    de: Mindestens acht Zeichen
+    en: Minimum eight characters
+    es: Mínimo ocho caracteres
+    fr: Minimum huit caractères
+    hi: न्यूनतम आठ वर्ण
+    nl: Minimaal acht tekens
+    zh: 至少八个字符
+  FormItemSelectColorName:
+    ar: لون
+    context: Color of things
+    de: Farbe
+    en: Color
+    es: Color
+    fr: Couleur
+    hi: रंग
+    nl: Kleur
+    zh: 颜色
+  FormItemSelectColorTooltip:
+    ar: ما اللون الذي يجب استخدامه
+    context: Tooltip for color fields
+    de: Welche Farbe zu verwenden
+    en: What color to use
+    es: Que color usar
+    fr: Quelle couleur utiliser
+    hi: किस रंग का प्रयोग करें
+    nl: Welke kleur te gebruiken
+    zh: 使用什么颜色
+  FormItemSelectCurrencyFormat:
+    ar: تنسيق العملة
+    context: Select the correct currency format
+    de: Währungsformat
+    en: Currency Format
+    es: Formato de moneda
+    fr: Format de devise
+    hi: मुद्रा प्रारूप
+    nl: Valuta Formaat
+    zh: 货币格式
+  FormItemSelectCurrencyFormatTooltip:
+    ar: تنسيق العرض للعملات
+    context: Tooltip for currency format field
+    de: Anzeigeformat für Währungen
+    en: Display format for currencies
+    es: Formato de visualización para monedas
+    fr: Format d'affichage des devises
+    hi: मुद्राओं के लिए प्रदर्शन प्रारूप
+    nl: Weergaveformaat voor valuta&#39;s
+    zh: 货币显示格式
+  FormItemTextAreaScanText:
+    ar: مسح النص من الصورة
+    context: Tooltip for scanning text from a picture
+    de: Text aus Bild scannen
+    en: Scan Text From Picture
+    es: Escanear texto de la imagen
+    fr: Numériser le texte à partir de l'image
+    hi: चित्र से टेक्स्ट स्कैन करें
+    nl: Scan tekst van afbeelding
+    zh: 从图片中扫描文本
+  FormLastUpdated:
+    ar: آخر تحديث
+    context: The last date something was updated
+    de: Letzte Aktualisierung
+    en: Last Updated
+    es: Última actualización
+    fr: Dernière mise à jour
+    hi: आखरी अपडेट
+    nl: Laatst bijgewerkt
+    zh: 最近更新时间
+  FormRecurrenceDays:
+    ar: أيام
+    context: Recur every x days
+    de: Tage
+    en: Days
+    es: Días
+    fr: Jours
+    hi: दिन
+    nl: Dagen
+    zh: 天
+  FormRecurrenceEnd:
+    ar: إنهاء التكرار في
+    context: Date to end a recurrence on
+    de: Wiederholung beenden ein
+    en: End Recurrence On
+    es: Terminar recurrencia en
+    fr: Fin de la récurrence le
+    hi: पुनरावृत्ति समाप्त करें
+    nl: Einde herhaling aan
+    zh: 结束循环
+  FormRecurrenceEndTooltip:
+    ar: متى تتوقف عن التكرار
+    context: Date to end a recurrence on tooltip
+    de: Wann aufhören, sich zu wiederholen
+    en: When to stop recurring
+    es: Cuándo dejar de repetirse
+    fr: Quand arrêter de se reproduire
+    hi: आवर्ती कब बंद करें
+    nl: Wanneer stoppen met terugkeren
+    zh: 什么时候停止重复
+  FormRecurrenceFirst:
+    ar: أولاً
+    context: Recur first of month
+    de: Erste
+    en: First
+    es: Primero
+    fr: D'abord
+    hi: पहला
+    nl: Eerst
+    zh: 第一的
+  FormRecurrenceFourth:
+    ar: الرابعة
+    context: Recur fourth to last of month
+    de: Vierte
+    en: Fourth
+    es: Cuatro
+    fr: Quatrième
+    hi: चौथी
+    nl: Vierde
+    zh: 第四
+  FormRecurrenceFourthToLast:
+    ar: الرابع إلى الأخير
+    context: Recur fourth to last of month
+    de: Vierter bis letzter
+    en: Fourth To Last
+    es: Cuarto al último
+    fr: Quatrième avant dernier
+    hi: चौथा से अंतिम
+    nl: Vierde tot laatste
+    zh: 倒数第四
+  FormRecurrenceLabel:
+    ar: تكرار كل...
+    context: Recurrence label
+    de: Wiederhole jeden...
+    en: Repeat every...
+    es: Repite cada...
+    fr: Répétez chaque...
+    hi: हर बार दोहराएं...
+    nl: Herhaal elke...
+    zh: 重复每...
+  FormRecurrenceLast:
+    ar: آخر
+    context: Recur last of month
+    de: Zuletzt
+    en: Last
+    es: Último
+    fr: Dernier
+    hi: अंतिम
+    nl: Laatst
+    zh: 最后的
+  FormRecurrenceMonths:
+    ar: شهور
+    context: Recur every x months
+    de: Monate
+    en: Months
+    es: Meses
+    fr: Mois
+    hi: महीने
+    nl: Maanden
+    zh: 月
+  FormRecurrenceNextDate:
+    ar: التاريخ القادم
+    context: The next date for a recurring something
+    de: Nächstes Datum
+    en: Next Date
+    es: Proxima fecha
+    fr: Prochain rendez-vous
+    hi: अगली तारीख
+    nl: Volgende datum
+    zh: 下一个日期
+  FormRecurrenceSecond:
+    ar: ثانية
+    context: Recur second of month
+    de: Zweite
+    en: Second
+    es: Segundo
+    fr: Deuxième
+    hi: दूसरा
+    nl: Seconde
+    zh: 第二
+  FormRecurrenceSecondToLast:
+    ar: من الثاني إلى الأخير
+    context: Recur second to last of month
+    de: Vorletzte
+    en: Second To Last
+    es: Penúltimo
+    fr: Avant-dernier
+    hi: आखरी से पहले
+    nl: Voorlaatste
+    zh: 倒数第二
+  FormRecurrenceSpecificDate:
+    ar: تاريخ معين
+    context: Recur on specific date of month
+    de: Bestimmtes Datum
+    en: Specific Date
+    es: Fecha específica
+    fr: Date spécifique
+    hi: विशिष्ट तारीख
+    nl: Specifieke datum
+    zh: 具体日期
+  FormRecurrenceThird:
+    ar: ثالث
+    context: Recur third of month
+    de: Dritte
+    en: Third
+    es: Tercero
+    fr: Troisième
+    hi: तीसरा
+    nl: Derde
+    zh: 第三
+  FormRecurrenceThirdToLast:
+    ar: الثالث إلى الأخير
+    context: Recur third to last of month
+    de: Drittletzter
+    en: Third To Last
+    es: antepenúltimo
+    fr: Avant-dernier
+    hi: थर्ड टू लास्ट
+    nl: Derde tot laatste
+    zh: 倒数第三
+  FormRecurrenceTooltip:
+    ar: قم بإنشاء التكرار ليوم أو أسبوع أو شهر أو تاريخ محدد
+    context: Tooltip for a recurrence field
+    de: Erstellen Sie die Wiederholung für einen bestimmten Tag, eine Woche, einen
+      Monat oder ein Datum
+    en: Create the recurrence for a specific day, week, month, or date
+    es: Crear la recurrencia para un día, semana, mes o fecha específicos
+    fr: Créer la récurrence pour un jour, une semaine, un mois ou une date spécifique
+    hi: किसी विशिष्ट दिन, सप्ताह, माह या दिनांक के लिए पुनरावृत्ति बनाएँ
+    nl: Maak de herhaling voor een specifieke dag, week, maand of datum
+    zh: 为特定的一天、一周、一个月或日期创建重复
+  FormRecurrenceWeeks:
+    ar: أسابيع
+    context: Recur every x weeks
+    de: Wochen
+    en: Weeks
+    es: Semanas
+    fr: Semaines
+    hi: हफ्तों
+    nl: Weken
+    zh: 周
+  FormRecurrenceYears:
+    ar: سنين
+    context: Recur every x years
+    de: Jahre
+    en: Years
+    es: Años
+    fr: Années
+    hi: साल
+    nl: jaren
+    zh: 年
+  Help:
+    ar: يساعد
+    context: Help button
+    de: Hilfe
+    en: Help
+    es: Ayuda
+    fr: Aider
+    hi: मदद
+    nl: Hulp
+    zh: 帮助
+  NoImage:
+    ar: لا توجد صورة
+    context: Message displayed when no image is found
+    de: Kein Bild
+    en: No Image
+    es: Sin imágen
+    fr: Pas d'image
+    hi: चित्र उपलब्द नहीं है
+    nl: Geen afbeelding
+    zh: 没有图像
+  Or:
+    ar: أو
+    context: Different options
+    de: Oder
+    en: Or
+    es: O
+    fr: Ou
+    hi: या
+    nl: Of
+    zh: 或者
+  TableHeaderFilterTooltip:
+    ar: قم بتصفية القيم في هذا العمود. يمكن أن يكون هذا عبارة عن سلسلة بسيطة أو تعبيرًا
+      عاديًا (RegExp).
+    context: Tooltip for filtering a table header value
+    de: Filtern Sie die Werte in dieser Spalte. Dies kann ein einfacher String oder
+      ein regulärer Ausdruck (RegExp) sein.
+    en: Filter the values in this column.  This can be a simple string or a regular
+      expression (RegExp).
+    es: Filtre los valores en esta columna. Puede ser una cadena simple o una expresión
+      regular (RegExp).
+    fr: Filtrez les valeurs dans cette colonne. Il peut s'agir d'une simple chaîne
+      ou d'une expression régulière (RegExp).
+    hi: इस कॉलम में मानों को फ़िल्टर करें। यह एक साधारण स्ट्रिंग या रेगुलर एक्सप्रेशन
+      (RegExp) हो सकता है।
+    nl: Filter de waarden in deze kolom. Dit kan een eenvoudige string zijn of een
+      reguliere expressie (RegExp).
+    zh: 过滤此列中的值。这可以是简单的字符串或正则表达式 (RegExp)。
+  TableNothing:
+    ar: لم يتم العثور على شيء
+    context: Message displayed in a table when nothing is found
+    de: Nichts gefunden
+    en: Nothing Found
+    es: Nada Encontrado
+    fr: rien n'a été trouvé
+    hi: कुछ भी नहीं मिला
+    nl: niets gevonden
+    zh: 什么都没找到
+  TableShowColumns:
+    ar: إظهار الأعمدة
+    context: Show different toggles in a table
+    de: Spalten anzeigen
+    en: Show Columns
+    es: Mostrar columnas
+    fr: Afficher les colonnes
+    hi: कॉलम दिखाएं
+    nl: Kolommen tonen
+    zh: 显示列
+  TooltipMarkdown:
+    ar: يستخدم هذا الإدخال Markdown
+    context: Tooltip for markdown fields
+    de: Diese Eingabe verwendet Markdown
+    en: This input uses Markdown
+    es: Esta entrada usa Markdown
+    fr: Cette entrée utilise Markdown
+    hi: यह इनपुट मार्कडाउन का उपयोग करता है
+    nl: Deze invoer gebruikt Markdown
+    zh: 此输入使用 Markdown
+  WeekdayFriday:
+    ar: جمعة
+    context: Friday day name
+    de: Freitag
+    en: Friday
+    es: Viernes
+    fr: Vendredi
+    hi: शुक्रवार
+    nl: Vrijdag
+    zh: 星期五
+  WeekdayMonday:
+    ar: الاثنين
+    context: Monday day name
+    de: Montag
+    en: Monday
+    es: Lunes
+    fr: Lundi
+    hi: सोमवार
+    nl: Maandag
+    zh: 周一
+  WeekdaySaturday:
+    ar: السبت
+    context: Saturday day name
+    de: Samstag
+    en: Saturday
+    es: Sábado
+    fr: Samedi
+    hi: शनिवार
+    nl: Zaterdag
+    zh: 周六
+  WeekdaySunday:
+    ar: الأحد
+    context: Sunday day name
+    de: Sonntag
+    en: Sunday
+    es: Domingo
+    fr: Dimanche
+    hi: रविवार
+    nl: Zondag
+    zh: 星期日
+  WeekdayThursday:
+    ar: يوم الخميس
+    context: Thursday day name
+    de: Donnerstag
+    en: Thursday
+    es: Jueves
+    fr: Jeudi
+    hi: गुरुवार
+    nl: Donderdag
+    zh: 周四
+  WeekdayTuesday:
+    ar: يوم الثلاثاء
+    context: Tuesday day name
+    de: Dienstag
+    en: Tuesday
+    es: Martes
+    fr: Mardi
+    hi: मंगलवार
+    nl: Dinsdag
+    zh: 周二
+  WeekdayWednesday:
+    ar: الأربعاء
+    context: Wednesday day name
+    de: Mittwoch
+    en: Wednesday
+    es: Miércoles
+    fr: Mercredi
+    hi: बुधवार
+    nl: Woensdag
+    zh: 周三

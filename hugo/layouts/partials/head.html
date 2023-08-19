@@ -17,7 +17,7 @@
   {{- if .IsHome -}}
     {{ .Site.Title -}}
   {{ else -}}
-    {{ with .Title }}{{ i18n . }} | {{ end -}}
+    {{ with .Title }}{{ if i18n . }}{{ i18n . }}{{ else }}{{ . }}{{ end }} | {{ end -}}
     {{ .Site.Title -}}
   {{ end -}}
 </title>

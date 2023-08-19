@@ -6,7 +6,7 @@ import m from "mithril";
 export function Or (): m.Component {
 	return {
 		view: (): m.Children => {
-			return m("span.Or", AppState.preferences().translations.or);
+			return m("span.Or", AppState.data.translations.or);
 		},
 	};
 }

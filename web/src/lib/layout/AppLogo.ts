@@ -116,7 +116,7 @@ export function AppLogo (): m.Component<AppLogoAttrs> {
 								m.redraw();
 							}, 500);
 						},
-						placeholder: AppState.preferences().translations.actionSearch,
+						placeholder: AppState.data.translations.actionSearch,
 						type: "text",
 						value: state.search,
 					}, state.items.length === 0 ?

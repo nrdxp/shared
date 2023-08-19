@@ -13,6 +13,8 @@ import { Color, ColorEnum } from "@lib/types/Color";
 import { DisplayEnum } from "@lib/types/Display";
 import type { Timestamp } from "@lib/types/Timestamp";
 import { Clone } from "@lib/utilities/Clone";
+import type { ISO639Code } from "@lib/yaml8n";
+import { ActionAdd, ActionCancel, ActionClose, ActionConfirm, ActionDelete, ActionDeleteConfirm, ActionDeselectAll, ActionDismiss, ActionEdit, ActionImport, ActionKeepAwake, ActionNew, ActionNone, ActionPreview, ActionSearch, ActionShow, ActionUpdate, ActionView, AlertNewVersion, AppToolbarActionsOnThisPage, ColorBlack, ColorBlue, ColorBrown, ColorGray, ColorGreen, ColorIndigo, ColorOrange, ColorPink, ColorPurple, ColorRed, ColorTeal, ColorWhite, ColorYellow, Default, FormCreated, FormImageSelect, FormImportCSVField, FormImportCSVSelectCSV, FormImportCSVTooltip, FormItemDurationHour, FormItemDurationHours, FormItemDurationMinute, FormItemDurationMinutes, FormItemInputIconName, FormItemInputIconTooltip, FormItemNewPasswordPassword, FormItemNewPasswordTooltip, FormItemSelectColorName, FormItemSelectColorTooltip, FormItemSelectCurrencyFormat, FormItemSelectCurrencyFormatTooltip, FormItemTextAreaScanText, FormLastUpdated, FormRecurrenceDays, FormRecurrenceEnd, FormRecurrenceEndTooltip, FormRecurrenceFirst, FormRecurrenceFourth, FormRecurrenceFourthToLast, FormRecurrenceLabel, FormRecurrenceLast, FormRecurrenceMonths, FormRecurrenceNextDate, FormRecurrenceSecond, FormRecurrenceSecondToLast, FormRecurrenceSpecificDate, FormRecurrenceThird, FormRecurrenceThirdToLast, FormRecurrenceTooltip, FormRecurrenceWeeks, FormRecurrenceYears, Help, NoImage, Or, TableHeaderFilterTooltip, TableNothing, TableShowColumns, TooltipMarkdown, Translate,WeekdayFriday, WeekdayMonday, WeekdaySaturday, WeekdaySunday, WeekdayThursday, WeekdayTuesday, WeekdayWednesday } from "@lib/yaml8n";
 import m from "mithril";
 import Stream from "mithril/stream";
 import nosleep from "nosleep.js";
@@ -67,6 +69,9 @@ export interface App {
 	/** Enable/disable the MOTD. */
 	sessionHideMOTD: boolean,
 
+	/** Current language. */
+	sessionISO639Code: string,
+
 	/** InstallPrompt event data for PWA. */
 	sessionInstallPrompt: BeforeInstallPromptEvent | null,
 
@@ -84,43 +89,8 @@ export interface App {
 
 	/** Sleep is disabled. */
 	sessionSleepDisabled: boolean,
-}
 
-interface AppPreferencesTranslationsFormItemSelectColorValue {
-	color: number,
-	id: string,
-	name: string,
-}
-
-export interface AppPreferences {
-	/** Accent color. */
-	colorAccent: ColorEnum,
-
-	/** Negative color. */
-	colorNegative: ColorEnum,
-
-	/** Positive color. */
-	colorPositive: ColorEnum,
-
-	/** Primary color. */
-	colorPrimary: ColorEnum,
-
-	/** Secondary color. */
-	colorSecondary: ColorEnum,
-
-	/** Dark mode. */
-	darkMode: boolean,
-
-	/** CivilDate order format. */
-	formatDateOrder: CivilDateOrderEnum,
-
-	/** CivilDate separator format. */
-	formatDateSeparator: CivilDateSeparatorEnum,
-
-	/** Time format. */
-	formatTime24: boolean,
-
-	/** Translations to use within the app. */
+	/** Translations contains various app-level translations. */
 	translations: {
 		/* eslint-disable jsdoc/require-jsdoc */
 		actionAdd: string,
@@ -188,9 +158,44 @@ export interface AppPreferences {
 		tableNothingFound: string,
 		tableShowColumns: string,
 		tooltipMarkdown: string,
-		undo: string,
 		/* eslint-enable jsdoc/require-jsdoc */
 	},
+}
+
+interface AppPreferencesTranslationsFormItemSelectColorValue {
+	color: number,
+	id: string,
+	name: string,
+}
+
+
+export interface AppPreferences {
+	/** Accent color. */
+	colorAccent: ColorEnum,
+
+	/** Negative color. */
+	colorNegative: ColorEnum,
+
+	/** Positive color. */
+	colorPositive: ColorEnum,
+
+	/** Primary color. */
+	colorPrimary: ColorEnum,
+
+	/** Secondary color. */
+	colorSecondary: ColorEnum,
+
+	/** Dark mode. */
+	darkMode: boolean,
+
+	/** CivilDate order format. */
+	formatDateOrder: CivilDateOrderEnum,
+
+	/** CivilDate separator format. */
+	formatDateSeparator: CivilDateSeparatorEnum,
+
+	/** Time format. */
+	formatTime24: boolean,
 }
 
 interface appPreferencesMap extends AppPreferences {
@@ -230,12 +235,99 @@ function New (): App {
 		sessionDebug: false,
 		sessionDisplay: DisplayEnum.XLarge,
 		sessionHideMOTD: false,
+		sessionISO639Code: "en",
 		sessionInstallPrompt: null,
 		sessionInstallPromptDismissed: false,
 		sessionOnline: true,
 		sessionRedirects: [],
 		sessionServiceWorkerRegistration: null,
 		sessionSleepDisabled: false,
+		translations: {
+			actionAdd: "Add",
+			actionCancel: "Cancel",
+			actionClose: "Close",
+			actionConfirm: "Confirm",
+			actionDelete: "Delete",
+			actionDeleteConfirm: "Confirm Delete",
+			actionDeselectAll: "Deselect All",
+			actionDismiss: "Dismiss",
+			actionEdit: "Edit",
+			actionImport: "Import",
+			actionKeepAwake: "Keep Awake",
+			actionNew: "New",
+			actionPreview: "Preview",
+			actionSearch: "Search",
+			actionShow: "Show",
+			actionUpdate: "Update",
+			alertNewVersion: "",
+			appToolbarActionsOnThisPage: "On this page",
+			formCreated: "Created",
+			formImageSelect: "Select",
+			formImportCSVField: "",
+			formImportCSVSelectCSV: "Select CSV",
+			formImportCSVTooltip: "",
+			formItemDurationHour: "Hour",
+			formItemDurationHours: "Hours",
+			formItemDurationMinute: "Minute",
+			formItemDurationMinutes: "Minutes",
+			formItemInputIconName: "Icon",
+			formItemInputIconTooltip: "tooltip",
+			formItemNewPasswordPassword: "Password",
+			formItemNewPasswordTooltip: "",
+			formItemSelectColorName: "Color",
+			formItemSelectColorTooltip: "",
+			formItemSelectColorValues: Color.values.map((color, i) => {
+				return {
+					color: i,
+					id: `${i}`,
+					key: i,
+					name: color,
+				};
+			}),
+			formItemSelectCurrencyFormat: "Currency Format",
+			formItemSelectCurrencyFormatTooltip: "",
+			formItemTextAreaScanText: "Scan Text From Picture",
+			formLastUpdated: "Last Updated",
+			formPermissionTypes: [
+				"Edit",
+				"View",
+				"None",
+			],
+			formRecurrenceDays: "Days",
+			formRecurrenceEnd: "End Recurrence on",
+			formRecurrenceEndTooltip: "",
+			formRecurrenceFirst: "First",
+			formRecurrenceFourth: "Fourth",
+			formRecurrenceFourthToLast: "Fourth To Last",
+			formRecurrenceLabel: "Repeat every...",
+			formRecurrenceLast: "Last",
+			formRecurrenceMonths: "Months",
+			formRecurrenceNextDate: "Next Date",
+			formRecurrenceSecond: "Second",
+			formRecurrenceSecondToLast: "Second To Last",
+			formRecurrenceSpecificDate: "Specific Date",
+			formRecurrenceThird: "Third",
+			formRecurrenceThirdToLast: "Third To Last",
+			formRecurrenceTooltip: "",
+			formRecurrenceWeekdays: [
+				"Monday",
+				"Tuesday",
+				"Wednesday",
+				"Thursday",
+				"Friday",
+				"Saturday",
+				"Sunday",
+			],
+			formRecurrenceWeeks: "Weeks",
+			formRecurrenceYears: "Years",
+			help: "Help",
+			noImage: "No Image",
+			or: "Or",
+			tableHeaderFilterTooltip: "",
+			tableNothingFound: "Nothing Found",
+			tableShowColumns: "SHow Columns",
+			tooltipMarkdown: "markdown",
+		},
 	};
 }
 
@@ -318,16 +410,23 @@ export const AppState = {
 		motd: () => string | undefined,
 		oncreate: () => Promise<void>,
 		ondebug: () => TelemetryOptions,
-		parserFormItemAutocomplete: FormItemAutocompleteParser,
-		parserMarkdown: MarkdownParser,
+		parserFormItemAutocomplete: FormItemAutocompleteParser | undefined,
+		parserMarkdown: MarkdownParser | undefined,
 		preferences: Stream<AppPreferences>,
 		product: string,
 	): void => {
 		AppState.motd = motd;
 		AppState.oncreate = oncreate;
 		AppState.ondebug = ondebug;
-		AppState.parserFormItemAutocomplete = parserFormItemAutocomplete;
-		AppState.parserMarkdown = parserMarkdown;
+
+		if (parserFormItemAutocomplete !== undefined) {
+			AppState.parserFormItemAutocomplete = parserFormItemAutocomplete;
+		}
+
+		if (parserMarkdown !== undefined) {
+			AppState.parserMarkdown = parserMarkdown;
+		}
+
 		AppState.preferences.end(true);
 		AppState.preferences = preferences.map((preferences) => {
 			return {
@@ -437,93 +536,6 @@ export const AppState = {
 		stylePositive: "",
 		stylePrimary: "",
 		styleSecondary: "",
-		translations: {
-			actionAdd: "Add",
-			actionCancel: "Cancel",
-			actionClose: "Close",
-			actionConfirm: "Confirm",
-			actionDelete: "Delete",
-			actionDeleteConfirm: "Confirm Delete",
-			actionDeselectAll: "Deselect All",
-			actionDismiss: "Dismiss",
-			actionEdit: "Edit",
-			actionImport: "Import",
-			actionKeepAwake: "Keep Awake",
-			actionNew: "New",
-			actionPreview: "Preview",
-			actionSearch: "Search",
-			actionShow: "Show",
-			actionUpdate: "Update",
-			alertNewVersion: "",
-			appToolbarActionsOnThisPage: "On this page",
-			formCreated: "Created",
-			formImageSelect: "Select",
-			formImportCSVField: "",
-			formImportCSVSelectCSV: "Select CSV",
-			formImportCSVTooltip: "",
-			formItemDurationHour: "Hour",
-			formItemDurationHours: "Hours",
-			formItemDurationMinute: "Minute",
-			formItemDurationMinutes: "Minutes",
-			formItemInputIconName: "Icon",
-			formItemInputIconTooltip: "tooltip",
-			formItemNewPasswordPassword: "Password",
-			formItemNewPasswordTooltip: "",
-			formItemSelectColorName: "Color",
-			formItemSelectColorTooltip: "",
-			formItemSelectColorValues: Color.values.map((color, i) => {
-				return {
-					color: i,
-					id: `${i}`,
-					key: i,
-					name: color,
-				};
-			}),
-			formItemSelectCurrencyFormat: "Currency Format",
-			formItemSelectCurrencyFormatTooltip: "",
-			formItemTextAreaScanText: "Scan Text From Picture",
-			formLastUpdated: "Last Updated",
-			formPermissionTypes: [
-				"Edit",
-				"View",
-				"None",
-			],
-			formRecurrenceDays: "Days",
-			formRecurrenceEnd: "End Recurrence on",
-			formRecurrenceEndTooltip: "",
-			formRecurrenceFirst: "First",
-			formRecurrenceFourth: "Fourth",
-			formRecurrenceFourthToLast: "Fourth To Last",
-			formRecurrenceLabel: "Repeat every...",
-			formRecurrenceLast: "Last",
-			formRecurrenceMonths: "Months",
-			formRecurrenceNextDate: "Next Date",
-			formRecurrenceSecond: "Second",
-			formRecurrenceSecondToLast: "Second To Last",
-			formRecurrenceSpecificDate: "Specific Date",
-			formRecurrenceThird: "Third",
-			formRecurrenceThirdToLast: "Third To Last",
-			formRecurrenceTooltip: "",
-			formRecurrenceWeekdays: [
-				"Monday",
-				"Tuesday",
-				"Wednesday",
-				"Thursday",
-				"Friday",
-				"Saturday",
-				"Sunday",
-			],
-			formRecurrenceWeeks: "Weeks",
-			formRecurrenceYears: "Years",
-			help: "Help",
-			noImage: "No Image",
-			or: "Or",
-			tableHeaderFilterTooltip: "",
-			tableNothingFound: "Nothing Found",
-			tableShowColumns: "SHow Columns",
-			tooltipMarkdown: "markdown",
-			undo: "Undo",
-		},
 	} as appPreferencesMap) ,
 	product: "",
 	redirect: (): void => {
@@ -634,7 +646,7 @@ export const AppState = {
 		}
 
 		alert.actions.unshift({
-			name: AppState.preferences().translations.actionDismiss,
+			name: AppState.data.translations.actionDismiss,
 			onclick: async (): Promise<void> => {
 				AppState.clearLayoutAppAlert(alert.message);
 			},
@@ -660,7 +672,7 @@ export const AppState = {
 		m.redraw();
 	},
 	setLayoutAppAlertNewVersion: (): void => {
-		const msg = AppState.preferences().translations.alertNewVersion;
+		const msg = AppState.data.translations.alertNewVersion;
 
 		AppState.setLayoutAppAlert(
 			{
@@ -709,6 +721,144 @@ export const AppState = {
 	setSessionHideMOTD: (): void => {
 		AppState.set({
 			sessionHideMOTD: true,
+		});
+	},
+	setSessionISO639: (code: ISO639Code): void => {
+		AppState.set({
+			sessionISO639Code: code,
+			translations: {
+				actionAdd: Translate(code, ActionAdd),
+				actionCancel: Translate(code, ActionCancel),
+				actionClose: Translate(code, ActionClose),
+				actionConfirm: Translate(code, ActionConfirm),
+				actionDelete: Translate(code, ActionDelete),
+				actionDeleteConfirm: Translate(code, ActionDeleteConfirm),
+				actionDeselectAll: Translate(code, ActionDeselectAll),
+				actionDismiss: Translate(code, ActionDismiss),
+				actionEdit: Translate(code, ActionEdit),
+				actionImport: Translate(code, ActionImport),
+				actionKeepAwake: Translate(code, ActionKeepAwake),
+				actionNew: Translate(code, ActionNew),
+				actionPreview: Translate(code, ActionPreview),
+				actionSearch: Translate(code, ActionSearch),
+				actionShow: Translate(code, ActionShow),
+				actionUpdate: Translate(code, ActionUpdate),
+				alertNewVersion: Translate(code, AlertNewVersion),
+				appToolbarActionsOnThisPage: Translate(code, AppToolbarActionsOnThisPage),
+				formCreated: Translate(code, FormCreated),
+				formImageSelect: Translate(code, FormImageSelect),
+				formImportCSVField: Translate(code, FormImportCSVField),
+				formImportCSVSelectCSV: Translate(code, FormImportCSVSelectCSV),
+				formImportCSVTooltip: Translate(code, FormImportCSVTooltip),
+				formItemDurationHour: Translate(code, FormItemDurationHour),
+				formItemDurationHours: Translate(code, FormItemDurationHours),
+				formItemDurationMinute: Translate(code, FormItemDurationMinute),
+				formItemDurationMinutes: Translate(code, FormItemDurationMinutes),
+				formItemInputIconName: Translate(code, FormItemInputIconName),
+				formItemInputIconTooltip: Translate(code, FormItemInputIconTooltip),
+				formItemNewPasswordPassword: Translate(code, FormItemNewPasswordPassword),
+				formItemNewPasswordTooltip: Translate(code, FormItemNewPasswordTooltip),
+				formItemSelectColorName: Translate(code, FormItemSelectColorName),
+				formItemSelectColorTooltip: Translate(code, FormItemSelectColorTooltip),
+				formItemSelectColorValues: Color.values.map((_color, i) => {
+					let c = "";
+
+					switch (i) {
+					case ColorEnum.Black:
+						c = Translate(code, ColorBlack);
+						break;
+					case ColorEnum.Blue:
+						c = Translate(code, ColorBlue);
+						break;
+					case ColorEnum.Brown:
+						c = Translate(code, ColorBrown);
+						break;
+					case ColorEnum.Default:
+						c = Translate(code, Default);
+						break;
+					case ColorEnum.Gray:
+						c = Translate(code, ColorGray);
+						break;
+					case ColorEnum.Green:
+						c = Translate(code, ColorGreen);
+						break;
+					case ColorEnum.Indigo:
+						c = Translate(code, ColorIndigo);
+						break;
+					case ColorEnum.Orange:
+						c = Translate(code, ColorOrange);
+						break;
+					case ColorEnum.Pink:
+						c = Translate(code, ColorPink);
+						break;
+					case ColorEnum.Purple:
+						c = Translate(code, ColorPurple);
+						break;
+					case ColorEnum.Red:
+						c = Translate(code, ColorRed);
+						break;
+					case ColorEnum.Teal:
+						c = Translate(code, ColorTeal);
+						break;
+					case ColorEnum.White:
+						c = Translate(code, ColorWhite);
+						break;
+					case ColorEnum.Yellow:
+						c = Translate(code, ColorYellow);
+						break;
+					}
+
+					return {
+						color: i,
+						id: `${i}`,
+						key: i,
+						name: c,
+					};
+				}),
+				formItemSelectCurrencyFormat: Translate(code, FormItemSelectCurrencyFormat),
+				formItemSelectCurrencyFormatTooltip: Translate(code, FormItemSelectCurrencyFormatTooltip),
+				formItemTextAreaScanText: Translate(code, FormItemTextAreaScanText),
+				formLastUpdated: Translate(code, FormLastUpdated),
+				formPermissionTypes: [
+					Translate(code, ActionEdit),
+					Translate(code, ActionView),
+					Translate(code, ActionNone),
+				],
+				formRecurrenceDays: Translate(code, FormRecurrenceDays),
+				formRecurrenceEnd: Translate(code, FormRecurrenceEnd),
+				formRecurrenceEndTooltip: Translate(code, FormRecurrenceEndTooltip),
+				formRecurrenceFirst: Translate(code, FormRecurrenceFirst),
+				formRecurrenceFourth: Translate(code, FormRecurrenceFourth),
+				formRecurrenceFourthToLast: Translate(code, FormRecurrenceFourthToLast),
+				formRecurrenceLabel: Translate(code, FormRecurrenceLabel),
+				formRecurrenceLast: Translate(code, FormRecurrenceLast),
+				formRecurrenceMonths: Translate(code, FormRecurrenceMonths),
+				formRecurrenceNextDate: Translate(code, FormRecurrenceNextDate),
+				formRecurrenceSecond: Translate(code, FormRecurrenceSecond),
+				formRecurrenceSecondToLast: Translate(code, FormRecurrenceSecondToLast),
+				formRecurrenceSpecificDate: Translate(code, FormRecurrenceSpecificDate),
+				formRecurrenceThird: Translate(code, FormRecurrenceThird),
+				formRecurrenceThirdToLast: Translate(code, FormRecurrenceThirdToLast),
+				formRecurrenceTooltip: Translate(code, FormRecurrenceTooltip),
+				formRecurrenceWeekdays: [
+					Translate(code, WeekdayMonday),
+					Translate(code, WeekdayTuesday),
+					Translate(code, WeekdayWednesday),
+					Translate(code, WeekdayThursday),
+					Translate(code, WeekdayFriday),
+					Translate(code, WeekdaySaturday),
+					Translate(code, WeekdaySunday),
+				],
+				formRecurrenceWeeks: Translate(code, FormRecurrenceWeeks),
+				formRecurrenceYears: Translate(code, FormRecurrenceYears),
+				help: Translate(code, Help),
+				noImage: Translate(code, NoImage),
+				or: Translate(code, Or),
+				tableHeaderFilterTooltip: Translate(code, TableHeaderFilterTooltip),
+				tableNothingFound: Translate(code, TableNothing),
+				tableShowColumns: Translate(code, TableShowColumns),
+				tooltipMarkdown: Translate(code, TooltipMarkdown),
+			},
 		});
 	},
 	setSessionInstallPrompt: (e: BeforeInstallPromptEvent | null): void => {

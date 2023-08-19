@@ -69,7 +69,7 @@ export function AppToolbar (): m.Component<AppToolbarAttrs> {
 						m(Button, {
 							icon: Icons.Awake,
 							iconOnly: AppState.data.sessionDisplay < DisplayEnum.Small,
-							name: AppState.preferences().translations.actionKeepAwake,
+							name: AppState.data.translations.actionKeepAwake,
 							onclick: async (): Promise<void> => {
 								return new Promise((resolve) => {
 									AppState.toggleSessionSleepDisabled();
@@ -85,7 +85,7 @@ export function AppToolbar (): m.Component<AppToolbarAttrs> {
 							accent: true,
 							icon: Icons.Help,
 							iconOnly: AppState.data.sessionDisplay < DisplayEnum.Small,
-							name: AppState.preferences().translations.help,
+							name: AppState.data.translations.help,
 							onclick: async (): Promise<void> => {
 								return new Promise((resolve) => {
 									AppState.toggleLayoutAppHelpOpen();

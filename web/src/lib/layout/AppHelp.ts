@@ -12,7 +12,7 @@ export function AppHelp (): m.Component {
 				m(Form, {
 					buttons: [
 						{
-							name: AppState.preferences().translations.actionClose,
+							name: AppState.data.translations.actionClose,
 							onclick: async (): Promise<void> => {
 								return new Promise((resolve) => {
 									AppState.toggleLayoutAppHelpOpen(false);
@@ -26,7 +26,7 @@ export function AppHelp (): m.Component {
 					],
 					overlay: true,
 					title: {
-						name: AppState.preferences().translations.help,
+						name: AppState.data.translations.help,
 					},
 				}, m("iframe", {
 					src: AppState.data.layoutAppHelpLink,

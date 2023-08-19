@@ -24,7 +24,7 @@ export function AppToolbarAction (): m.Component<AppToolbarActionAttrs> {
 						icon: Icons.Add,
 						iconOnly: AppState.data.sessionDisplay < DisplayEnum.Small,
 						id: "app-toolbar-action-toggle",
-						name: AppState.preferences().translations.actionAdd,
+						name: AppState.data.translations.actionAdd,
 						onclick: async (): Promise<void> => {
 							return new Promise((resolve) => {
 								AppState.setComponentsDropdownMenu(id, 0);
@@ -42,7 +42,7 @@ export function AppToolbarAction (): m.Component<AppToolbarActionAttrs> {
 								[
 									{
 										header: true,
-										name: AppState.preferences().translations.appToolbarActionsOnThisPage,
+										name: AppState.data.translations.appToolbarActionsOnThisPage,
 										permitted: true,
 										requireOnline: false,
 									},

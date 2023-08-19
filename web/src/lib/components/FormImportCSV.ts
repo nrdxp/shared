@@ -45,7 +45,7 @@ export function FormImportCSV (): m.Component<FormImportCSVAttrs> {
 				m(Form, {
 					buttons: [
 						{
-							name: AppState.preferences().translations.actionCancel,
+							name: AppState.data.translations.actionCancel,
 							onclick: async (): Promise<void> => {
 								return new Promise((resolve) => {
 									state.csv = "";
@@ -58,7 +58,7 @@ export function FormImportCSV (): m.Component<FormImportCSVAttrs> {
 							requireOnline: true,
 						},
 						{
-							name: AppState.preferences().translations.actionImport,
+							name: AppState.data.translations.actionImport,
 							permitted: state.csv !== "",
 							requireOnline: true,
 							submit: true,
@@ -76,7 +76,7 @@ export function FormImportCSV (): m.Component<FormImportCSVAttrs> {
 					},
 				}, [
 					m(Button, {
-						name: AppState.preferences().translations.formImportCSVSelectCSV,
+						name: AppState.data.translations.formImportCSVSelectCSV,
 						oninput: async (file) => {
 							const reader = new FileReader();
 							reader.onload = async (): Promise<void> => {
@@ -120,9 +120,9 @@ export function FormImportCSV (): m.Component<FormImportCSVAttrs> {
 								m("label", {
 									for: "form-item-input-csv-field-mapping",
 									id: "form-item-label-csv-field-mapping",
-								}, AppState.preferences().translations.formImportCSVField),
+								}, AppState.data.translations.formImportCSVField),
 								m(Tooltip, {
-									value: AppState.preferences().translations.formImportCSVTooltip,
+									value: AppState.data.translations.formImportCSVTooltip,
 								}),
 							]),
 							Object.keys(vnode.attrs.fields)

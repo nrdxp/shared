@@ -86,7 +86,7 @@ export function FormItemSelect (): m.Component<FormItemSelectAttrs> {
 							el.selectedIndex = -1;
 							vnode.attrs.oninput("", el);
 						},
-					}, AppState.preferences().translations.actionDeselectAll),
+					}, AppState.data.translations.actionDeselectAll),
 					) :
 					[],
 			];

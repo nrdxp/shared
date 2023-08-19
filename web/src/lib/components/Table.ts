@@ -71,7 +71,7 @@ export function Table (): m.Component<TableAttrs> {
 							[] :
 							[
 								{
-									name: AppState.preferences().translations.tableShowColumns,
+									name: AppState.data.translations.tableShowColumns,
 									onclick: (e:string): void => {
 										if (vnode.attrs.tableColumnsNameEnabled()[e] === undefined) {
 											vnode.attrs.tableColumnsNameEnabled()[e] = "";
@@ -204,14 +204,14 @@ export function Table (): m.Component<TableAttrs> {
 								m("i.Table__none-icon", Icons.NotFound),
 								m("p.Table__label", {
 									id: "table-no-data-message",
-								}, AppState.preferences().translations.tableNothingFound),
+								}, AppState.data.translations.tableNothingFound),
 								vnode.attrs.noNewButton === true ?
 									[] :
 									AppState.data.layoutAppToolbarActionButtons.map((action) => {
 										if (action.permitted && AppState.isSessionOnline() || !action.requireOnline) {
 											return m(Button, {
 												icon: Icons.Add,
-												name: `${AppState.preferences().translations.actionNew} ${action.name}`,
+												name: `${AppState.data.translations.actionNew} ${action.name}`,
 												onclick: async (): Promise<void> => {
 													return action.onclick!(); // eslint-disable-line @typescript-eslint/no-non-null-assertion
 												},

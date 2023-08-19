@@ -62,8 +62,6 @@ runs:
       with:
         filters: |
           etcha:
-            - 'go/etcha/**'
-            - 'go/lib/**'
             - 'etcha/**'
             - 'shell/**'
           go:
@@ -75,8 +73,6 @@ runs:
             - 'shell/**'
             - 'terraform/**'
           yaml8n:
-            - 'go/lib/**'
-            - 'go/yaml8n/**'
             - 'shell/**'
             - 'yaml8n/**'
           web:

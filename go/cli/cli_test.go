@@ -121,8 +121,6 @@ Flags:
   -d	Enable debug logging
   -j	Output JSON instead of YAML
   -n	Disable colored logging
-  -x string
-    	Comma separated list of config key=value pairs
 `,
 		},
 		"missing-arg": {

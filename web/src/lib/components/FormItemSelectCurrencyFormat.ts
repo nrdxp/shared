@@ -18,7 +18,7 @@ export function FormItemSelectCurrencyFormat (): m.Component<FormItemSelectCurre
 	return {
 		view: (vnode): m.Children => {
 			return m(FormItem, {
-				name: AppState.preferences().translations.formItemSelectCurrencyFormat,
+				name: AppState.data.translations.formItemSelectCurrencyFormat,
 				select: {
 					disabled: ! vnode.attrs.permitted,
 					oninput: (e: string): void => {
@@ -94,7 +94,7 @@ export function FormItemSelectCurrencyFormat (): m.Component<FormItemSelectCurre
 					],
 					value: `${vnode.attrs.value}`,
 				},
-				tooltip: AppState.preferences().translations.formItemSelectCurrencyFormatTooltip,
+				tooltip: AppState.data.translations.formItemSelectCurrencyFormatTooltip,
 			});
 		},
 	};

@@ -100,12 +100,3 @@ unzip -o vault.zip -d ${BINDIR}
 rm vault.zip"
 	fi
 }
-
-cmd install-yaml8n Install YAML8n, a translation tool
-install-yaml8n () {
-	if ! ${EXEC_YAML8N} version 2>&1 | grep "${VERSION_YAML8N}" > /dev/null; then
-		printf "Installing yaml8n..."
-		try "curl -s -L https://github.com/candiddev/yaml8n/releases/download/latest/yaml8n_${OSNAME}_${OSARCH}.tar.gz | tar --no-same-owner -C ${BINDIR} -xz yaml8n_${OSNAME}_${OSARCH}
-mv ${BINDIR}/yaml8n_${OSNAME}_${OSARCH} ${BINDIR}/yaml8n"
-	fi
-}

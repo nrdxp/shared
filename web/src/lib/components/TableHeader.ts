@@ -248,7 +248,7 @@ export function TableHeader (): m.Component<TableLayoutAttrs> {
 								value: vnode.attrs.tableColumnsNameEnabled()[state.filterProperty],
 							},
 							name: state.filterName,
-							tooltip: AppState.preferences().translations.tableHeaderFilterTooltip,
+							tooltip: AppState.data.translations.tableHeaderFilterTooltip,
 						}),
 						m(Icon, {
 							icon: Icons.Close,

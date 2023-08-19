@@ -117,7 +117,7 @@ export function FormItemInputProperties (): m.Component<FormItemInputPropertiesA
 						]);
 					}),
 				m(Button, {
-					name: `${AppState.preferences().translations.actionAdd} ${vnode.attrs.nameSingle}`,
+					name: `${AppState.data.translations.actionAdd} ${vnode.attrs.nameSingle}`,
 					onclick: async (): Promise<void> => {
 						return new Promise((resolve) => {
 							vnode.attrs.data[""] = "";

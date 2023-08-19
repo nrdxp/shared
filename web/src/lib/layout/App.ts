@@ -190,7 +190,7 @@ export function App (): m.Component<AppAttrs> {
 									value: AppState.motd(),
 								}),
 								m(Button, {
-									name: AppState.preferences().translations.actionDismiss,
+									name: AppState.data.translations.actionDismiss,
 									onclick: async (): Promise<void> => {
 										return new Promise((resolve) => {
 											AppState.setSessionHideMOTD();

@@ -36,10 +36,14 @@ lw () {
 
 cmd lint-yaml8n,ly Lint YAML8n translations
 lint-yaml8n() {
-	install-yaml8n
-
 	for i in "${DIR}"/yaml8n/*; do
-		try "${EXEC_YAML8N} -x input_path=${i} validate"
+		name=$(basename "${i}")
+		printf "Validating %s..." "${name}"
+		try "${EXEC_YAML8N} validate yaml8n/${name}"
+
+		printf "Comparing %s..." "${name}"
+		try "${EXEC_YAML8N} generate yaml8n/${name}
+git diff --exit-code"
 	done
 }
 ly () {

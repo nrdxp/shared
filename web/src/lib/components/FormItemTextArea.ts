@@ -166,7 +166,7 @@ export function FormItemTextArea (): m.Component<FormItemTextAreaAttrs> {
 										},
 										type: "file",
 									}),
-									AppState.preferences().translations.formItemTextAreaScanText,
+									AppState.data.translations.formItemTextAreaScanText,
 								]),
 							m("span", {
 								id: `form-item-text-area-preview${StringToID(vnode.attrs.name)}`,
@@ -175,8 +175,8 @@ export function FormItemTextArea (): m.Component<FormItemTextAreaAttrs> {
 									preview = ! preview;
 								},
 							}, preview ?
-								AppState.preferences().translations.actionEdit :
-								AppState.preferences().translations.actionPreview),
+								AppState.data.translations.actionEdit :
+								AppState.data.translations.actionPreview),
 						]),
 				];
 		},

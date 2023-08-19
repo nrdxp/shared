@@ -67,8 +67,8 @@ export function FormItemDuration (): m.Component<FormItemDurationAttrs> {
 						value: getHour(vnode.attrs.getDuration()),
 					}),
 					m("span", getHour(vnode.attrs.getDuration()) === 1 ?
-						AppState.preferences().translations.formItemDurationHour :
-						AppState.preferences().translations.formItemDurationHours),
+						AppState.data.translations.formItemDurationHour :
+						AppState.data.translations.formItemDurationHours),
 					m(FormItemInput, {
 						disabled: vnode.attrs.disabled,
 						min: 0,
@@ -89,8 +89,8 @@ export function FormItemDuration (): m.Component<FormItemDurationAttrs> {
 						value: getMinute(vnode.attrs.getDuration()),
 					}),
 					m("span", getMinute(vnode.attrs.getDuration()) === 1 ?
-						AppState.preferences().translations.formItemDurationMinute :
-						AppState.preferences().translations.formItemDurationMinutes),
+						AppState.data.translations.formItemDurationMinute :
+						AppState.data.translations.formItemDurationMinutes),
 				]),
 			]);
 		},

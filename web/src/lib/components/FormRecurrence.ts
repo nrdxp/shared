@@ -31,21 +31,21 @@ export interface FormRecurrenceAttrs {
 
 export function FormRecurrence (): m.Component<FormRecurrenceAttrs> {
 	const every = [
-		AppState.preferences().translations.formRecurrenceDays,
-		AppState.preferences().translations.formRecurrenceWeeks,
-		AppState.preferences().translations.formRecurrenceMonths,
-		AppState.preferences().translations.formRecurrenceYears,
+		AppState.data.translations.formRecurrenceDays,
+		AppState.data.translations.formRecurrenceWeeks,
+		AppState.data.translations.formRecurrenceMonths,
+		AppState.data.translations.formRecurrenceYears,
 	];
 	const monthCadence = [
-		AppState.preferences().translations.formRecurrenceFourthToLast,
-		AppState.preferences().translations.formRecurrenceThirdToLast,
-		AppState.preferences().translations.formRecurrenceSecondToLast,
-		AppState.preferences().translations.formRecurrenceLast,
-		AppState.preferences().translations.formRecurrenceSpecificDate,
-		AppState.preferences().translations.formRecurrenceFirst,
-		AppState.preferences().translations.formRecurrenceSecond,
-		AppState.preferences().translations.formRecurrenceThird,
-		AppState.preferences().translations.formRecurrenceFourth,
+		AppState.data.translations.formRecurrenceFourthToLast,
+		AppState.data.translations.formRecurrenceThirdToLast,
+		AppState.data.translations.formRecurrenceSecondToLast,
+		AppState.data.translations.formRecurrenceLast,
+		AppState.data.translations.formRecurrenceSpecificDate,
+		AppState.data.translations.formRecurrenceFirst,
+		AppState.data.translations.formRecurrenceSecond,
+		AppState.data.translations.formRecurrenceThird,
+		AppState.data.translations.formRecurrenceFourth,
 	];
 
 	const state: {
@@ -111,9 +111,9 @@ export function FormRecurrence (): m.Component<FormRecurrenceAttrs> {
 						m("label", {
 							for: "form-item-input-recurrence",
 							id: "form-item-label-recurrence",
-						}, AppState.preferences().translations.formRecurrenceLabel),
+						}, AppState.data.translations.formRecurrenceLabel),
 						m(Tooltip, {
-							value: AppState.preferences().translations.formRecurrenceTooltip,
+							value: AppState.data.translations.formRecurrenceTooltip,
 						}),
 					]),
 					m("div.FormItem__multi", [
@@ -187,15 +187,15 @@ export function FormRecurrence (): m.Component<FormRecurrenceAttrs> {
 									vnode.attrs.recurrence.weekdays = null;
 								},
 								options: [
-									AppState.preferences().translations.formRecurrenceSpecificDate,
-									AppState.preferences().translations.formRecurrenceFirst,
-									AppState.preferences().translations.formRecurrenceSecond,
-									AppState.preferences().translations.formRecurrenceThird,
-									AppState.preferences().translations.formRecurrenceFourth,
-									AppState.preferences().translations.formRecurrenceLast,
-									AppState.preferences().translations.formRecurrenceSecondToLast,
-									AppState.preferences().translations.formRecurrenceThirdToLast,
-									AppState.preferences().translations.formRecurrenceFourthToLast,
+									AppState.data.translations.formRecurrenceSpecificDate,
+									AppState.data.translations.formRecurrenceFirst,
+									AppState.data.translations.formRecurrenceSecond,
+									AppState.data.translations.formRecurrenceThird,
+									AppState.data.translations.formRecurrenceFourth,
+									AppState.data.translations.formRecurrenceLast,
+									AppState.data.translations.formRecurrenceSecondToLast,
+									AppState.data.translations.formRecurrenceThirdToLast,
+									AppState.data.translations.formRecurrenceFourthToLast,
 								],
 								value: monthCadence[state.monthCadence],
 							}) :
@@ -231,21 +231,21 @@ export function FormRecurrence (): m.Component<FormRecurrenceAttrs> {
 											const options: HTMLOptionElement[] = [].slice.call(el.options);
 											for (const option of options) {
 												if (option.selected === true) {
-													days.push(AppState.preferences().translations.formRecurrenceWeekdays.indexOf(option.value) + 1);
+													days.push(AppState.data.translations.formRecurrenceWeekdays.indexOf(option.value) + 1);
 												}
 											}
 										}
 										vnode.attrs.recurrence.weekdays = days;
 									} else {
-										vnode.attrs.recurrence.weekday = AppState.preferences().translations.formRecurrenceWeekdays.indexOf(e) + 1;
+										vnode.attrs.recurrence.weekday = AppState.data.translations.formRecurrenceWeekdays.indexOf(e) + 1;
 									}
 								},
-								options: AppState.preferences().translations.formRecurrenceWeekdays.map((weekday) => {
+								options: AppState.data.translations.formRecurrenceWeekdays.map((weekday) => {
 									return {
 										name: weekday,
 										selected: vnode.attrs.recurrence.weekdays === null ?
-											vnode.attrs.recurrence.weekday === AppState.preferences().translations.formRecurrenceWeekdays.indexOf(weekday) + 1 :
-											vnode.attrs.recurrence.weekdays.includes(AppState.preferences().translations.formRecurrenceWeekdays.indexOf(weekday) + 1),
+											vnode.attrs.recurrence.weekday === AppState.data.translations.formRecurrenceWeekdays.indexOf(weekday) + 1 :
+											vnode.attrs.recurrence.weekdays.includes(AppState.data.translations.formRecurrenceWeekdays.indexOf(weekday) + 1),
 									};
 								}),
 							}) :
@@ -266,19 +266,19 @@ export function FormRecurrence (): m.Component<FormRecurrenceAttrs> {
 								AppState.formatCivilDate(Recurrence.nextTimestamp(vnode.attrs.recurrence, Timestamp.fromCivilDate(CivilDate.fromString(vnode.attrs.startDate)))
 									.toCivilDate()),
 					},
-					name: AppState.preferences().translations.formRecurrenceNextDate,
+					name: AppState.data.translations.formRecurrenceNextDate,
 					tooltip: "",
 				}),
 				vnode.attrs.endDate === undefined ?
 					[] :
 					m(FormItemInputDate, {
-						name: AppState.preferences().translations.formRecurrenceEnd,
+						name: AppState.data.translations.formRecurrenceEnd,
 						oninput: (e: string): void => {
 							if (vnode.attrs.endDateInput !== undefined) {
 								vnode.attrs.endDateInput(e);
 							}
 						},
-						tooltip: AppState.preferences().translations.formRecurrenceEndTooltip,
+						tooltip: AppState.data.translations.formRecurrenceEndTooltip,
 						value: vnode.attrs.endDate,
 					}),
 			]);

@@ -1,5 +1,4 @@
 enableRobotsTXT: true
-defaultContentLanguage: en
 defaultContentLanguageInSubdir: true
 languages:
   ar:
@@ -39,3 +38,19 @@ markup:
   goldmark:
     renderer:
       unsafe: true
+  highlight:
+    style: github
+  tableOfContents:
+    endLevel: 5
+module:
+  imports:
+    - path: ../../shared/hugo
+params:
+  copyright: Candid Development LLC
+  copyrightLink: https://www.candid.dev
+  disable_click2copy_chroma: true
+  ui:
+    sidebar_menu_foldable: true
+taxonomies:
+  tag: tags
+  category: categories

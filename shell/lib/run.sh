@@ -23,6 +23,32 @@ run-github-release-id () {
 	run-github "${GITHUB_PATH}/releases/tags/${BUILD_TAG}" | jq -r .id
 }
 
+cmd run-hugo-start Start Hugo
+run-hugo-start () {
+	install-hugo
+	run-network
+	run-hugo-stop
+
+	printf "Starting Hugo..."
+	try "${CR} run \
+		-d \
+		${CR_LOGOPTS} \
+		${CR_USER} \
+		--name candiddev_hugo_${APP_NAME} \
+		-p 1313:1313 \
+		--restart always \
+		-v ${DIR}:/hugo \
+		-w /hugo/hugo \
+		debian:bullseye \
+		../.bin/hugo server --verbose --watch --bind 0.0.0.0 -b /"
+}
+
+cmd run-hugo-stop Stop Hugo
+run-hugo-stop () {
+	printf "Stopping Hugo..."
+	try "${CR} rm -f candiddev_hugo_${APP_NAME}"
+}
+
 cmd run-network Start network
 run-network () {
 	printf "Starting network..."
@@ -127,8 +153,41 @@ run-vault-secrets-github () {
 }
 
 cmd run-vault-secrets-kv Retreive a KV secret from Vault
-run-vault-secrets-kv() {
+run-vault-secrets-kv () {
 	install-vault
 
 	${EXEC_VAULT} read -field="${1}" "${2}"
+}
+
+cmd run-yaml8n-start,rys Run YAML8n listeners
+run-yaml8n-start () {
+	run-network
+	run-yaml8n-stop
+
+	for i in "${DIR}"/yaml8n/*; do
+		name="$(basename "${i}" | cut -d. -f1)"
+		printf "Running YAML8n %s container..." "${name}"
+
+		try "${CR} run \
+			-d \
+			${CR_LOGOPTS} \
+			${CR_USER} \
+			--name candiddev_yaml8n_${name} \
+			--network candiddev \
+			--pull always \
+			--restart always \
+			-v ${DIR}:/work \
+			-w /work \
+			${CR_REGISTRY}/candiddev/yaml8n:latest \
+			watch /work/yaml8n/${name}.yaml"
+	done
+}
+rys () {
+	run-yaml8n-start
+}
+cmd run-yaml8n-stop Stop YAML8n listeners
+run-yaml8n-stop() {
+	for i in "${DIR}"/yaml8n/*; do
+		${CR} rm -f "candiddev_yaml8n_$(basename "${i}" | cut -d. -f1)" || true
+	done
 }
