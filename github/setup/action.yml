@@ -36,7 +36,7 @@ runs:
       id: cache
       uses: actions/cache@v3
       with:
-        key: ${{ runner.os }}-${{ hashFiles('shell/lib/**', 'web/package-lock.json') }}
+        key: ${{ runner.os }}-${{ hashFiles('shell/**', 'web/package-lock.json') }}
         path: |
           .bin
           web/node_modules

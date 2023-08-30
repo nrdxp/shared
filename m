@@ -6,7 +6,19 @@ COMMANDS=""
 DIR=$(cd -- "$(dirname "$0")" >/dev/null 2>&1; pwd -P)
 export DIR
 export BINDIR=${BINDIR:-${DIR}/.bin}
-mkdir -p "${BINDIR}"
+export BUILD_SOURCE=${BUILD_SOURCE:-dev}
+
+if [[ -L "${BINDIR}" ]]; then
+	mkdir -p "${DIR}/shared/.bin"
+else
+	mkdir -p "${BINDIR}"
+fi
+
+if [[ -L "${DIR}/.cache" ]]; then
+	mkdir -p "${DIR}/shared/.cache"
+else
+	mkdir -p "${DIR}/.cache"
+fi
 
 export PATH="${BINDIR}/go/lib/bin:${BINDIR}/go/local/bin:${BINDIR}/node/bin:${BINDIR}:${PATH}"
 

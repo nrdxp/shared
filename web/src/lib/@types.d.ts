@@ -8,7 +8,7 @@ declare module "totp-generator"
 declare module "whatwg-fetch"
 declare module "xml2js"
 
-declare module "*.png?webp" {
+declare module "*.png?format=webp" {
 	const content: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 	export default content;
 }
