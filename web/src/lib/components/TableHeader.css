@@ -23,7 +23,7 @@
 	justify-content: center;
 }
 
-.TableHeader--right {
+th.TableHeader--right {
 	justify-content: flex-end;
 }
 

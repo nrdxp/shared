@@ -1,9 +1,11 @@
-root = "go"
-
 [build]
 bin = "./m run-go"
 cmd = "./m build-go"
 delay = 1000 # ms
+exclude_dir = [
+  "go/vendor",
+  "shared/go/vendor",
+]
 include_dir = [
   "go",
   "shared/go",

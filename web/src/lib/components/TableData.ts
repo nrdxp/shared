@@ -185,7 +185,7 @@ export function TableData (): m.Component<TableColumnAttrs> {
 			case TableDataType.Currency:
 				if (typeof data === "number") {
 					return m(`td.TableData--right.${c}`, {
-						class: data < 0 ?
+						class: data < 0 || vnode.attrs.positive !== undefined && vnode.attrs.positive(vnode.attrs.data) === false ?
 							"TableData--negative" :
 							"TableData--positive",
 						id: id,

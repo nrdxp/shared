@@ -55,8 +55,6 @@ params:
   copyrightLink: https://www.candid.dev
   disable_click2copy_chroma: true
   time_format_blog: 2006-01-02
-  ui:
-    sidebar_menu_foldable: true
 taxonomies:
   tag: tags
   category: categories

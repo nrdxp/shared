@@ -29,18 +29,13 @@ export interface FormItemInputCurrencyAttrs {
 }
 
 export function FormItemInputCurrency (): m.Component<FormItemInputCurrencyAttrs> {
-	let amountString = "";
+	let negativeZero = false;
 	let zeroString = "";
 
 	return {
 		oninit: (vnode): void => {
-			amountString = Currency.toString(vnode.attrs.value, vnode.attrs.format);
 			zeroString = Currency.toString(0, vnode.attrs.format)
 				.trim();
-
-			if (vnode.attrs.startNegative === true && vnode.attrs.value === 0) {
-				amountString = `-${amountString.trim()}`;
-			}
 		},
 		view: (vnode): m.Children => {
 			return m(FormItem, {
@@ -48,17 +43,14 @@ export function FormItemInputCurrency (): m.Component<FormItemInputCurrencyAttrs
 					oninput: (e: string): void => {
 						e = e.trim(); // eslint-disable-line no-param-reassign
 
-						if (vnode.attrs.onlyPositive === true && e.includes("-")) {
-							e = e.replace("-", ""); // eslint-disable-line no-param-reassign
-						}
-
 						if (e === `${zeroString}-`) {
-							amountString = `-${zeroString}`;
-
+							negativeZero = true;
 							return;
 						}
 
-						amountString = "";
+						if (vnode.attrs.onlyPositive === true && e.includes("-")) {
+							e = e.replace("-", ""); // eslint-disable-line no-param-reassign
+						}
 
 						if (e.startsWith("-") && e.endsWith("-")) {
 							e = e.replace(/-/g, ""); // eslint-disable-line no-param-reassign
@@ -68,9 +60,9 @@ export function FormItemInputCurrency (): m.Component<FormItemInputCurrencyAttrs
 					},
 					required: vnode.attrs.required === true,
 					type: "text",
-					value: amountString === "" ?
-						Currency.toString(vnode.attrs.value, vnode.attrs.format) :
-						amountString,
+					value: vnode.attrs.value === 0 && (vnode.attrs.startNegative === true || negativeZero) ?
+						`-${zeroString}` :
+						Currency.toString(vnode.attrs.value, vnode.attrs.format),
 				},
 				name: vnode.attrs.name,
 				tooltip: vnode.attrs.tooltip,
