@@ -80,6 +80,7 @@ export EXEC_NODE=${BINDIR}/node/bin/node
 export EXEC_RCLONE=${BINDIR}/rclone
 export EXEC_SHELLCHECK=${BINDIR}/shellcheck
 export EXEC_SWAG=${BINDIR}/swag
+export EXEC_TERRAFORM=${BINDIR}/terraform
 export EXEC_VAULT=${BINDIR}/vault
 export EXEC_YAML8N="${CR} run --rm ${CR_USER} --pull always ${CR_VOLUME} ${CR_REGISTRY}/candiddev/yaml8n:latest"
 
@@ -90,7 +91,7 @@ export GOCACHE=${DIR}/.cache/go
 export GOPATH=${BINDIR}/go/local
 export GOROOT=${CUSTOMGOROOT}
 
-export INSTALLALL=${INSTALLALL:-"install-go install-golangci-lint install-node install-shellcheck"}
+export INSTALL_ALL=${INSTALL_ALL:-"install-go install-golangci-lint install-node install-shellcheck"}
 
 export RELEASE_CONTAINER_CMD=${RELEASE_CONTAINER_CMD:-}
 export RUN_GO_ARGS=${RUN_GO_ARGS:-}
@@ -107,4 +108,5 @@ export VERSION_POSTGRESQL=14 # https://hub.docker.com/_/postgres/tags
 export VERSION_RCLONE=1.63.1 # https://github.com/rclone/rclone/releases
 export VERSION_SHELLCHECK=0.9.0 # https://github.com/koalaman/shellcheck/releases
 export VERSION_SWAG=1.16.2 # https://github.com/swaggo/swag/releases
+export VERSION_TERRAFORM=1.5.2 # https://www.terraform.io/downloads
 export VERSION_VAULT=1.14.2 # https://www.vaultproject.io/downloads

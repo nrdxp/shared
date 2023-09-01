@@ -2,7 +2,7 @@
 
 cmd install,i Install required tools
 install () {
-	for i in ${INSTALLALL}; do
+	for i in ${INSTALL_ALL}; do
 		"${i}"
 	done
 }
@@ -102,6 +102,20 @@ install-swag () {
 		printf "Installing swag..."
 		try "curl -s -L https://github.com/swaggo/swag/releases/download/v${VERSION_SWAG}/swag_${VERSION_SWAG}_${OSNAME}_x86_64.tar.gz | tar --no-same-owner -C ${BINDIR} -xz"
 	fi
+}
+
+cmd install-terraform Install Terraform, a tool for infrastructure management
+install-terraform () {
+	if ! ${EXEC_TERRAFORM} --version 2>&1 | grep "Terraform v${VERSION_TERRAFORM}" > /dev/null; then
+		printf "Installing Terraform..."
+		try "curl -L https://releases.hashicorp.com/terraform/${VERSION_TERRAFORM}/terraform_${VERSION_TERRAFORM}_${OSNAME}_${OSARCH}.zip -o terraform.zip
+unzip -o terraform.zip -d ${BINDIR}
+rm terraform.zip
+"
+	fi
+
+	printf "Refreshing terraform plugins..."
+	try "${EXEC_TERRAFORM} -chdir=${DIR}/terraform/workspaces init"
 }
 
 cmd install-vault Install Vault, a tool for accessing secrets
