@@ -165,7 +165,7 @@ rvag () {
 cmd run-vault-secrets-github Retreive a GitHub secret from Vault
 run-vault-secrets-github () {
 	if [[ -z ${GITHUB_TOKEN} ]]; then
-		install-vault
+		install-vault &> /dev/null
 
 		GITHUB_TOKEN=$(${EXEC_VAULT} write -field=token github/token repository_ids="${GITHUB_REPOSITORY_ID}" org_name=candiddev)
 	fi
@@ -173,7 +173,7 @@ run-vault-secrets-github () {
 
 cmd run-vault-secrets-kv Retreive a KV secret from Vault
 run-vault-secrets-kv () {
-	install-vault
+	install-vault &> /dev/null
 
 	${EXEC_VAULT} read -field="${1}" "${2}"
 }

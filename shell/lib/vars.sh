@@ -22,6 +22,7 @@ export APP_NAME=${APP_NAME:-}
 
 export BUILD_COMMIT=${BUILD_COMMIT:-$(git rev-parse --short HEAD 2>/dev/null)}
 export BUILD_DATE=${BUILD_DATE:-$(date "+%Y-%m-%d")}
+export BUILD_GO_DIR=${BUILD_GO_DIR:-}
 export BUILD_GO_TAGS=${BUILD_GO_TAGS:-develop}
 export BUILD_GO_VARS=${BUILD_GO_VARS:-}
 export BUILD_TAG=${BUILD_TAG:-dev}
@@ -91,18 +92,19 @@ export GOROOT=${CUSTOMGOROOT}
 
 export INSTALLALL=${INSTALLALL:-"install-go install-golangci-lint install-node install-shellcheck"}
 
+export RELEASE_CONTAINER_CMD=${RELEASE_CONTAINER_CMD:-}
 export RUN_GO_ARGS=${RUN_GO_ARGS:-}
 
 export VAULT_SSH_ROLE=${VAULT_SSH_ROLE:-}
 export VAULT_TOKEN=${VAULT_TOKEN:-$(vault token lookup &>/dev/null && cat ~/.vault-token 2>/dev/null)}
 
-export VERSION_AIR=1.44.0 # https://github.com/cosmtrek/air/releases
+export VERSION_AIR=1.45.0 # https://github.com/cosmtrek/air/releases
 export VERSION_GO=1.20.7 # https://golang.org/dl/
-export VERSION_GOLANGCILINT=1.53.3 # https://github.com/golangci/golangci-lint/releases
-export VERSION_HUGO=0.115.0 # https://github.com/gohugoio/hugo/releases
-export VERSION_NODE=18.16.1 # https://nodejs.org/en/download/
+export VERSION_GOLANGCILINT=1.54.2 # https://github.com/golangci/golangci-lint/releases
+export VERSION_HUGO=0.118.2 # https://github.com/gohugoio/hugo/releases
+export VERSION_NODE=18.17.1 # https://nodejs.org/en/download/
 export VERSION_POSTGRESQL=14 # https://hub.docker.com/_/postgres/tags
 export VERSION_RCLONE=1.63.1 # https://github.com/rclone/rclone/releases
 export VERSION_SHELLCHECK=0.9.0 # https://github.com/koalaman/shellcheck/releases
-export VERSION_SWAG=1.8.12 # https://github.com/swaggo/swag/releases
-export VERSION_VAULT=1.13.4 # https://www.vaultproject.io/downloads
+export VERSION_SWAG=1.16.2 # https://github.com/swaggo/swag/releases
+export VERSION_VAULT=1.14.2 # https://www.vaultproject.io/downloads

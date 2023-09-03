@@ -5,7 +5,7 @@ build-go () {
 	install-go
 
 	printf "Building go/%s..." "${BUILD_NAME}"
-	try "cd ${DIR}/go && CGO_ENABLED=0 GOOS=${BUILD_TARGET_OS} GOARCH=${BUILD_TARGET_ARCH} go build -tags ${BUILD_GO_TAGS} -v -ldflags '-X github.com/candiddev/shared/go/cli.BuildDate=${BUILD_DATE} -X github.com/candiddev/shared/go/cli.BuildVersion=${BUILD_VERSION} ${BUILD_GO_VARS} -w' -o ${DIR}/${BUILD_NAME} ."
+	try "cd ${DIR}/go/${BUILD_GO_DIR} && CGO_ENABLED=0 GOOS=${BUILD_TARGET_OS} GOARCH=${BUILD_TARGET_ARCH} go build -tags ${BUILD_GO_TAGS} -v -ldflags '-X github.com/candiddev/shared/go/cli.BuildDate=${BUILD_DATE} -X github.com/candiddev/shared/go/cli.BuildVersion=${BUILD_VERSION} ${BUILD_GO_VARS} -w' -o ${DIR}/${BUILD_NAME} ."
 }
 bg () {
 	build-go
