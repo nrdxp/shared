@@ -1,6 +1,5 @@
 baseURL: /
 enableRobotsTXT: true
-defaultContentLanguageInSubdir: true
 languages:
   ar:
     contentDir: content/
@@ -52,7 +51,7 @@ outputs:
     - RSS
 params:
   copyright: Candid Development LLC
-  copyrightLink: https://www.candid.dev
+  copyrightLink: https://candid.dev
   disable_click2copy_chroma: true
   time_format_blog: 2006-01-02
 taxonomies:

@@ -64,7 +64,9 @@ run-hugo-start () {
 cmd run-hugo-stop Stop Hugo
 run-hugo-stop () {
 	printf "Stopping Hugo..."
-	try "${CR} rm -f candiddev_hugo_${APP_NAME}"
+
+	# shellcheck disable=SC2016
+	try 'for i in $(${CR} ps --filter=name=candiddev_hugo -qa); do ${CR} rm -f ${i}; done'
 }
 
 cmd run-network Start network

@@ -83,6 +83,11 @@ main {
   border-radius: 6px !important;
 }
 
+.td-card-group {
+  justify-content: center;
+   max-width: 100% !important;
+}
+
 .td-content ul li, .td-content ol li {
   margin-bottom: 0;
 }
@@ -134,3 +139,15 @@ main {
   font-size: 1rem;
   padding-bottom: 0.375rem;
 }
+
+{{ if .Site.Params.fontFamily }}
+:root {
+  --bs-body-font-family: {{ .Site.Params.fontFamily }};
+}
+{{ end }}
+
+{{ if .Site.Params.fontSize}}
+:root {
+  --bs-body-font-size: {{ .Site.Params.fontSize}}
+}
+{{ end }}
