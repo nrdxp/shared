@@ -1,3 +1,5 @@
 {{ $original := .Page.Resources.GetMatch (printf "**%s*" (.Get 0)) | fingerprint }}
-{{ $resize := $original.Resize "x1320" }}
-<a href={{ $original.RelPermalink }} target="_blank"><img alt={{ .Get 1 }} class="img" src="{{ $resize.RelPermalink }}"/></a>
+{{ $noBorder := .Get 3 | not | not }}
+{{ $width := (cond (.Get 2 | not | not) (.Get 2) 1320) }}
+{{ $resize := $original.Resize (printf "x%d" $width) }}
+<a href={{ $original.RelPermalink }} target="_blank"><img alt={{ .Get 1 }} class="img" src="{{ $resize.RelPermalink }}" style="{{ if $noBorder }}border: 0;{{ end }}max-width: {{ $width }}px"/></a>
