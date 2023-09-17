@@ -6,7 +6,7 @@ Once upon a time, Candid Development used a monorepo and life was easy.  When we
 
 ## License
 
-The code in this repository is licensed under the [Candid Public License](https://www.candid.dev/licenses).  Please [contact us](mailto:info@candid.dev) for licensing exceptions.
+The code in this repository is licensed under the [GNU AGPL](https://www.gnu.org/licenses/agpl-3.0.en.html).  Please [contact us](mailto:info@candid.dev) for licensing exceptions.
 
 ## Development
 

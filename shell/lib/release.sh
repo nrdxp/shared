@@ -38,7 +38,7 @@ release-binary () {
 		build-go
 
 		printf "Creating release artifacts for %s..." "${BUILD_NAME}"
-		try "tar -czf ${BUILD_NAME}.tar.gz --transform='s/_.*//' ${BUILD_NAME} LICENSE
+		try "tar -czf ${BUILD_NAME}.tar.gz --transform='s/_.*//' ${BUILD_NAME} LICENSE.md
 	sha256sum -b ${BUILD_NAME}.tar.gz > ${BUILD_NAME}.tar.gz.sha256"
 
 		for i in tar.gz tar.gz.sha256; do
