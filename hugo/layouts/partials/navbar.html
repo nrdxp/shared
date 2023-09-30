@@ -9,8 +9,7 @@
 <div class="container-fluid flex-column flex-md-row">
   <a class="navbar-brand" href="{{ .Site.Home.RelPermalink }}">
     {{- /**/ -}}
-    {{- $logo := "logo.png" | relURL -}}
-    <img class="navbar-logo"src="{{ $logo}}">
+    <img class="navbar-logo"src="{{ printf ("/%s.png") .Site.Params.Logo }}">
     {{- /**/ -}}
     <span class="navbar-brand__name">
       {{- .Site.Title -}}

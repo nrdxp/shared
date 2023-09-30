@@ -1,0 +1,51 @@
+<script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "url": {{ .Site.BaseURL }},
+      "logo": {{ printf "%s/%s.png" .Site.BaseURL .Site.Params.Logo }}
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "{{ .Site.Title }}",
+      "url": {{ .Site.BaseURL }}
+    },
+    {{- with .Params.blogImages }}
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "{{ $.Site.Title }}",
+      "image": [
+        {{- $blogImagesLen := len . }}
+        {{- range $i, $b := . }}
+        {{ $b }}{{ if ne (add $i 1) $blogImagesLen }},{{ end }}
+        {{- end }}
+       ],
+      "datePublished": {{ $.PublishDate.Format "2006-01-02T15:04:05-07:00" }},
+      "dateModified": {{ $.Lastmod.Format "2006-01-02T15:04:05-07:00" }},
+      "author": [{
+          "@type": "Person",
+          "name": "{{ $.Params.author }}"
+        }
+      ]
+    },
+    {{- end }}
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {{ $ancestorsLen := len .Ancestors.Reverse }}
+        {{- range $i, $a := .Ancestors.Reverse }}
+        {
+          "@type": "ListItem",
+          "item": {{ $a.RelPermalink }},
+          "name": {{ $a.Title }},
+          "position": {{ add $i 1 }}
+        }{{ if ne (add $i 1) $ancestorsLen }},{{ end }}
+        {{- end }}
+      ]
+    }
+  ]
+</script>
