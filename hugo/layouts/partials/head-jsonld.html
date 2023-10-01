@@ -40,7 +40,7 @@
         {{- range $i, $a := .Ancestors.Reverse }}
         {
           "@type": "ListItem",
-          "item": {{ $a.RelPermalink }},
+          "item": {{ $a.Permalink }},
           "name": {{ $a.Title }},
           "position": {{ add $i 1 }}
         }{{ if ne (add $i 1) $ancestorsLen }},{{ end }}
