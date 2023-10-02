@@ -2,7 +2,7 @@
 {{ $logoSVG.Publish }}
 {{ $logoPNG := resources.Get (printf "%s.png" .Site.Params.Logo) }}
 {{ $logoPNG.Publish }}
-{{ $logo180 := resources.Copy "/homechart_180.png" ($logoPNG.Resize "180x180") }}
+{{ $logo180 := resources.Copy (printf "%s_180.png" .Site.Params.Logo) ($logoPNG.Resize "180x180") }}
 
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="{{ $logoSVG.RelPermalink }}" type="image/svg+xml">
