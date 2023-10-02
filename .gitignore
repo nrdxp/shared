@@ -3,5 +3,6 @@
 .gcp
 
 go/coverage.out
+hugo/.hugo_build.lock
 hugo/resources
 web/node_modules

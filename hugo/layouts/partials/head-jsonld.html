@@ -36,6 +36,14 @@
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       "itemListElement": [
+        {{- if .IsHome }}
+        {
+          "@type": "ListItem",
+          "item": {{ .Site.BaseURL }},
+          "name": {{ .Title }},
+          "position": 1
+        }
+        {{- else }}
         {{ $ancestorsLen := len .Ancestors.Reverse }}
         {{- range $i, $a := .Ancestors.Reverse }}
         {
@@ -44,6 +52,7 @@
           "name": {{ $a.Title }},
           "position": {{ add $i 1 }}
         }{{ if ne (add $i 1) $ancestorsLen }},{{ end }}
+        {{- end }}
         {{- end }}
       ]
     }

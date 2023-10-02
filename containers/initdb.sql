@@ -1,16 +1,16 @@
 CREATE DATABASE homechart;
 CREATE ROLE "homechart" WITH CREATEDB LOGIN PASSWORD 'homechart';
-REVOKE ALL PRIVILEGES ON SCHEMA public FROM public;
 GRANT ALL PRIVILEGES ON DATABASE homechart TO homechart;
-GRANT ALL PRIVILEGES ON SCHEMA public TO homechart;
+\c homechart;
+GRANT ALL ON SCHEMA public TO homechart;
 
 CREATE DATABASE homechart_self_hosted;
-REVOKE ALL PRIVILEGES ON SCHEMA public FROM public;
 GRANT ALL PRIVILEGES ON DATABASE homechart_self_hosted TO homechart;
-GRANT ALL PRIVILEGES ON SCHEMA public TO homechart;
+\c homechart_self_hosted;
+GRANT ALL ON SCHEMA public TO homechart;
 
 CREATE DATABASE testdb;
 CREATE ROLE "testuser" WITH CREATEDB LOGIN PASSWORD 'testuser';
-REVOKE ALL PRIVILEGES ON SCHEMA public FROM public;
 GRANT ALL PRIVILEGES ON DATABASE testdb TO testuser;
-GRANT ALL PRIVILEGES ON SCHEMA public TO testuser;
+\c testdb;
+GRANT ALL ON SCHEMA public TO testuser;
