@@ -16,4 +16,6 @@ func TestAttributes(t *testing.T) {
 	ctx = SetAttribute(ctx, "int", 1)
 
 	assert.Equal(t, `key="value" bool=true int=1`, GetAttributes(ctx))
+	assert.Equal(t, `value`, GetAttribute(ctx, "key"))
+	assert.Equal(t, ``, GetAttribute(ctx, "eh"))
 }

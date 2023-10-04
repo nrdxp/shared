@@ -132,7 +132,7 @@ func GenerateAES128[T cli.AppConfig[any]](ctx context.Context, _ []string, _ T) 
 		return logger.Error(ctx, errs.ErrReceiver.Wrap(err))
 	}
 
-	fmt.Printf("%s\n", key) //nolint:forbidigo
+	logger.Raw(string(key))
 
 	return nil
 }

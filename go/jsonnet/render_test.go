@@ -2,6 +2,7 @@ package jsonnet
 
 import (
 	"net/http"
+	"strings"
 	"testing"
 	"time"
 
@@ -33,6 +34,7 @@ func TestImportRender(t *testing.T) {
 		imports      *Imports
 		wantErr      error
 		wantOut      testdata
+		wantStdout   string
 		wantRequests []get.HTTPMockRequest
 	}{
 		"bad import reference": {
@@ -153,6 +155,23 @@ n.getConfig().Vars`,
 				String: "Hello",
 			},
 		},
+		"good getPath fallback": {
+			config: c,
+			imports: &Imports{
+				Entrypoint: "f.jsonnet",
+				Files: map[string]string{
+					"native.libsonnet": Native,
+					"f.jsonnet": `local n = import 'native.libsonnet';
+{
+	String: n.getPath('/not/a/real/path', 'hello')
+}
+`,
+				},
+			},
+			wantOut: testdata{
+				String: "hello",
+			},
+		},
 		"bad record": {
 			config: c,
 			imports: &Imports{
@@ -176,13 +195,30 @@ n.getConfig().Vars`,
 					"native.libsonnet": Native,
 					"f.jsonnet": `local n = import 'native.libsonnet';
 {
-	String: n.getRecord('a', 'app01.xlc1.candid.dev') + ' ' + n.getRecord('cname', 'candid.dev')
+	String: n.getRecord('a', 'one.one.one.one.')[0] + n.getRecord('aaaa', 'one.one.one.one.')[0] + ' ' + n.getRecord('cname', 'candid.dev')[0]
 }
 `,
 				},
 			},
 			wantOut: testdata{
-				String: "10.0.1.11 candid.dev.",
+				String: "1.0.0.12606:4700:4700::1001 candid.dev.",
+			},
+		},
+		"good record fallback": {
+			config: c,
+			imports: &Imports{
+				Entrypoint: "f.jsonnet",
+				Files: map[string]string{
+					"native.libsonnet": Native,
+					"f.jsonnet": `local n = import 'native.libsonnet';
+{
+	String: n.getRecord('a', 'not.a.real.domain.test', 'hello')
+}
+`,
+				},
+			},
+			wantOut: testdata{
+				String: "hello",
 			},
 		},
 		"good imports": {
@@ -208,17 +244,34 @@ n.getConfig().Vars`,
 				},
 			},
 		},
+		"good trace": {
+			config: c,
+			imports: &Imports{
+				Entrypoint: "/main.jsonnet",
+				Files: map[string]string{
+					"/main.jsonnet": `{
+	String: std.trace('hello', 'world')
+}`,
+				},
+			},
+			wantOut: testdata{
+				String: "world",
+			},
+			wantStdout: "hello",
+		},
 	}
 
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
 			data := testdata{}
 
+			logger.SetStd()
 			r := NewRender(ctx, tc.config)
 			r.Import(tc.imports)
 			assert.HasErr(t, r.Render(ctx, &data), tc.wantErr)
 			assert.Equal(t, data, tc.wantOut)
 			assert.Equal(t, ts.Requests(), tc.wantRequests)
+			assert.Equal(t, strings.Contains(logger.ReadStd(), tc.wantStdout), true)
 		})
 	}
 }

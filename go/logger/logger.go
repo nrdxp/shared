@@ -224,6 +224,11 @@ func Info(ctx context.Context, message ...string) {
 	writeLog(ctx, LevelInfo, nil, strings.Join(message, ""))
 }
 
+// Raw writes an raw message to stdout.
+func Raw(message ...string) {
+	fmt.Fprint(Stdout, strings.Join(message, "")) //nolint:forbidigo
+}
+
 // UseTestLogger sets the logging output to the test logger.
 func UseTestLogger(tb testing.TB) {
 	tb.Helper()

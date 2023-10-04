@@ -181,7 +181,7 @@ func GenerateRSA2048[T cli.AppConfig[any]](ctx context.Context, _ []string, _ T)
 		"publicKey":  string(pub),
 	}
 
-	logger.Info(ctx, types.JSONToString(m))
+	logger.Raw(types.JSONToString(m))
 
 	return nil
 }

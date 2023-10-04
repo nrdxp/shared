@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -15,6 +16,11 @@ import (
 func TestFile(t *testing.T) {
 	ctx := context.Background()
 	h := NewHTTPMock([]string{"/good1", "/good2"}, []byte("Hello World"), time.Now().UTC())
+
+	u, _ := os.UserHomeDir()
+	up := filepath.Join(u, ".shared-jsonnet-test")
+	os.WriteFile(up, []byte("Hello World"), 0600)
+	upt, _ := os.Stat(up)
 
 	os.WriteFile("./local", []byte("Hello World"), 0600)
 	local, _ := os.Stat("./local")
@@ -97,6 +103,12 @@ func TestFile(t *testing.T) {
 			writer:           &bytes.Buffer{},
 		},
 		{
+			name:             "local home",
+			src:              up,
+			wantLastModified: upt.ModTime(),
+			writer:           &bytes.Buffer{},
+		},
+		{
 			name:             "local no writer",
 			src:              "file:/./local",
 			wantLastModified: local.ModTime(),
@@ -128,6 +140,7 @@ func TestFile(t *testing.T) {
 	}
 
 	os.Remove("./local")
+	os.Remove(up)
 	h.Close()
 }
 

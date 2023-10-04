@@ -1,0 +1,1 @@
+{{ os.ReadFile (printf "pages/%s.md" (.Get 0)) | markdownify }}

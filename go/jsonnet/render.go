@@ -9,6 +9,7 @@ import (
 	"net"
 	"os"
 	"regexp"
+	"sort"
 	"strings"
 	"time"
 
@@ -28,7 +29,7 @@ type Render struct {
 }
 
 // NewRender returns a jsonnet renderer.
-func NewRender(ctx context.Context, config any) *Render {
+func NewRender(ctx context.Context, config any) *Render { //nolint:gocognit
 	cache := map[string]any{}
 	vm := jsonnet.MakeVM()
 
@@ -63,7 +64,7 @@ func NewRender(ctx context.Context, config any) *Render {
 	vm.NativeFunction(&jsonnet.NativeFunction{
 		Func: func(params []any) (any, error) {
 			if path, ok := params[0].(string); ok {
-				if v, ok := cache["getPath"+path]; ok {
+				if v, ok := cache["getPath_"+path]; ok {
 					return v, nil
 				}
 
@@ -71,6 +72,10 @@ func NewRender(ctx context.Context, config any) *Render {
 
 				_, err := get.File(ctx, path, b, time.Time{})
 				if err != nil {
+					if params[1] != nil {
+						return params[1], nil
+					}
+
 					return nil, logger.Error(ctx, errs.ErrReceiver.Wrap(errors.New("error getting value"), err))
 				}
 
@@ -84,7 +89,7 @@ func NewRender(ctx context.Context, config any) *Render {
 			return nil, logger.Error(ctx, errs.ErrReceiver.Wrap(errors.New("no path provided")))
 		},
 		Name:   "getPath",
-		Params: ast.Identifiers{"path"},
+		Params: ast.Identifiers{"path", "fallback"},
 	})
 	vm.NativeFunction(&jsonnet.NativeFunction{
 		Func: func(params []any) (any, error) {
@@ -98,6 +103,12 @@ func NewRender(ctx context.Context, config any) *Render {
 				return nil, logger.Error(ctx, errs.ErrReceiver.Wrap(errors.New("no hostname provided")))
 			}
 
+			c := fmt.Sprintf("getRecord_%s_%s", t, n)
+
+			if v, ok := cache[c]; ok {
+				return v, nil
+			}
+
 			var err error
 
 			var r []string
@@ -105,6 +116,26 @@ func NewRender(ctx context.Context, config any) *Render {
 			switch strings.ToLower(t) {
 			case "a":
 				r, err = net.LookupHost(n)
+
+				filter := []string{}
+				for i := range r {
+					if strings.Contains(r[i], ".") {
+						filter = append(filter, r[i])
+					}
+				}
+
+				r = filter
+			case "aaaa":
+				r, err = net.LookupHost(n)
+
+				filter := []string{}
+				for i := range r {
+					if strings.Contains(r[i], ":") {
+						filter = append(filter, r[i])
+					}
+				}
+
+				r = filter
 			case "cname":
 				var s string
 
@@ -117,13 +148,27 @@ func NewRender(ctx context.Context, config any) *Render {
 			}
 
 			if err != nil {
+				if params[2] != nil {
+					return params[2], nil
+				}
+
 				return nil, logger.Error(ctx, errs.ErrReceiver.Wrap(errors.New("error resolving record"), err))
 			}
 
-			return strings.Join(r, ""), nil
+			a := []any{}
+
+			sort.Strings(r)
+
+			for i := range r {
+				a = append(a, r[i])
+			}
+
+			cache[c] = a
+
+			return a, nil
 		},
 		Name:   "getRecord",
-		Params: ast.Identifiers{"type", "name"},
+		Params: ast.Identifiers{"type", "name", "fallback"},
 	})
 	vm.NativeFunction(&jsonnet.NativeFunction{
 		Func: func(params []any) (any, error) {
@@ -147,6 +192,7 @@ func NewRender(ctx context.Context, config any) *Render {
 		Name:   "regexMatch",
 		Params: ast.Identifiers{"regex", "string"},
 	})
+	vm.SetTraceOut(logger.Stderr)
 
 	return &Render{
 		vm: vm,

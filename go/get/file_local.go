@@ -5,12 +5,23 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 )
 
 func fileLocal(_ context.Context, src string, dst io.Writer) (time.Time, error) {
-	f, err := os.Open(strings.TrimPrefix(src, "file:/"))
+	src = strings.TrimPrefix(src, "file:/")
+	if strings.HasPrefix(src, "~") {
+		dir, err := os.UserHomeDir()
+		if err != nil {
+			return time.Time{}, fmt.Errorf("error getting homedir: %w", err)
+		}
+
+		src = filepath.Join(dir, src[2:])
+	}
+
+	f, err := os.Open(src)
 	if err != nil {
 		return time.Time{}, fmt.Errorf("error opening src: %w", err)
 	}

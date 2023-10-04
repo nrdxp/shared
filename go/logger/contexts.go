@@ -10,6 +10,16 @@ import (
 
 type ctxKey string
 
+// GetAttribute gets a logging attributes.
+func GetAttribute(ctx context.Context, attr string) string {
+	s, ok := ctx.Value(ctxKey(attr)).(string)
+	if !ok {
+		return ""
+	}
+
+	return s
+}
+
 // GetAttributes gets all logging attributes.
 func GetAttributes(ctx context.Context) string {
 	s, ok := ctx.Value(ctxKey("attributes")).(string)
@@ -48,6 +58,7 @@ func SetAttribute(ctx context.Context, key string, value any) context.Context {
 	})
 
 	ctx = context.WithValue(ctx, ctxKey("attributes"), a)
+	ctx = context.WithValue(ctx, ctxKey(key), value)
 	ctx = trace.ContextWithSpan(ctx, span)
 
 	return ctx

@@ -39,6 +39,12 @@ func TestLint(t *testing.T) {
 				"testdata/funcs.jsonnet": {"error importing jsonnet files: RUNTIME ERROR: couldn't open import \"../functions.libsonnet\": no match locally or in the Jsonnet library paths\n\ttestdata/funcs.jsonnet:1:14-45"},
 			},
 		},
+		"native": {
+			checkFormat:    true,
+			path:           "native.libsonnet",
+			wantImportsLen: 1,
+			wantResults:    types.Results{},
+		},
 	}
 
 	for name, tc := range tests {
