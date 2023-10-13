@@ -170,7 +170,7 @@ func writeLog(ctx context.Context, level Level, err errs.Err, message string) { 
 		}
 
 		if span.SpanContext().HasTraceID() {
-			out += fmt.Sprintf(" traceID=%#v", span.SpanContext().TraceID())
+			out += fmt.Sprintf(" traceID=%#v", span.SpanContext().TraceID().String())
 		}
 
 		out += " " + GetAttributes(ctx)
