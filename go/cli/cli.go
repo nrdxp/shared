@@ -56,6 +56,19 @@ type Command[T AppConfig[any]] struct {
 
 var ErrUnknownCommand = errs.ErrSenderNotFound.Wrap(errors.New("unknown command"))
 
+// ConfigArgs is a list of config arguments.
+type ConfigArgs []string
+
+func (i *ConfigArgs) Set(value string) error {
+	*i = append(*i, value)
+
+	return nil
+}
+
+func (i *ConfigArgs) String() string {
+	return strings.Join(*i, "")
+}
+
 // App is a CLI application.
 type App[T AppConfig[any]] struct {
 	Commands         map[string]Command[T]
@@ -69,7 +82,7 @@ type App[T AppConfig[any]] struct {
 // AppConfig is a configuration that can be used with CLI.
 type AppConfig[T any] interface {
 	CLIConfig() *Config
-	Parse(ctx context.Context, configArgs, paths string) errs.Err
+	Parse(ctx context.Context, configArgs []string, paths string) errs.Err
 }
 
 // Run is the main entrypoint into a CLI app.
@@ -121,7 +134,7 @@ Commands:
 
 	var paths string
 
-	configArgs := ""
+	c := ConfigArgs{}
 
 	if !a.NoParse {
 		flag.StringVar(&paths, "c", "", "Path to JSON/Jsonnet configuration files separated by a comma")
@@ -133,7 +146,7 @@ Commands:
 			Usage: "Print the current configuration",
 		}
 
-		flag.StringVar(&configArgs, "x", configArgs, "Comma separated list of config key=value pairs")
+		flag.Var(&c, "x", "Set config key=value (can be provided multiple times)")
 	}
 
 	a.Commands["version"] = Command[T]{
@@ -153,9 +166,13 @@ Commands:
 	flag.Parse()
 
 	if !a.NoParse {
-		if err := a.Config.Parse(ctx, configArgs, paths); err != nil {
+		if err := a.Config.Parse(ctx, c, paths); err != nil {
 			return err
 		}
+	}
+
+	if a.Config.CLIConfig().LogFormat != "" {
+		ctx = logger.SetFormat(ctx, a.Config.CLIConfig().LogFormat)
 	}
 
 	if a.Config.CLIConfig().LogLevel != "" {

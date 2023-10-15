@@ -1,6 +1,7 @@
 package notify
 
 import (
+	"crypto/ecdh"
 	"database/sql/driver"
 	"encoding/base64"
 	"encoding/json"
@@ -18,7 +19,7 @@ type WebPushClient struct {
 // WebPushClients is multiple WebPushClient.
 type WebPushClients []*WebPushClient
 
-func (c *WebPushClient) decode() (auth []byte, p256 []byte, err error) {
+func (c *WebPushClient) decode() (auth []byte, p256 *ecdh.PublicKey, err error) {
 	a, err := base64.RawURLEncoding.DecodeString(c.Auth)
 	if err != nil {
 		return nil, nil, fmt.Errorf("error decoding auth: %w", err)
@@ -29,7 +30,12 @@ func (c *WebPushClient) decode() (auth []byte, p256 []byte, err error) {
 		return nil, nil, fmt.Errorf("error decoding p256: %w", err)
 	}
 
-	return a, p, nil
+	k, err := ecdh.P256().NewPublicKey(p)
+	if err != nil {
+		return nil, nil, fmt.Errorf("error decoding p256: %w", err)
+	}
+
+	return a, k, nil
 }
 
 // Scan reads in a WebPushClient from a database.

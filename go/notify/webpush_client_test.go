@@ -16,5 +16,5 @@ func TestClientDe(t *testing.T) {
 	a, p, err := testClient.decode()
 	assert.HasErr(t, err, nil)
 	assert.Equal(t, len(a), 16)
-	assert.Equal(t, len(p), 65)
+	assert.Equal(t, len(p.Bytes()), 65)
 }

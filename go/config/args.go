@@ -2,38 +2,18 @@ package config
 
 import (
 	"context"
-	"reflect"
-	"strings"
+	"errors"
 
 	"github.com/candiddev/shared/go/errs"
 	"github.com/candiddev/shared/go/logger"
 )
 
-func getArgs(ctx context.Context, config any, args string) errs.Err {
-	k := reflect.TypeOf(config).Elem()
-	v := reflect.ValueOf(config).Elem()
+var ErrUpdateArg = errors.New("error updating config from argument")
 
-	values := map[string]string{}
-
-	for _, kv := range strings.Split(args, ",") {
-		if s := strings.Split(kv, "="); len(s) == 2 {
-			values[strings.ToLower(s[0])] = s[1]
-		}
-	}
-
-	if err := iterateConfig("", k, v, lookupArg, values); err != nil {
-		return logger.Error(ctx, errs.ErrReceiver.Wrap(ErrUpdateEnv, err))
+func getArgs(ctx context.Context, config any, args []string) errs.Err {
+	if err := parseValue(ctx, config, "", args); err != nil {
+		return logger.Error(ctx, errs.ErrReceiver.Wrap(ErrUpdateArg, err))
 	}
 
 	return logger.Error(ctx, nil)
-}
-
-func lookupArg(key string, values any) (string, error) {
-	n := strings.ToLower(key)
-
-	if val, ok := values.(map[string]string)[n]; ok {
-		return val, nil
-	}
-
-	return "", nil
 }

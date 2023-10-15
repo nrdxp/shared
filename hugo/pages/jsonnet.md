@@ -1,3 +1,10 @@
+---
+categories:
+- reference
+description: Reference documentation for Jsonnet libraries.
+title: Jsonnet
+---
+
 Jsonnet is a configuration language for building JSON.  It provides capabilities for defining functions, pulling in external data, and other useful features to create dynamic JSON configuration files.
 
 ## Format

@@ -1,13 +1,10 @@
 // Package notify contains helper functions for sending notifications.
-//
-//nolint:staticcheck
 package notify
 
 import (
 	"bytes"
 	"context"
-	"crypto/elliptic"
-	"crypto/rand"
+	"crypto/ecdh"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -19,21 +16,22 @@ import (
 	"time"
 
 	"github.com/candiddev/shared/go/assert"
+	"github.com/candiddev/shared/go/cryptolib"
+	"github.com/candiddev/shared/go/jwt"
 	"github.com/candiddev/shared/go/logger"
-	"github.com/golang-jwt/jwt/v4"
 )
 
 func TestWebPushSend(t *testing.T) {
 	logger.UseTestLogger(t)
 
-	srvPrv, srvPub, _ := NewWebPushVAPID()
-	c := WebPush{
-		BaseURL:         "hello",
-		VAPIDPrivateKey: srvPrv,
-	}
-	curve := elliptic.P256()
-	cliPrv, x, y, _ := elliptic.GenerateKey(curve, rand.Reader)
-	cliPub := elliptic.Marshal(curve, x, y)
+	legacyPrv := "3-NI4eCXzQt3ILqRmOaIuEWHCl9Lp7zrOlGhhdyy7MU"
+	legacyPub := "BMcCmv0dhitH4h1hrKHGpJbaD_kTPpaGap8AH4kjLoM7pZXPzdPgCASqZ9pMOZckHD62xvXFtfWbxLBzJGzWtU4"
+
+	srvPrv, srvPub, err := NewWebPushVAPID()
+	assert.HasErr(t, err, nil)
+
+	cliPrv, cliPub, err := NewWebPushVAPID()
+	assert.HasErr(t, err, nil)
 
 	msg := WebPushMessage{
 		Actions: WebPushActions{
@@ -70,12 +68,14 @@ func TestWebPushSend(t *testing.T) {
 	cli := &WebPushClient{
 		Auth:     "lDVz2GD0oypIBSDIEnIe6A",
 		Endpoint: srv.URL,
-		P256:     base64.RawURLEncoding.EncodeToString(cliPub),
+		P256:     cliPub,
 	}
 
 	tests := map[string]struct {
+		cliPrv    string
 		client    *WebPushClient
 		resStatus int
+		srvPrv    string
 		srvPub    string
 		wantErr   error
 	}{
@@ -83,6 +83,7 @@ func TestWebPushSend(t *testing.T) {
 			wantErr: ErrCancelled,
 		},
 		"no client": {
+			srvPrv:  srvPrv,
 			srvPub:  srvPub,
 			wantErr: ErrCancelled,
 		},
@@ -90,62 +91,87 @@ func TestWebPushSend(t *testing.T) {
 			client: &WebPushClient{
 				Auth:     "#*&&%*@(%*@)!(%_)",
 				Endpoint: srv.URL,
-				P256:     string(cliPub),
+				P256:     cliPub,
 			},
+			srvPrv:  srvPrv,
 			srvPub:  srvPub,
 			wantErr: ErrSend,
 		},
 		"bad request": {
 			client:    cli,
 			resStatus: http.StatusBadRequest,
+			srvPrv:    srvPrv,
 			srvPub:    srvPub,
 			wantErr:   ErrSend,
 		},
 		"forbidden": {
 			client:    cli,
 			resStatus: http.StatusForbidden,
+			srvPrv:    srvPrv,
 			srvPub:    srvPub,
 			wantErr:   ErrSend,
 		},
 		"not found": {
 			client:    cli,
 			resStatus: http.StatusNotFound,
+			srvPrv:    srvPrv,
 			srvPub:    srvPub,
 			wantErr:   ErrMissing,
 		},
 		"gone": {
 			client:    cli,
 			resStatus: http.StatusGone,
+			srvPrv:    srvPrv,
 			srvPub:    srvPub,
 			wantErr:   ErrMissing,
 		},
 		"too large": {
 			client:    cli,
 			resStatus: http.StatusRequestEntityTooLarge,
+			srvPrv:    srvPrv,
 			srvPub:    srvPub,
 			wantErr:   ErrSend,
 		},
 		"too many requests": {
 			client:    cli,
 			resStatus: http.StatusTooManyRequests,
+			srvPrv:    srvPrv,
 			srvPub:    srvPub,
 			wantErr:   ErrSend,
 		},
-		"good": {
+		"good_new": {
 			client: &WebPushClient{
-				Auth:     "lDVz2GD0oypIBSDIEnIe6A",
+				Auth:     cli.Auth,
 				Endpoint: srv.URL,
-				P256:     base64.RawURLEncoding.EncodeToString(cliPub),
+				P256:     cliPub,
 			},
+			cliPrv:    cliPrv,
 			resStatus: http.StatusCreated,
+			srvPrv:    srvPrv,
 			srvPub:    srvPub,
+		},
+		"good_legacy": {
+			client: &WebPushClient{
+				Auth:     cli.Auth,
+				Endpoint: srv.URL,
+				P256:     legacyPub,
+			},
+			cliPrv:    legacyPrv,
+			resStatus: http.StatusCreated,
+			srvPrv:    legacyPrv,
+			srvPub:    legacyPub,
 		},
 	}
 
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
+			c := WebPush{
+				BaseURL:         "hello",
+				VAPIDPublicKey:  tc.srvPub,
+				VAPIDPrivateKey: tc.srvPrv,
+			}
+
 			ctx := context.Background()
-			c.VAPIDPublicKey = tc.srvPub
 			m := msg
 			m.Client = tc.client
 			resStatus = tc.resStatus
@@ -155,34 +181,46 @@ func TestWebPushSend(t *testing.T) {
 			if tc.wantErr == nil {
 				assert.Equal(t, gotHeader.Get("Content-Encoding"), "aes128gcm")
 				assert.Equal(t, gotHeader.Get("Content-Type"), "application/octet-stream")
-				assert.Equal(t, gotHeader.Get("Crypto-Key"), fmt.Sprintf("p256ecdsa=%s", srvPub))
+				assert.Equal(t, gotHeader.Get("Crypto-Key"), fmt.Sprintf("p256ecdsa=%s", tc.srvPub))
 				assert.Equal(t, gotHeader.Get("TTL"), "100")
 				assert.Equal(t, gotHeader.Get("Topic"), "topic1")
 				assert.Equal(t, gotHeader.Get("Urgency"), "high")
 
-				c := jwt.MapClaims{
-					"aud": "",
-					"exp": jwt.NewNumericDate(time.Now()),
-					"sub": "",
-				}
+				srvB, err := base64.RawURLEncoding.DecodeString(tc.srvPub)
+				assert.HasErr(t, err, nil)
 
-				token, err := jwt.ParseWithClaims(strings.Split(gotHeader.Get("Authorization"), " ")[1], &c, func(t *jwt.Token) (any, error) {
-					return &server.key.PublicKey, nil
+				token, _, err := jwt.Parse(strings.Split(gotHeader.Get("Authorization"), " ")[1], cryptolib.KeysVerify{
+					{
+						Key: cryptolib.Key[cryptolib.KeyProviderVerify]{
+							Key: cryptolib.ECP256PublicKey(base64.StdEncoding.EncodeToString(srvB)),
+						},
+					},
 				})
+				assert.HasErr(t, err, nil)
+
+				wp := webPushJWT{}
+				assert.HasErr(t, token.ParsePayload(&wp, "", "", ""), nil)
 
 				assert.HasErr(t, err, nil)
-				assert.Equal(t, token.Valid, true)
 				assert.Equal(t, len(gotBody), 4096)
-				assert.Equal(t, c["aud"].(string), strings.Join(strings.Split(srv.URL, ":")[:2], ":"))
-				assert.Equal(t, time.Unix(int64(c["exp"].(float64)), 0).After(time.Now().Add(4*time.Hour)), true)
-				assert.Equal(t, c["sub"], "hello")
+				assert.Equal(t, wp.Audience[0], strings.Join(strings.Split(srv.URL, ":")[:2], ":"))
+				assert.Equal(t, time.Unix(wp.ExpiresAt, 0).After(time.Now().Add(4*time.Hour)), true)
+				assert.Equal(t, wp.Subject, "hello")
 
 				salt := gotBody[:16] // Salt is 16 characters
 				l := int(gotBody[20])
-				srvPub := gotBody[21 : 21+l]
-				auth, _ := base64.RawURLEncoding.DecodeString(cli.Auth)
+				srvPub, err := ecdh.P256().NewPublicKey(gotBody[21 : 21+l])
+				assert.HasErr(t, err, nil)
+				auth, err := base64.RawURLEncoding.DecodeString(cli.Auth)
+				assert.HasErr(t, err, nil)
 
-				gcm, nonce, _ := getWebPushCipherNonce(srvPub, cliPrv, cliPub, auth, salt, true)
+				cliPrvB, err := base64.RawURLEncoding.DecodeString(tc.cliPrv)
+				assert.HasErr(t, err, nil)
+				cliPrvP, err := ecdh.P256().NewPrivateKey(cliPrvB)
+				assert.HasErr(t, err, nil)
+
+				gcm, nonce, err := getWebPushCipherNonce(srvPub, cliPrvP, auth, salt, true)
+				assert.HasErr(t, err, nil)
 				ct, err := gcm.Open([]byte{}, nonce, gotBody[21+l:], nil)
 				assert.HasErr(t, err, nil)
 

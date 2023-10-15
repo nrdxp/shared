@@ -243,7 +243,7 @@ func UseTestLogger(tb testing.TB) {
 func getFunc(depth int) (string, int) {
 	_, file, line, _ := runtime.Caller(depth)
 	n := strings.Split(file, "/")
-	f := strings.Join(n[len(n)-4:], "/")
+	f := strings.Join(n[len(n)-2:], "/")
 
 	return f, line
 }

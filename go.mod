@@ -6,7 +6,6 @@ replace github.com/google/go-jsonnet => github.com/thequailman/go-jsonnet v0.0.0
 
 require (
 	github.com/disintegration/imaging v1.6.2
-	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/gomarkdown/markdown v0.0.0-20230922105210-14b16010c2ee
 	github.com/google/go-cmp v0.5.9
 	github.com/google/go-jsonnet v0.0.0-00010101000000-000000000000

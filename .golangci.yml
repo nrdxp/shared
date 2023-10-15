@@ -26,15 +26,22 @@ issues:
       linters:
         - errcheck
         - gosec
-    - source: "(var Err)|((CLIConfig|Default|GetRegisteredClaims|MarshalJSON|Parse|PrivateKey|PublicKey|Scan|SetID|SliceString|String|UnmarshalJSON|Type|Value)\\()"
+    - source: "((var)? Err)|((CLIConfig|Default|GetRegisteredClaims|MarshalJSON|Parse|PrivateKey|PublicKey|Scan|SetID|SliceString|String|UnmarshalJSON|Type|Value)\\()"
       linters:
         - revive
       text: "exported: "
-    - source: "(Decrypt|Encrypt|Type)\\("
+    - source: "(Algorithm|Decrypt|Encrypt)"
       linters:
         - revive
-      path: crypto
+      path: cryptolib
       text: "exported: "
+    - source: "Keys\\["
+      linters:
+        - govet
+    - source: "^func (Collect|Get|Set)"
+      path: metrics
+      linters:
+        - revive
   exclude-use-default: false
 linters:
   disable:

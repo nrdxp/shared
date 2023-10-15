@@ -93,7 +93,6 @@ export GOROOT=${CUSTOMGOROOT}
 
 export INSTALL_ALL=${INSTALL_ALL:-"install-go install-golangci-lint install-node install-shellcheck"}
 
-export RELEASE_CONTAINER_CMD=${RELEASE_CONTAINER_CMD:-}
 export RUN_GO_ARGS=${RUN_GO_ARGS:-}
 
 export VAULT_SSH_ROLE=${VAULT_SSH_ROLE:-}

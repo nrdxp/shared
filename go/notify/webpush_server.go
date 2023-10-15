@@ -1,6 +1,4 @@
 // Package notify contains helper functions for sending notifications.
-//
-//nolint:staticcheck
 package notify
 
 import (
@@ -8,8 +6,7 @@ import (
 	"context"
 	"crypto/aes"
 	"crypto/cipher"
-	"crypto/ecdsa"
-	"crypto/elliptic"
+	"crypto/ecdh"
 	"crypto/rand"
 	"crypto/sha256"
 	"database/sql/driver"
@@ -18,18 +15,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"math/big"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
+	"github.com/candiddev/shared/go/cryptolib"
 	"github.com/candiddev/shared/go/errs"
+	"github.com/candiddev/shared/go/jwt"
 	"github.com/candiddev/shared/go/logger"
 	"github.com/candiddev/shared/go/metrics"
-	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/hkdf"
 )
 
@@ -65,6 +61,24 @@ type WebPushMessage struct {
 	Urgency WebPushUrgency
 }
 
+// NewWebPushVAPID generates a new private and public VAPID.
+func NewWebPushVAPID() (prv, pub string, err error) {
+	p, _, err := cryptolib.NewECP256()
+	if err != nil {
+		return "", "", fmt.Errorf("error generating private key: %w", err)
+	}
+
+	k, err := p.PrivateKeyECDH()
+	if err != nil {
+		return "", "", fmt.Errorf("error generating private key: %w", err)
+	}
+
+	prv = base64.RawURLEncoding.EncodeToString(k.Bytes())
+	pub = base64.RawURLEncoding.EncodeToString(k.PublicKey().Bytes())
+
+	return prv, pub, nil
+}
+
 // WebPushActions are the actions to take for the web push.
 type WebPushActions struct {
 	Default    string              `json:"default"`
@@ -97,41 +111,35 @@ func (c WebPushActions) Value() (driver.Value, error) {
 	return j, err
 }
 
-var server = struct { //nolint:gochecknoglobals
-	key   *ecdsa.PrivateKey
-	mutex sync.Mutex
-}{}
-
-// NewWebPushVAPID generates a new private and public VAPID.
-func NewWebPushVAPID() (prv, pub string, err error) {
-	c := elliptic.P256()
-
-	private, x, y, err := elliptic.GenerateKey(c, rand.Reader)
-	if err != nil {
-		return "", "", fmt.Errorf("error generating private key: %w", err)
-	}
-
-	public := elliptic.Marshal(c, x, y)
-
-	return base64.RawURLEncoding.EncodeToString(private), base64.RawURLEncoding.EncodeToString(public), nil
+type webPushJWT struct {
+	jwt.RegisteredClaims
 }
 
-func getWebPushCipherNonce(clientPub, serverPrv, serverPub, auth, salt []byte, reversePRK bool) (gcm cipher.AEAD, nonce []byte, err error) { //nolint:revive
-	curve := elliptic.P256()
-	x, y := elliptic.Unmarshal(curve, clientPub)
-	s, _ := curve.ScalarMult(x, y, serverPrv)
+func (w *webPushJWT) GetRegisteredClaims() *jwt.RegisteredClaims {
+	return &w.RegisteredClaims
+}
 
+func (*webPushJWT) Valid() error {
+	return nil
+}
+
+func getWebPushCipherNonce(client *ecdh.PublicKey, server *ecdh.PrivateKey, auth, salt []byte, reversePRK bool) (gcm cipher.AEAD, nonce []byte, err error) {
 	prk := bytes.NewBufferString("WebPush: info\x00")
 
 	if reversePRK {
-		prk.Write(serverPub)
-		prk.Write(clientPub)
+		prk.Write(server.PublicKey().Bytes())
+		prk.Write(client.Bytes())
 	} else {
-		prk.Write(clientPub)
-		prk.Write(serverPub)
+		prk.Write(client.Bytes())
+		prk.Write(server.PublicKey().Bytes())
 	}
 
-	prkHKDF := hkdf.New(sha256.New, s.Bytes(), auth, prk.Bytes())
+	key, err := server.ECDH(client)
+	if err != nil {
+		return nil, nil, fmt.Errorf("error generating shared secret: %w", err)
+	}
+
+	prkHKDF := hkdf.New(sha256.New, key, auth, prk.Bytes())
 	ikm := make([]byte, 32)
 
 	if _, err := io.ReadFull(prkHKDF, ikm); err != nil {
@@ -169,46 +177,30 @@ func getWebPushCipherNonce(clientPub, serverPrv, serverPub, auth, salt []byte, r
 
 // generateJWT must be called during a mutex lock.
 func (c *WebPush) getJWT(endpoint string) (string, error) {
-	server.mutex.Lock()
-	defer server.mutex.Unlock()
-
-	if server.key == nil {
-		prv, err := base64.RawURLEncoding.DecodeString(c.VAPIDPrivateKey)
-		if err != nil {
-			return "", fmt.Errorf("error decoding private key: %w", err)
-		}
-
-		cur := elliptic.P256()
-
-		x, y := cur.ScalarMult(cur.Params().Gx, cur.Params().Gy, prv)
-
-		d := &big.Int{}
-		d.SetBytes(prv)
-
-		key := &ecdsa.PrivateKey{
-			PublicKey: ecdsa.PublicKey{
-				Curve: cur,
-				X:     x,
-				Y:     y,
-			},
-			D: d,
-		}
-
-		server.key = key
-	}
-
 	u, err := url.Parse(endpoint)
 	if err != nil {
 		return "", fmt.Errorf("error parsing endpoint: %w", err)
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, jwt.MapClaims{
-		"aud": fmt.Sprintf("%s://%s", u.Scheme, u.Hostname()),
-		"exp": jwt.NewNumericDate(time.Now().Add(5 * time.Hour)),
-		"sub": c.BaseURL,
-	})
+	t, err := jwt.New(&webPushJWT{}, time.Now().Add(5*time.Hour), []string{fmt.Sprintf("%s://%s", u.Scheme, u.Hostname())}, "", "", c.BaseURL)
+	if err != nil {
+		return "", err
+	}
 
-	return token.SignedString(server.key)
+	b, err := base64.RawURLEncoding.DecodeString(c.VAPIDPrivateKey)
+	if err != nil {
+		return "", fmt.Errorf("error decoding private key: %w", err)
+	}
+
+	if err := t.Sign(cryptolib.KeySign{
+		Key: cryptolib.Key[cryptolib.KeyProviderSign]{
+			Key: cryptolib.ECP256PrivateKey(base64.StdEncoding.EncodeToString(b)),
+		},
+	}); err != nil {
+		return "", err
+	}
+
+	return t.String(), nil
 }
 
 // Send POSTs a WebPushMessage to a WebPush provider.
@@ -234,14 +226,21 @@ func (c *WebPush) Send(ctx context.Context, m *WebPushMessage) errs.Err {
 		return logger.Error(ctx, errs.ErrReceiver.Wrap(ErrSend, fmt.Errorf("error decoding client: %w", err)))
 	}
 
-	cur := elliptic.P256()
-
-	prv, x, y, err := elliptic.GenerateKey(cur, rand.Reader)
+	prv, pub, err := cryptolib.NewECP256()
 	if err != nil {
-		return logger.Error(ctx, errs.ErrReceiver.Wrap(ErrSend, fmt.Errorf("error generating private key: %w", err)))
+		return logger.Error(ctx, errs.ErrReceiver.Wrap(ErrSend, fmt.Errorf("error generating keys: %w", err)))
 	}
 
-	pub := elliptic.Marshal(cur, x, y)
+	prvECDH, err := prv.PrivateKeyECDH()
+	if err != nil {
+		return logger.Error(ctx, errs.ErrReceiver.Wrap(ErrSend, fmt.Errorf("error generating keys: %w", err)))
+	}
+
+	pubECDH, err := pub.PublicKeyECDH()
+	if err != nil {
+		return logger.Error(ctx, errs.ErrReceiver.Wrap(ErrSend, fmt.Errorf("error generating keys: %w", err)))
+	}
+
 	salt := make([]byte, 16)
 
 	if _, err := io.ReadFull(rand.Reader, salt); err != nil {
@@ -250,7 +249,7 @@ func (c *WebPush) Send(ctx context.Context, m *WebPushMessage) errs.Err {
 		return logger.Error(ctx, errs.ErrReceiver.Wrap(ErrSend, fmt.Errorf("error generating salt: %w", err)))
 	}
 
-	gcm, nonce, err := getWebPushCipherNonce(p256, prv, pub, auth, salt, false)
+	gcm, nonce, err := getWebPushCipherNonce(p256, prvECDH, auth, salt, false)
 	if err != nil {
 		metrics.Notifications.WithLabelValues("webpush", "failure").Add(1)
 
@@ -268,8 +267,8 @@ func (c *WebPush) Send(ctx context.Context, m *WebPushMessage) errs.Err {
 	rs := make([]byte, 4)
 	binary.BigEndian.PutUint32(rs, 4096)
 	recordBuf.Write(rs)
-	recordBuf.Write([]byte{byte(len(pub))})
-	recordBuf.Write(pub)
+	recordBuf.Write([]byte{byte(len(pubECDH.Bytes()))})
+	recordBuf.Write(pubECDH.Bytes())
 
 	j, err := json.Marshal(map[string]any{
 		"actions": m.Actions,

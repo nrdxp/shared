@@ -25,7 +25,7 @@ func TestFmt(t *testing.T) {
 				`,
 				},
 			},
-			wantOutput: `ERROR shared/go/jsonnet/fmt.go:36
+			wantOutput: `ERROR jsonnet/fmt.go:36
 files not formatted properly
 diff have main.jsonnet want main.jsonnet
 --- have main.jsonnet

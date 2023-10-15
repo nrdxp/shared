@@ -8,8 +8,11 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"os/user"
+	"strconv"
 	"strings"
 	"sync"
+	"syscall"
 
 	"github.com/candiddev/shared/go/errs"
 	"github.com/candiddev/shared/go/logger"
@@ -26,7 +29,11 @@ const (
 	ContainerRuntimePodman ContainerRuntime = "podman"
 )
 
-var ErrRun = errors.New("error running commands")
+var (
+	ErrRun            = errors.New("error running commands")
+	ErrRunLookupGroup = errors.New("error looking up group")
+	ErrRunLookupUser  = errors.New("error looking up user")
+)
 
 // CmdOutput is a string of the command exec output.
 type CmdOutput string
@@ -51,6 +58,24 @@ func getContainerRuntime() (ContainerRuntime, error) {
 	}
 
 	return ContainerRuntimePodman, nil
+}
+
+// RunOpts are options for running a CLI command.
+type RunOpts struct {
+	Args                []string
+	Command             string
+	ContainerEntrypoint string
+	ContainerImage      string
+	ContainerPull       string
+	ContainerPrivileged bool
+	ContainerUser       string
+	ContainerVolumes    []string
+	Environment         []string
+	Group               string
+	NoErrorLog          bool
+	User                string
+	Stdin               string
+	WorkDir             string
 }
 
 func (r *RunOpts) getCmd(ctx context.Context) (*exec.Cmd, errs.Err) {
@@ -91,6 +116,10 @@ func (r *RunOpts) getCmd(ctx context.Context) (*exec.Cmd, errs.Err) {
 				args = append(args, "--privileged")
 			}
 
+			if r.ContainerPull != "" {
+				args = append(args, "--pull", r.ContainerPull)
+			}
+
 			if r.ContainerUser != "" {
 				args = append(args, "-u", r.ContainerUser)
 			}
@@ -113,26 +142,63 @@ func (r *RunOpts) getCmd(ctx context.Context) (*exec.Cmd, errs.Err) {
 	return exec.CommandContext(ctx, cmd, args...), nil
 }
 
-// RunOpts are options for running a CLI command.
-type RunOpts struct {
-	Args                []string
-	Command             string
-	ContainerEntrypoint string
-	ContainerImage      string
-	ContainerPrivileged bool
-	ContainerUser       string
-	ContainerVolumes    []string
-	Environment         []string
-	NoErrorLog          bool
-	Stdin               string
-	WorkDir             string
-}
-
 // Run uses RunOpts to run CLI commands.
-func (c *Config) Run(ctx context.Context, opts RunOpts) (out CmdOutput, err errs.Err) {
+func (c *Config) Run(ctx context.Context, opts RunOpts) (out CmdOutput, err errs.Err) { //nolint:gocognit
 	cmd, err := opts.getCmd(ctx)
 	if err != nil {
 		return "", logger.Error(ctx, errs.ErrReceiver.Wrap(err))
+	}
+
+	var e error
+
+	creds := &syscall.Credential{}
+
+	if opts.Group != "" {
+		gid, e := strconv.ParseUint(opts.Group, 10, 32)
+		if e != nil {
+			g, e := user.Lookup(opts.Group)
+			if e != nil {
+				return "", logger.Error(ctx, errs.ErrReceiver.Wrap(fmt.Errorf("%w: %s", ErrRunLookupGroup, opts.Group)))
+			}
+
+			gid, e = strconv.ParseUint(g.Gid, 10, 32)
+			if e != nil {
+				return "", logger.Error(ctx, errs.ErrReceiver.Wrap(fmt.Errorf("%w: %s", ErrRunLookupUser, opts.Group)))
+			}
+		}
+
+		creds.Gid = uint32(gid)
+
+		if opts.User == "" {
+			creds.Uid = uint32(os.Getuid())
+		}
+	}
+
+	if opts.User != "" {
+		uid, e := strconv.ParseUint(opts.User, 10, 32)
+		if e != nil {
+			u, e := user.Lookup(opts.User)
+			if e != nil {
+				return "", logger.Error(ctx, errs.ErrReceiver.Wrap(fmt.Errorf("%w: %s", ErrRunLookupUser, opts.User)))
+			}
+
+			uid, e = strconv.ParseUint(u.Uid, 10, 32)
+			if e != nil {
+				return "", logger.Error(ctx, errs.ErrReceiver.Wrap(fmt.Errorf("%w: %s", ErrRunLookupUser, opts.User)))
+			}
+		}
+
+		creds.Uid = uint32(uid)
+
+		if opts.Group == "" {
+			creds.Gid = uint32(os.Getgid())
+		}
+	}
+
+	if opts.Group != "" || opts.User != "" {
+		cmd.SysProcAttr = &syscall.SysProcAttr{
+			Credential: creds,
+		}
 	}
 
 	cmd.Dir = opts.WorkDir
@@ -143,8 +209,6 @@ func (c *Config) Run(ctx context.Context, opts RunOpts) (out CmdOutput, err errs
 	}
 
 	logger.Debug(ctx, "Running commands:\n"+cmd.String())
-
-	var e error
 
 	var o []byte
 
@@ -165,9 +229,19 @@ func (c *Config) Run(ctx context.Context, opts RunOpts) (out CmdOutput, err errs
 			c.runMock.errs = nil
 		}
 
+		gid := uint32(0)
+		uid := uint32(0)
+
+		if cmd.SysProcAttr != nil && cmd.SysProcAttr.Credential != nil {
+			gid = cmd.SysProcAttr.Credential.Gid
+			uid = cmd.SysProcAttr.Credential.Uid
+		}
+
 		c.runMock.inputs = append(c.runMock.inputs, RunMockInput{
 			Environment: opts.Environment,
 			Exec:        cmd.String(),
+			GID:         gid,
+			UID:         uid,
 			WorkDir:     opts.WorkDir,
 		})
 
@@ -203,6 +277,8 @@ func (c *Config) Run(ctx context.Context, opts RunOpts) (out CmdOutput, err errs
 type RunMockInput struct {
 	Environment []string
 	Exec        string
+	GID         uint32
+	UID         uint32
 	WorkDir     string
 }
 

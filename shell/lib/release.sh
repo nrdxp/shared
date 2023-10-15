@@ -66,5 +66,5 @@ release-container () {
 	try "${CR} login -u $ -p ${GITHUB_TOKEN} ${CR_REGISTRY}
 ${CR} buildx create --name ${APP_NAME} || true
 ${CR} buildx use ${APP_NAME}
-${CR} buildx build --build-arg=CMD=${RELEASE_CONTAINER_CMD} --build-arg=REPOSITORY=${APP_NAME} --provenance=false -f ${DIR}/Dockerfile --platform ${BUILD_TARGETS_CONTAINER// /,} ${tags} --push ."
+${CR} buildx build --build-arg=REPOSITORY=${APP_NAME} --provenance=false -f ${DIR}/Dockerfile --platform ${BUILD_TARGETS_CONTAINER// /,} ${tags} --push ."
 }

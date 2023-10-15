@@ -21,8 +21,8 @@ func (c *C) CLIConfig() *Config {
 	return &c.CLI
 }
 
-func (c *C) Parse(ctx context.Context, configArgs, paths string) errs.Err {
-	return config.Parse(ctx, c, "cli", "", configArgs, paths)
+func (c *C) Parse(ctx context.Context, configArgs []string, paths string) errs.Err {
+	return config.Parse(ctx, c, configArgs, "cli", "", paths)
 }
 
 type msg struct {

@@ -24,6 +24,7 @@ func getEnv(ctx context.Context, config any, prefix string) errs.Err {
 		}
 	}
 
+	// TODO remove me
 	k := reflect.TypeOf(config).Elem()
 	v := reflect.ValueOf(config).Elem()
 
@@ -31,12 +32,27 @@ func getEnv(ctx context.Context, config any, prefix string) errs.Err {
 		return logger.Error(ctx, errs.ErrReceiver.Wrap(ErrUpdateEnv, err))
 	}
 
+	if err := parseValue(ctx, config, prefix+"_", os.Environ()); err != nil {
+		return logger.Error(ctx, errs.ErrReceiver.Wrap(ErrUpdateEnv, err))
+	}
+
+	for _, env := range os.Environ() {
+		if strings.HasPrefix(env, prefix+"_") {
+			os.Unsetenv(env) //nolint:errcheck
+		}
+	}
+
 	return logger.Error(ctx, nil)
 }
 
+// TODO remove me.
 func lookupEnv(key string, _ any) (string, error) {
 	n := strings.ToUpper(key)
 	e := os.Getenv(n)
 
-	return e, os.Setenv(n, "")
+	if e != "" {
+		return e, os.Setenv(n, "")
+	}
+
+	return e, nil
 }

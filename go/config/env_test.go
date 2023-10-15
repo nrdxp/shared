@@ -6,6 +6,7 @@ import (
 
 	"github.com/candiddev/shared/go/assert"
 	"github.com/candiddev/shared/go/logger"
+	"github.com/candiddev/shared/go/types"
 )
 
 func TestGetEnv(t *testing.T) {
@@ -18,7 +19,7 @@ func TestGetEnv(t *testing.T) {
 		inputPort    string
 		inputStrings string
 		wantDebug    bool
-		wantStrings  customStrings
+		wantStrings  types.SliceString
 	}{
 		"bad": {
 			err:          ErrUpdateEnv,
@@ -31,18 +32,17 @@ func TestGetEnv(t *testing.T) {
 			inputBaseURL: "homechart.app",
 			inputDebug:   "true",
 			inputPort:    "10",
-			inputStrings: "a,b,c",
+			inputStrings: `["a","b","c"]`,
 			wantDebug:    true,
-			wantStrings:  customStrings{"a", "b", "c"},
+			wantStrings:  types.SliceString{"a", "b", "c"},
 		},
 	}
 
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			t.Setenv("HOMECHART_APP_BASEURL", tc.inputBaseURL)
-			t.Setenv("HOMECHART_APP_DEBUG", tc.inputDebug)
+			t.Setenv("HOMECHART_app_debug", tc.inputDebug)
 			t.Setenv("HOMECHART_APP_PORT", tc.inputPort)
-			t.Setenv("HOMECHART_APP_STRINGS", tc.inputStrings)
+			t.Setenv("HOMECHART_app_strings", tc.inputStrings)
 
 			ctx := context.Background()
 

@@ -3,7 +3,9 @@ package cli
 import (
 	"context"
 	"fmt"
+	"os"
 	"regexp"
+	"strconv"
 	"testing"
 
 	"github.com/candiddev/shared/go/assert"
@@ -22,9 +24,14 @@ func TestRun(t *testing.T) {
 		"b",
 	})
 
+	gid := os.Getgid()
+	uid := os.Getuid()
+
 	tests := []struct {
+		group      string
 		mock       bool
 		name       string
+		user       string
 		wantErr    bool
 		wantOutput CmdOutput
 	}{
@@ -43,6 +50,28 @@ func TestRun(t *testing.T) {
 			name:       "mock 2",
 			wantOutput: "b",
 		},
+		{
+			mock:    true,
+			name:    "bad_user",
+			user:    "notarealuser",
+			wantErr: true,
+		},
+		{
+			mock: true,
+			name: "good_user",
+			user: strconv.Itoa(uid),
+		},
+		{
+			group:   "notarealgroup",
+			mock:    true,
+			name:    "bad_group",
+			wantErr: true,
+		},
+		{
+			group: strconv.Itoa(gid),
+			mock:  true,
+			name:  "good_group",
+		},
 	}
 
 	for _, tc := range tests {
@@ -54,6 +83,8 @@ func TestRun(t *testing.T) {
 					"testdata",
 				},
 				Command: "ls",
+				Group:   tc.group,
+				User:    tc.user,
 				WorkDir: "./",
 			})
 
@@ -69,6 +100,18 @@ func TestRun(t *testing.T) {
 		},
 		{
 			Exec:    "/usr/bin/ls testdata",
+			WorkDir: "./",
+		},
+		{
+			Exec:    "/usr/bin/ls testdata",
+			GID:     uint32(gid),
+			UID:     uint32(uid),
+			WorkDir: "./",
+		},
+		{
+			Exec:    "/usr/bin/ls testdata",
+			GID:     uint32(gid),
+			UID:     uint32(uid),
 			WorkDir: "./",
 		},
 	})

@@ -84,8 +84,8 @@ Flags:
   -l string
     	Set minimum log level (none, debug, info, error, default: info)
   -n	Disable colored logging
-  -x string
-    	Comma separated list of config key=value pairs
+  -x value
+    	Set config key=value (can be provided multiple times)
 `,
 		},
 		"config": {

@@ -21,6 +21,15 @@ var (
 	TelemetryErrorTotal       *prometheus.CounterVec
 )
 
+// ParseBool converts a bool to a metric string.
+func ParseBool(b bool) string {
+	if b {
+		return "1"
+	}
+
+	return "0"
+}
+
 // Setup creates new metric counters.
 func Setup(appName string) {
 	CacheRequestTotal = prometheus.NewCounterVec(

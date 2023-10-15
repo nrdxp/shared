@@ -1,23 +1,21 @@
 package config
 
 import (
-	"errors"
+	"context"
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/candiddev/shared/go/jsonnet"
+	"github.com/candiddev/shared/go/logger"
 )
 
-// HasParser is an interface for types to import strings intelligently.
-type HasParser interface {
-	ParseString(string) error
-}
-
+// TODO remove me.
 type lookupFunc func(key string, lookupValues any) (string, error)
 
-// ErrParsingValue means the iterator couldn't determine the correct value.
-var ErrParsingValue = errors.New("error parsing value")
-
+// TODO remove me.
 func iterateConfig(prefix string, keys reflect.Type, values reflect.Value, lFunc lookupFunc, lValues any) error {
 	for i := 0; i < keys.NumField(); i++ {
 		key := keys.Field(i)
@@ -49,17 +47,6 @@ func iterateConfig(prefix string, keys reflect.Type, values reflect.Value, lFunc
 			return err
 		}
 
-		if value.CanInterface() {
-			if i, ok := value.Interface().(HasParser); ok {
-				err := i.ParseString(v)
-				if err != nil {
-					return err
-				}
-
-				continue
-			}
-		}
-
 		rv, err := getValueFromString(v, value)
 		if err != nil {
 			return err
@@ -73,6 +60,7 @@ func iterateConfig(prefix string, keys reflect.Type, values reflect.Value, lFunc
 	return nil
 }
 
+// TODO remove me.
 func iterateMap(keyName, prefix string, lFunc lookupFunc, lValues any, value reflect.Value) error {
 	keys := value.MapKeys()
 
@@ -102,6 +90,7 @@ func iterateMap(keyName, prefix string, lFunc lookupFunc, lValues any, value ref
 	return nil
 }
 
+// TODO remove me.
 func getValueFromString(input string, value reflect.Value) (reflect.Value, error) {
 	if input != "" {
 		switch value.Kind() { //nolint:exhaustive
@@ -155,4 +144,90 @@ func getValueFromString(input string, value reflect.Value) (reflect.Value, error
 	}
 
 	return reflect.Value{}, nil
+}
+
+func parseValue(ctx context.Context, config any, prefix string, kvs []string) error { //nolint:gocognit
+	j := map[string]any{}
+
+	b, err := json.Marshal(config)
+	if err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal(b, &j); err != nil {
+		return err
+	}
+
+	jsn := ""
+
+	for _, kv := range kvs {
+		if strings.HasPrefix(kv, prefix) {
+			ek := strings.Split(kv, "=")
+			if len(ek) >= 2 && ek[0] != strings.ToUpper(ek[0]) {
+				keys := []string{}
+				value := strings.Join(ek[1:], "=")
+
+				if ek[0] == prefix+"config" {
+					jsn = value
+
+					continue
+				}
+
+				for i, p := range strings.Split(ek[0], "_") {
+					if prefix != "" && i == 0 {
+						continue
+					}
+
+					keys = append(keys, p)
+				}
+
+				k := j
+
+				var v any
+
+				if i, err := strconv.Atoi(value); err == nil {
+					v = i
+				} else if value == "true" { //nolint:gocritic
+					v = true
+				} else if value == "false" {
+					v = false
+				} else if strings.HasPrefix(value, "[") || strings.HasPrefix(value, "{") {
+					v = json.RawMessage([]byte(value))
+				} else if value != "null" {
+					v = value
+				}
+
+				for i, key := range keys {
+					if i == len(keys)-1 {
+						break
+					}
+
+					i, ok := k[key].(map[string]any)
+					if !ok || i == nil {
+						k[key] = map[string]any{}
+					}
+
+					k = k[key].(map[string]any)
+				}
+
+				k[keys[len(keys)-1]] = v
+			}
+		}
+	}
+
+	if jsn != "" {
+		r := jsonnet.NewRender(ctx, config)
+		r.Import(r.GetString(jsn))
+
+		if err := r.Render(ctx, config); err != nil {
+			return logger.Error(ctx, err)
+		}
+	}
+
+	b, err = json.Marshal(j)
+	if err != nil {
+		return err
+	}
+
+	return json.Unmarshal(b, config)
 }

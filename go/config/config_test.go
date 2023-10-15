@@ -10,13 +10,8 @@ import (
 	"testing"
 
 	"github.com/candiddev/shared/go/assert"
+	"github.com/candiddev/shared/go/types"
 )
-
-type customStrings []string
-
-func (*customStrings) ParseString(input string) any {
-	return strings.Split(input, ",")
-}
 
 type config struct {
 	App      configApp       `json:"app"`
@@ -25,23 +20,30 @@ type config struct {
 }
 
 type configApp struct {
-	Arg1               string        `json:"arg1"`
-	Arg2               string        `json:"arg2"`
-	Arg3               string        `json:"arg3"`
-	Env                string        `json:"env"`
-	PostgreSQLUsername string        `json:"postgreSQLUsername"`
-	Debug              bool          `json:"debug"`
-	Lists              []string      `json:"lists"`
-	ListEl             string        `json:"listEl"`
-	Port               int           `json:"port"`
-	Strings            customStrings `json:"strings"`
-	Vault              any           `json:"vault"`
-	Yes                bool          `json:"bool"`
+	Arg1               string                      `json:"arg1"`
+	Arg2               string                      `json:"arg2"`
+	Arg3               string                      `json:"arg3"`
+	Env                string                      `json:"env"`
+	PostgreSQLUsername string                      `json:"postgreSQLUsername"`
+	Debug              bool                        `json:"debug"`
+	Lists              []string                    `json:"lists"`
+	ListEl             string                      `json:"listEl"`
+	Nested             map[string]*configAppNested `json:"nested"`
+	Port               int                         `json:"port"`
+	Strings            types.SliceString           `json:"strings"`
+	Vault              any                         `json:"vault"`
+	Yes                bool                        `json:"yes"`
 }
 
 type configCommand struct {
 	Exec string `json:"exec"`
 	Path string `json:"path"`
+}
+
+type configAppNested struct {
+	Bool   bool   `json:"bool"`
+	Int    int    `json:"int"`
+	String string `json:"string"`
 }
 
 var vaultSrv = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -63,16 +65,17 @@ func TestParse(t *testing.T) {
 	os.Setenv("VAULT_ADDR", vaultSrv.URL) //nolint:tenv
 	t.Setenv("VAULT_TOKEN", "")
 	t.Setenv("HOMECHART_APP_ARG1", "a")
-	t.Setenv("HOMECHART_APP_ARG2", "b")
-	t.Setenv("HOMECHART_APP_ARG3", "c")
-	t.Setenv("HOMECHART_APP_PORT", "22")
-	t.Setenv("HOMECHART_CONFIG", `{
+	t.Setenv("HOMECHART_app_arg2", "b")
+	t.Setenv("HOMECHART_app_arg3", "c")
+	t.Setenv("HOMECHART_app_port", "22")
+	t.Setenv("HOMECHART_app_nested_something_bool", "true")
+	t.Setenv("HOMECHART_config", `{
   vars: {
     arg: 1
   }
 }`)
 	t.Setenv("ENV", "prd")
-	t.Setenv("HOMECHART_APP_YES", "yes")
+	t.Setenv("HOMECHART_app_yes", "true")
 
 	c := config{}
 
@@ -87,9 +90,15 @@ func TestParse(t *testing.T) {
 				"this",
 				"that",
 			},
-			ListEl:             "world",
+			ListEl: "world",
+			Nested: map[string]*configAppNested{
+				"something": {
+					Bool: true,
+				},
+			},
 			PostgreSQLUsername: "tester",
 			Port:               22,
+			Strings:            types.SliceString{},
 			Vault: map[string]any{
 				"app_port":            "12345",
 				"postgresql_username": "tester",
@@ -112,6 +121,6 @@ func TestParse(t *testing.T) {
 		},
 	}
 
-	assert.Equal(t, Parse(ctx, &c, "HOMECHART", "", `app_arg1=d,config={"vars":{"test": false}},vars_arg=2`, "testdata/good.json,testdata/good.jsonnet"), nil)
+	assert.Equal(t, Parse(ctx, &c, strings.Split(`app_arg1=d,config={"vars":{"test": false}},vars_arg=2`, ","), "HOMECHART", "", "testdata/good.json,testdata/good.jsonnet"), nil)
 	assert.Equal(t, c, want)
 }
