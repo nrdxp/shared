@@ -70,6 +70,7 @@ type RunOpts struct {
 	ContainerPrivileged bool
 	ContainerUser       string
 	ContainerVolumes    []string
+	ContainerWorkDir    string
 	Environment         []string
 	Group               string
 	NoErrorLog          bool
@@ -128,7 +129,7 @@ func (r *RunOpts) getCmd(ctx context.Context) (*exec.Cmd, errs.Err) {
 				args = append(args, "-v", r.ContainerVolumes[i])
 			}
 
-			args = append(args, "-w", r.WorkDir)
+			args = append(args, "-w", r.ContainerWorkDir)
 			args = append(args, r.ContainerImage)
 
 			if r.Command != "" {

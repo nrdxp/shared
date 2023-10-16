@@ -128,13 +128,14 @@ func TestRun(t *testing.T) {
 			"/a:/a",
 			"/b:/b",
 		},
-		WorkDir: "/test",
+		ContainerWorkDir: "/test1",
+		WorkDir:          "/test2",
 	})
 
 	cri, _ := getContainerRuntime()
 
-	assert.Equal(t, regexp.MustCompile(fmt.Sprintf(`^/usr/bin/%s run -i --rm --name etcha_\S+ --privileged -v /a:/a -v /b:/b -w /test example hello world$`, cri)).MatchString(c.runMock.inputs[0].Exec), true)
-	assert.Equal(t, c.runMock.inputs[0].WorkDir, "/test")
+	assert.Equal(t, regexp.MustCompile(fmt.Sprintf(`^/usr/bin/%s run -i --rm --name etcha_\S+ --privileged -v /a:/a -v /b:/b -w /test1 example hello world$`, cri)).MatchString(c.runMock.inputs[0].Exec), true)
+	assert.Equal(t, c.runMock.inputs[0].WorkDir, "/test2")
 
 	c.runMockEnable = false
 
