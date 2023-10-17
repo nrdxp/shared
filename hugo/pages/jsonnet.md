@@ -16,10 +16,10 @@ Jsonnet looks very similar to JSON:
 {{< highlight jsonnet >}}
 {
   person1: {
-    name: "Alice",
-    welcome: "Hello " + self.name + "!",
+    name: 'Alice',
+    welcome: 'Hello ' + self.name + '!',
   },
-  person2: self.person1 { name: "Bob" },
+  person2: self.person1 { name: 'Bob' },
 }
 {{< /highlight >}}
 {{< /tab >}}
@@ -59,10 +59,10 @@ local func = import 'func.libsonnet';
 
 {
   person1: {
-    name: "Alice",
-    welcome: "Hello " + self.name + "!",
+    name: 'Alice',
+    welcome: 'Hello ' + self.name + '!',
   },
-  person2: func("Bob"),
+  person2: func('Bob'),
 }
 {{< /highlight >}}
 {{< /tab >}}
@@ -71,7 +71,7 @@ local func = import 'func.libsonnet';
 function(name)
   {
     name: name,
-    welcome: "Hello " + self.name + "!",
+    welcome: 'Hello ' + self.name + '!',
   }
 {{< /highlight >}}
 {{< /tab >}}
@@ -85,11 +85,11 @@ Jsonnet values are immutable.  You cannot change them, you must define a new val
 {{< tab header="Objects" >}}
 {{< highlight jsonnet >}}
 local object1 = {
-  hello: "world"
+  hello: 'world'
 }
 
 object1 + {
-  hello: "person"
+  hello: 'person'
 }
 {{< /highlight >}}
 {{< /tab >}}
@@ -121,19 +121,19 @@ This function returns the string value of the environment variable.  If the envi
 {{< highlight jsonnet >}}
 local getEnv(key) = std.native('getEnv')(key);
 
-getEnv("PWD")
+getEnv('PWD')
 {{< /highlight >}}
 
 ### `getPath(path, fallback=null) string`
 
-This function returns the string value of a `path` (local or http/https via GET).  The results are cached for repeat lookups within the current render cycle.  For HTTP or HTTPS paths, you can set headers for your request using a `#`, the header as a `k:v`, and deliminiated by a newline `\r\n`, e.g. `getEnv("https://example.com/api#myHeader:myValue\r\nmyOtherHeader:myOtherValue"`.
+This function returns the string value of a `path` (local or http/https via GET).  The results are cached for repeat lookups within the current render cycle.  For HTTP or HTTPS paths, you can set headers for your request using a `#`, the header as a `k:v`, and deliminiated by a newline `\r\n`, e.g. `getEnv('https://example.com/api#myHeader:myValue\r\nmyOtherHeader:myOtherValue'`.
 
 If the path is unreachable, an error will be thrown and rendering will halt.  You can optionally provide a fallback value to prevent this, this value will be returned instead on failure.
 
 {{< highlight jsonnet >}}
 local getPath(path, fallback=null) = std.native('getPath')(path, fallback);
 
-getPath("~/.bashrc", "fallback")
+getPath('~/.bashrc', 'fallback')
 {{< /highlight >}}
 
 ### `getRecord(type, name, fallback=null) []string`
@@ -143,7 +143,17 @@ This function returns a list of sorted string values of a DNS record with `type`
 {{< highlight jsonnet >}}
 local getRecord(type, name, fallback=null) = std.native('getRecord')(type, name, fallback);
 
-getRecord("a", "candid.dev", "fallback")
+getRecord('a', 'candid.dev', 'fallback')
+{{< /highlight >}}
+
+### `randStr(length) string`
+
+This function returns a random string of length `length`.  Will panic if it cannot generate a cryptographically secure value.
+
+{{< highlight jsonnet >}}
+local randStr(length) = std.native('randStr')(length);
+
+randStr(10)
 {{< /highlight >}}
 
 ### `regexMatch(regex, string) bool`
@@ -153,9 +163,8 @@ This function returns a bool if `string` matches `regex`.  Will throw an error i
 {{< highlight jsonnet >}}
 local regexMatch(regex, string) = std.native('regexMatch')(regex, string);
 
-getRegex("^hello world$", "hello world)
+regexMatch('^hello world$', 'hello world')
 {{< /highlight >}}
-
 
 ## Best Practices
 

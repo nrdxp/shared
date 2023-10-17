@@ -16,6 +16,7 @@ import (
 	"github.com/candiddev/shared/go/errs"
 	"github.com/candiddev/shared/go/get"
 	"github.com/candiddev/shared/go/logger"
+	"github.com/candiddev/shared/go/types"
 	"github.com/google/go-jsonnet"
 	"github.com/google/go-jsonnet/ast"
 )
@@ -169,6 +170,18 @@ func NewRender(ctx context.Context, config any) *Render { //nolint:gocognit
 		},
 		Name:   "getRecord",
 		Params: ast.Identifiers{"type", "name", "fallback"},
+	})
+	vm.NativeFunction(&jsonnet.NativeFunction{
+		Func: func(params []any) (any, error) {
+			length, ok := params[0].(float64)
+			if !ok {
+				return nil, logger.Error(ctx, errs.ErrReceiver.Wrap(errors.New("no length provided")))
+			}
+
+			return types.RandString(int(length)), nil
+		},
+		Name:   "randStr",
+		Params: ast.Identifiers{"length"},
 	})
 	vm.NativeFunction(&jsonnet.NativeFunction{
 		Func: func(params []any) (any, error) {

@@ -274,4 +274,31 @@ n.getConfig().Vars`,
 			assert.Equal(t, strings.Contains(logger.ReadStd(), tc.wantStdout), true)
 		})
 	}
+
+	// Test randStr
+	logger.UseTestLogger(t)
+
+	r := NewRender(ctx, c)
+	i = &Imports{
+		Entrypoint: "main.jsonnet",
+		Files: map[string]string{
+			"native.libsonnet": Native,
+			"main.jsonnet": `local n = import 'native.libsonnet';
+{
+	String: n.randStr(10),
+}`,
+		},
+	}
+
+	r.Import(i)
+
+	data := testdata{}
+	assert.HasErr(t, r.Render(ctx, &data), nil)
+	assert.Equal(t, len(data.String), 10)
+
+	i.Files["main.jsonnet"] = strings.Replace(i.Files["main.jsonnet"], "10", "'10'", 1)
+	r = NewRender(ctx, c)
+
+	r.Import(i)
+	assert.HasErr(t, r.Render(ctx, &data), errs.ErrReceiver)
 }
