@@ -39,10 +39,13 @@ runs:
         key: ${{ runner.os }}-${{ hashFiles('shell/**', 'web/package-lock.json') }}
         path: |
           .bin
+          .cache
+          shared/.bin
+          shared/.cache
           web/node_modules
         restore-keys: |
           ${{ runner.os }}-
-    - if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+    - if: steps.cache.outputs.cache-hit != 'true'
       name: Refresh cache
       run: ${{ inputs.install_commands }}
       shell: bash
