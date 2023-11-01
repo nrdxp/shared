@@ -244,6 +244,46 @@ n.getConfig().Vars`,
 				},
 			},
 		},
+		"bad render": {
+			config: c,
+			imports: &Imports{
+				Entrypoint: "f.jsonnet",
+				Files: map[string]string{
+					"native.libsonnet": Native,
+					"f.jsonnet": `local n = import 'native.libsonnet';
+
+local rendered = n.render(|||
+{
+	String: std.native('getPath')('testdata/imports/text.txt')
+
+|||);
+
+rendered
+`,
+				},
+			},
+			wantErr: errs.ErrReceiver,
+		},
+		"good render": {
+			config: c,
+			imports: &Imports{
+				Entrypoint: "f.jsonnet",
+				Files: map[string]string{
+					"native.libsonnet": Native,
+					"f.jsonnet": `local n = import 'native.libsonnet';
+
+local rendered = n.render(|||
+	{String: std.native('getPath')('testdata/imports/text.txt', '')}
+|||);
+
+rendered
+`,
+				},
+			},
+			wantOut: testdata{
+				String: "Hello",
+			},
+		},
 		"good trace": {
 			config: c,
 			imports: &Imports{
@@ -284,9 +324,9 @@ n.getConfig().Vars`,
 		Files: map[string]string{
 			"native.libsonnet": Native,
 			"main.jsonnet": `local n = import 'native.libsonnet';
-{
-	String: n.randStr(10),
-}`,
+		{
+			String: n.randStr(10),
+		}`,
 		},
 	}
 

@@ -205,6 +205,26 @@ func NewRender(ctx context.Context, config any) *Render { //nolint:gocognit
 		Name:   "regexMatch",
 		Params: ast.Identifiers{"regex", "string"},
 	})
+	vm.NativeFunction(&jsonnet.NativeFunction{
+		Func: func(params []any) (any, error) {
+			s, ok := params[0].(string)
+			if !ok {
+				return nil, logger.Error(ctx, errs.ErrReceiver.Wrap(errors.New("no string provided")))
+			}
+
+			r := NewRender(ctx, config)
+			r.Import(r.GetString(s))
+
+			m := map[string]any{}
+			if err := r.Render(ctx, &m); err != nil {
+				return nil, logger.Error(ctx, err)
+			}
+
+			return m, nil
+		},
+		Name:   "render",
+		Params: ast.Identifiers{"string"},
+	})
 	vm.SetTraceOut(logger.Stderr)
 
 	return &Render{

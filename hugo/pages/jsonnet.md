@@ -166,6 +166,18 @@ local regexMatch(regex, string) = std.native('regexMatch')(regex, string);
 regexMatch('^hello world$', 'hello world')
 {{< /highlight >}}
 
+### `render(string) object`
+
+This function renders `string` using Jsonnet.
+
+{{< highlight jsonnet >}}
+std.native('render')(|||
+  local regexMatch(regex, string) = std.native('regexMatch')(regex, string);
+
+  regexMatch('^hello world$', 'hello world')
+|||)
+{{< /highlight >}}
+
 ## Best Practices
 
 ### Always Wrap Your Ifs

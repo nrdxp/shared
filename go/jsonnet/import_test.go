@@ -108,7 +108,7 @@ func TestGetPath(t *testing.T) {
 	}
 }
 
-func TestGetText(t *testing.T) {
+func TestGetString(t *testing.T) {
 	logger.UseTestLogger(t)
 
 	c := config{
