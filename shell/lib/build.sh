@@ -34,13 +34,24 @@ bw () {
 	build-web
 }
 
-cmd build-yaml8n,by Build YAML8n translations
-build-yaml8n () {
+cmd build-yaml8n-generate,byg Build YAML8n generate
+build-yaml8n-generate () {
 	for i in "${DIR}"/yaml8n/*; do
 		# shellcheck disable=SC2086
-		${CR} run -it --rm ${CR_USER} -e "GOOGLE_APPLICATION_CREDENTIALS=/.gcp" -v "${DIR}/.gcp:/.gcp" --pull always ${CR_VOLUME} "${CR_REGISTRY}/candiddev/yaml8n:latest" generate "/work/yaml8n/$(basename "${i}")"
+		${CR} run -it --rm ${CR_USER} --pull always ${CR_VOLUME} "${CR_REGISTRY}/candiddev/yaml8n:latest" generate "/work/yaml8n/$(basename "${i}")"
 	done
 }
-by () {
-	build-yaml8n
+byg () {
+	build-yaml8n-generate
+}
+
+cmd build-yaml8n-translate,byt Build YAML8n translations
+build-yaml8n-translate () {
+	for i in "${DIR}"/yaml8n/*; do
+		# shellcheck disable=SC2086
+		${CR} run -it --rm ${CR_USER} -e "GOOGLE_APPLICATION_CREDENTIALS=/.gcp" -v "${DIR}/.gcp:/.gcp" --pull always ${CR_VOLUME} "${CR_REGISTRY}/candiddev/yaml8n:latest" translate "/work/yaml8n/$(basename "${i}")"
+	done
+}
+byt () {
+	build-yaml8n-translate
 }

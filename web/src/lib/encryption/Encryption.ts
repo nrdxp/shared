@@ -107,6 +107,10 @@ export async function NewKey (type: KeyType): Promise<({
 	privateKey?: Key,
 	publicKey?: Key,
 } | Err)> {
+	if (crypto.subtle === undefined) {
+		return NewErr("WebCrypto not detected");
+	}
+
 	let id = "";
 	const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 	const charactersLength = characters.length;
@@ -177,6 +181,10 @@ export function ParseEncryptedValue (value: string): EncryptedValue | Err {
 }
 
 export function ParseKey (s: string): Key | Err {
+	if (crypto.subtle === undefined) {
+		return NewErr("WebCrypto not detected");
+	}
+
 	const r = s.split(":");
 
 	let i = "";
