@@ -155,13 +155,22 @@ func writeLog(ctx context.Context, level Level, err errs.Err, message string) { 
 
 	switch format {
 	case FormatHuman:
-		out = fmt.Sprintf("%-5s %s", strings.ToUpper(string(level)), f)
+		out = fmt.Sprintf("%-5s ", strings.ToUpper(string(level)))
+
+		if e == "" && msg == "" {
+			return
+		}
+
 		if e != "" {
-			out += "\n" + e
+			out += e
+
+			if msg != "" {
+				out += "\n"
+			}
 		}
 
 		if msg != "" {
-			out += "\n" + msg
+			out += msg
 		}
 	case FormatKV:
 		out = fmt.Sprintf("level=%#v function=%#v status=%#v success=%#v", strings.ToUpper(string(level)), f, status, status == 200)

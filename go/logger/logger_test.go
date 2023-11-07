@@ -97,11 +97,9 @@ func TestLog(t *testing.T) {
 			} else {
 				assert.Contains(t, out, tc.outputWant)
 
-				if tc.err != nil {
+				if tc.err != nil && tc.format == FormatKV {
 					assert.Contains(t, out, "logger/logger_test.go:")
-					if tc.format == FormatKV {
-						assert.Contains(t, out, `key2="value2"`)
-					}
+					assert.Contains(t, out, `key2="value2"`)
 				}
 			}
 		})

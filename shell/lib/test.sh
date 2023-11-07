@@ -3,7 +3,6 @@
 cmd test-go Test Go code
 test-go () {
 	install-go
-	run-postgresql-start
 
 	run test-go-pre
 
