@@ -99,7 +99,7 @@ export VAULT_SSH_ROLE=${VAULT_SSH_ROLE:-}
 export VAULT_TOKEN=${VAULT_TOKEN:-$(vault token lookup &>/dev/null && cat ~/.vault-token 2>/dev/null)}
 
 export VERSION_AIR=1.45.0 # https://github.com/cosmtrek/air/releases
-export VERSION_GO=1.21.3 # https://golang.org/dl/
+export VERSION_GO=1.21.4 # https://golang.org/dl/
 export VERSION_GOLANGCILINT=1.54.2 # https://github.com/golangci/golangci-lint/releases
 export VERSION_HUGO=0.119.0 # https://github.com/gohugoio/hugo/releases
 export VERSION_NODE=18.18.0 # https://nodejs.org/en/download/
