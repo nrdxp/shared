@@ -254,8 +254,7 @@ func (c *Config) Run(ctx context.Context, opts RunOpts) (out CmdOutput, err errs
 
 		c.runMock.mutex.Unlock()
 	} else {
-		cmd.Env = os.Environ()
-		cmd.Env = append(cmd.Env, opts.Environment...)
+		cmd.Env = opts.Environment
 		o, e = cmd.CombinedOutput()
 	}
 
