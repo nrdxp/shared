@@ -114,9 +114,9 @@ local getConfig() = std.native('getConfig')();
 config()
 {{< /highlight >}}
 
-### `getEnv(key) string`
+### `getEnv(key, fallback=null) string`
 
-This function returns the string value of the environment variable.  If the environment variable is not defined or does not exist, it returns an empty string.
+This function returns the string value of the environment variable.  If the environment variable is not defined or does not exist, it returns an empty string or a fallback value if provided.
 
 {{< highlight jsonnet >}}
 local getEnv(key) = std.native('getEnv')(key);

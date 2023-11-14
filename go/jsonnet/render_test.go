@@ -108,6 +108,23 @@ n.getConfig().Vars`,
 				String: "world",
 			},
 		},
+		"good getEnvFallback": {
+			config: c,
+			imports: &Imports{
+				Entrypoint: "e.jsonnet",
+				Files: map[string]string{
+					"native.libsonnet": Native,
+					"e.jsonnet": `local n = import 'native.libsonnet';
+{
+	String: n.getEnv('notRight', 'world')
+}
+`,
+				},
+			},
+			wantOut: testdata{
+				String: "world",
+			},
+		},
 		"bad getPath": {
 			config: c,
 			imports: &Imports{

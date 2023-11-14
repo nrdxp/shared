@@ -54,13 +54,18 @@ func NewRender(ctx context.Context, config any) *Render { //nolint:gocognit
 	vm.NativeFunction(&jsonnet.NativeFunction{
 		Func: func(params []any) (any, error) {
 			if key, ok := params[0].(string); ok {
-				return os.Getenv(key), nil
+				key := os.Getenv(key)
+				if key == "" && len(params) == 2 && params[1] != nil {
+					return params[1], nil
+				}
+
+				return key, nil
 			}
 
 			return nil, logger.Error(ctx, errs.ErrReceiver.Wrap(errors.New("no key provided")))
 		},
 		Name:   "getEnv",
-		Params: ast.Identifiers{"key"},
+		Params: ast.Identifiers{"key", "fallback"},
 	})
 	vm.NativeFunction(&jsonnet.NativeFunction{
 		Func: func(params []any) (any, error) {
@@ -73,7 +78,7 @@ func NewRender(ctx context.Context, config any) *Render { //nolint:gocognit
 
 				_, err := get.File(ctx, path, b, time.Time{})
 				if err != nil {
-					if params[1] != nil {
+					if len(params) == 2 && params[1] != nil {
 						return params[1], nil
 					}
 
@@ -149,7 +154,7 @@ func NewRender(ctx context.Context, config any) *Render { //nolint:gocognit
 			}
 
 			if err != nil {
-				if params[2] != nil {
+				if len(params) == 3 && params[2] != nil {
 					return params[2], nil
 				}
 

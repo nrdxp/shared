@@ -1,6 +1,6 @@
 {
   getConfig(): std.native('getConfig')(),
-  getEnv(key): std.native('getEnv')(key),
+  getEnv(key, fallback=null): std.native('getEnv')(key, fallback),
   getPath(path, fallback=null): std.native('getPath')(path, fallback),
   getRecord(type, name, fallback=null): std.native('getRecord')(type, name, fallback),
   randStr(length): std.native('randStr')(length),
