@@ -64,4 +64,19 @@ func TestEd25519(t *testing.T) {
 	b, _ := base64.StdEncoding.DecodeString("iUfnOZ+Wx/j6eS+BVXrlPQDzkUsy0/diZzY8OygbE7vyunKDFhx3P13GHAhA+HsIKDyHNrY3N9yTxH/ieOTJDw==")
 	err = pubStr.Verify(m, 0, b)
 	assert.HasErr(t, err, nil)
+
+	// Vault
+	// vault read transit/export/signing-key/key
+	prvStr = Ed25519PrivateKey("8a/aaGnksrgTfMDUE4EJSP+t2azWKMUr3XKm2+4uovWAHKSeD1/vWGeXniIHFp1jqZRMRTTnwSEUnJPcLdEiMQ==")
+	// vault read transit/export/public-key/key
+	pubStr = Ed25519PublicKey("gBykng9f71hnl54iBxadY6mUTEU058EhFJyT3C3RIjE=")
+	sig, err = prvStr.Sign(m, 0)
+	assert.HasErr(t, err, nil)
+	err = pubStr.Verify(m, 0, sig)
+	assert.HasErr(t, err, nil)
+
+	// vault write transit/sign/key input=aGVsbG8=
+	b, _ = base64.StdEncoding.DecodeString("KBu0AQf1MgyvaLV9Z2VF+sqtTxz/9GVZJ03+x0BNwahJbjouT0PRRZ/C9JLyPzuk+7gPfUUgObmarOTpOkzrCw==")
+	err = pubStr.Verify(m, 0, b)
+	assert.HasErr(t, err, nil)
 }
