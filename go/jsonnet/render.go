@@ -30,7 +30,7 @@ type Render struct {
 }
 
 // NewRender returns a jsonnet renderer.
-func NewRender(ctx context.Context, config any) *Render { //nolint:gocognit
+func NewRender(ctx context.Context, config any) *Render { //nolint:gocognit,gocyclo
 	cache := map[string]any{}
 	vm := jsonnet.MakeVM()
 

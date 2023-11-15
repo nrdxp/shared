@@ -6,6 +6,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/candiddev/shared/go/assert"
@@ -92,6 +93,25 @@ func TestRun(t *testing.T) {
 			assert.Equal(t, o, tc.wantOutput)
 		})
 	}
+
+	// Test environment
+	c.runMockEnable = false
+	opts := RunOpts{
+		Command: "/usr/bin/printenv",
+		Environment: []string{
+			"hello=world",
+		},
+	}
+	o, err := c.Run(ctx, opts)
+	assert.HasErr(t, err, nil)
+	assert.Contains(t, o.String(), "hello=world")
+	assert.Equal(t, strings.Contains(o.String(), "PATH="), false)
+
+	opts.EnvironmentInherit = true
+	o, err = c.Run(ctx, opts)
+	assert.HasErr(t, err, nil)
+	assert.Contains(t, o.String(), "hello=world")
+	assert.Equal(t, strings.Contains(o.String(), "PATH="), true)
 
 	assert.Equal(t, c.RunMockInputs(), []RunMockInput{
 		{
