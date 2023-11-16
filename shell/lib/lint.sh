@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+cmd lint-etcha Lint Etcha code
+lint-etcha () {
+	install-etcha
+
+	printf "Linting Etcha..."
+	try "${EXEC_ETCHA} lint ${DIR}/etcha" yes
+}
+
 cmd lint-go Lint Go Code
 lint-go () {
 	install-go
