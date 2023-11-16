@@ -5,7 +5,7 @@ lint-etcha () {
 	install-etcha
 
 	printf "Linting Etcha..."
-	try "${EXEC_ETCHA} lint ${DIR}/etcha" yes
+	try "${EXEC_ETCHA} lint ${DIR}/etcha yes"
 }
 
 cmd lint-go Lint Go Code
