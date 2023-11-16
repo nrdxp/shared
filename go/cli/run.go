@@ -130,7 +130,10 @@ func (r *RunOpts) getCmd(ctx context.Context) (*exec.Cmd, errs.Err) {
 				args = append(args, "-v", r.ContainerVolumes[i])
 			}
 
-			args = append(args, "-w", r.ContainerWorkDir)
+			if r.ContainerWorkDir != "" {
+				args = append(args, "-w", r.ContainerWorkDir)
+			}
+
 			args = append(args, r.ContainerImage)
 
 			if r.Command != "" {
