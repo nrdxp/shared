@@ -124,16 +124,26 @@ local getEnv(key) = std.native('getEnv')(key);
 getEnv('PWD')
 {{< /highlight >}}
 
-### `getPath(path, fallback=null) string`
+### `getFile(path, fallback=null) string`
 
 This function returns the string value of a `path` (local or http/https via GET).  The results are cached for repeat lookups within the current render cycle.  For HTTP or HTTPS paths, you can set headers for your request using a `#`, the header as a `k:v`, and deliminiated by a newline `\r\n`, e.g. `getEnv('https://example.com/api#myHeader:myValue\r\nmyOtherHeader:myOtherValue'`.
 
 If the path is unreachable, an error will be thrown and rendering will halt.  You can optionally provide a fallback value to prevent this, this value will be returned instead on failure.
 
 {{< highlight jsonnet >}}
-local getPath(path, fallback=null) = std.native('getPath')(path, fallback);
+local getFile(path, fallback=null) = std.native('getFile')(path, fallback);
 
-getPath('~/.bashrc', 'fallback')
+getFile('~/.bashrc', 'fallback')
+{{< /highlight >}}
+
+### `getPath() string`
+
+This function returns the string value of the full directory path containing the target jsonnet file.  This value may be an empty string if the exact value cannot be determined.
+
+{{< highlight jsonnet >}}
+local getPath() = std.native('getPath')();
+
+getPath()
 {{< /highlight >}}
 
 ### `getRecord(type, name, fallback=null) []string`

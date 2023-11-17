@@ -63,7 +63,8 @@ func (r *Render) GetPath(ctx context.Context, path string) (*Imports, errs.Err) 
 		path = filepath.Join(p, path)
 	}
 
-	basePath := filepath.Dir(path)
+	r.path = filepath.Dir(path)
+	basePath := r.path
 
 	for i := range imports {
 		imports[i] = filepath.Clean(imports[i])

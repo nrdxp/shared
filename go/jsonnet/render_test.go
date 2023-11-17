@@ -125,7 +125,7 @@ n.getConfig().Vars`,
 				String: "world",
 			},
 		},
-		"bad getPath": {
+		"bad getFile": {
 			config: c,
 			imports: &Imports{
 				Entrypoint: "d.jsonnet",
@@ -133,14 +133,14 @@ n.getConfig().Vars`,
 					"native.libsonnet": Native,
 					"d.jsonnet": `local n = import 'native.libsonnet';
 {
-	String: n.getPath('testdata/imports/text.ttttxt')
+	String: n.getFile('testdata/imports/text.ttttxt')
 }
 `,
 				},
 			},
 			wantErr: errs.ErrReceiver,
 		},
-		"bad getPathHTTP": {
+		"bad getFileHTTP": {
 			config: c,
 			imports: &Imports{
 				Entrypoint: "d.jsonnet",
@@ -148,14 +148,14 @@ n.getConfig().Vars`,
 					"native.libsonnet": Native,
 					"d.jsonnet": `local n = import 'native.libsonnet';
 {
-	String: n.getPath('http://127.0.0.1:62000/test')
+	String: n.getFile('http://127.0.0.1:62000/test')
 }
 `,
 				},
 			},
 			wantErr: errs.ErrReceiver,
 		},
-		"good getPath": {
+		"good getFile": {
 			config: c,
 			imports: &Imports{
 				Entrypoint: "e.jsonnet",
@@ -163,7 +163,7 @@ n.getConfig().Vars`,
 					"native.libsonnet": Native,
 					"e.jsonnet": `local n = import 'native.libsonnet';
 {
-	String: n.getPath('testdata/imports/text.txt')
+	String: n.getFile('testdata/imports/text.txt')
 }
 `,
 				},
@@ -172,7 +172,7 @@ n.getConfig().Vars`,
 				String: "Hello",
 			},
 		},
-		"good getPath fallback": {
+		"good getFile fallback": {
 			config: c,
 			imports: &Imports{
 				Entrypoint: "f.jsonnet",
@@ -180,13 +180,30 @@ n.getConfig().Vars`,
 					"native.libsonnet": Native,
 					"f.jsonnet": `local n = import 'native.libsonnet';
 {
-	String: n.getPath('/not/a/real/path', 'hello')
+	String: n.getFile('/not/a/real/path', 'hello')
 }
 `,
 				},
 			},
 			wantOut: testdata{
 				String: "hello",
+			},
+		},
+		"getPath": {
+			config: c,
+			imports: &Imports{
+				Entrypoint: "f.jsonnet",
+				Files: map[string]string{
+					"native.libsonnet": Native,
+					"f.jsonnet": `local n = import 'native.libsonnet';
+{
+	String: n.getPath(),
+}
+`,
+				},
+			},
+			wantOut: testdata{
+				String: "/etc/main.jsonnet",
 			},
 		},
 		"bad record": {
@@ -271,7 +288,7 @@ n.getConfig().Vars`,
 
 local rendered = n.render(|||
 {
-	String: std.native('getPath')('testdata/imports/text.txt')
+	String: std.native('getFile')('testdata/imports/text.txt')
 
 |||);
 
@@ -290,7 +307,7 @@ rendered
 					"f.jsonnet": `local n = import 'native.libsonnet';
 
 local rendered = n.render(|||
-	{String: std.native('getPath')('testdata/imports/text.txt', '')}
+	{String: std.native('getFile')('testdata/imports/text.txt', '')}
 |||);
 
 rendered
@@ -324,6 +341,7 @@ rendered
 
 			logger.SetStd()
 			r := NewRender(ctx, tc.config)
+			r.path = "/etc/main.jsonnet"
 			r.Import(tc.imports)
 			assert.HasErr(t, r.Render(ctx, &data), tc.wantErr)
 			assert.Equal(t, data, tc.wantOut)

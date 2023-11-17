@@ -4,7 +4,7 @@ local cmd(path) = {
   exec: f.getConfig().app.lists[0],
   path: path
 };
-local vault = std.parseJson(f.getPath(f.getEnv('VAULT_ADDR'))).data;
+local vault = std.parseJson(f.getFile(f.getEnv('VAULT_ADDR'))).data;
 
 {
   app: {
