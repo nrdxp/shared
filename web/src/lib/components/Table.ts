@@ -63,7 +63,7 @@ export function Table (): m.Component<TableAttrs> {
 
 	return {
 		oncreate: (vnode): void => {
-			route = m.route.get();
+			route = `${m.route.get()}-${vnode.attrs.id}`;
 
 			if (history[route] !== undefined) {
 				if (history[route].sort !== undefined && vnode.attrs.sort !== undefined) {
@@ -72,7 +72,6 @@ export function Table (): m.Component<TableAttrs> {
 
 				vnode.attrs.tableColumnsNameEnabled(history[route].tableColumnsNameEnabled);
 			}
-
 		},
 		onremove: (vnode): void => {
 			history[route] = {

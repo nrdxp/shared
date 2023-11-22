@@ -28,7 +28,7 @@ export function FormItemSelectCurrencyFormat (): m.Component<FormItemSelectCurre
 					},
 					options: [
 						{
-							id: `${CurrencyEnum.AUD}`,
+							id: `${CurrencyEnum.AED}`,
 							name: `AED - ${Currency.toString(123456, CurrencyEnum.AED)}`,
 						},
 						{
