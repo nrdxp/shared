@@ -2,6 +2,7 @@ package cryptolib
 
 import (
 	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"io"
 	"os"
@@ -14,7 +15,7 @@ func SHA256File(f *os.File) (string, error) {
 		return "", fmt.Errorf("error creating SHA: %w", err)
 	}
 
-	return fmt.Sprintf("%x", s.Sum(nil)), nil
+	return hex.EncodeToString(s.Sum(nil)), nil
 }
 
 // SHA256String accepts a strings and returns the SHA.

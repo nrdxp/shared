@@ -51,7 +51,7 @@ func (e EmailAddress) Value() (driver.Value, error) {
 
 // Scan reads an interface into Email Address.
 func (e *EmailAddress) Scan(src any) error {
-	if src.(string) != "" {
+	if s, ok := src.(string); ok && s != "" {
 		*e = EmailAddress(strings.ToLower(src.(string)))
 	}
 

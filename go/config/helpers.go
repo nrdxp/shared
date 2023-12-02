@@ -207,7 +207,7 @@ func parseValue(ctx context.Context, config any, prefix string, kvs []string) er
 						k[key] = map[string]any{}
 					}
 
-					k = k[key].(map[string]any)
+					k = k[key].(map[string]any) //nolint:revive
 				}
 
 				k[keys[len(keys)-1]] = v

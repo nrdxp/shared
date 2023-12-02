@@ -2,7 +2,6 @@
 package errs
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 )
@@ -37,7 +36,7 @@ func (e *err) Error() string {
 	out := []string{}
 
 	for i := range e.errors {
-		out = append(out, strings.TrimSpace(fmt.Sprint(e.errors[i])))
+		out = append(out, strings.TrimSpace(e.errors[i].Error()))
 	}
 
 	return strings.Join(out, ": ")
