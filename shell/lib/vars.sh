@@ -82,6 +82,7 @@ export EXEC_HUGO=${BINDIR}/hugo
 export EXEC_NPM=${NPM:-${BINDIR}/node/bin/npm --prefix ${DIR}/web}
 export EXEC_NODE=${BINDIR}/node/bin/node
 export EXEC_RCLONE=${BINDIR}/rclone
+export EXEC_ROT=${BINDIR}/rot
 export EXEC_SHELLCHECK=${BINDIR}/shellcheck
 export EXEC_SWAG=${BINDIR}/swag
 export EXEC_TERRAFORM=${BINDIR}/terraform

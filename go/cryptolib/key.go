@@ -52,47 +52,44 @@ type KeyProvider interface {
 	Provides(e Encryption) bool
 }
 
-// KeyProviderDecryptAsymmetric is a key that decrypts asymmetrically.
-type KeyProviderDecryptAsymmetric interface {
+// KeyProviderSymmetric is a key that encrypts symmetrically.
+type KeyProviderSymmetric interface {
+	DecryptSymmetric(input EncryptedValue) (output []byte, err error)
+	EncryptSymmetric(input []byte, keyID string) (output EncryptedValue, err error)
+	KeyProvider
+}
+
+// KeyProviderKDFGet is a key used for retrieving a KDF with existing inputs.
+type KeyProviderKDFGet interface {
+	KDF() KDF
+	KDFGet(input, keyID string) (key []byte, err error)
+	KeyProvider
+}
+
+// KeyProviderKDFSet is a key that creates a new KDF.
+type KeyProviderKDFSet interface {
+	KDF() KDF
+	KDFSet() (input string, key []byte, err error)
+	KeyProvider
+}
+
+// KeyProviderPrivate is a private key.
+type KeyProviderPrivate interface {
 	DecryptAsymmetric(input EncryptedValue) (output []byte, err error)
 	Sign(message []byte, hash crypto.Hash) (signature []byte, err error)
 	KeyProvider
 }
 
-// KeyProviderDecryptKDF is a key used for decrypting a KDF with existing inputs.
-type KeyProviderDecryptKDF interface {
-	KDF() KDF
-	DecryptKDF(input, keyID string) (key []byte, err error)
-	KeyProvider
-}
-
-// KeyProviderEncryptAsymmetric is a key that encrypts asymmetrically.
-type KeyProviderEncryptAsymmetric interface {
+// KeyProviderPublic is a public key.
+type KeyProviderPublic interface {
 	EncryptAsymmetric(input []byte, keyID string, encryption Encryption) (output EncryptedValue, err error)
 	Verify(message []byte, hash crypto.Hash, signature []byte) (err error)
-	KeyProvider
-}
-
-// KeyProviderEncryptKDF is a key that creates a new KDF.
-type KeyProviderEncryptKDF interface {
-	KDF() KDF
-	EncryptKDF() (input string, key []byte, err error)
-	KeyProvider
-}
-
-// KeyProviderEncryptSymmetric is a key that encrypts symmetrically.
-type KeyProviderEncryptSymmetric interface {
-	DecryptSymmetric(input EncryptedValue) (output []byte, err error)
-	EncryptSymmetric(input []byte, keyID string) (output EncryptedValue, err error)
 	KeyProvider
 }
 
 // GenerateKeys is a helper function for CLI apps to generate crypto keys.
 func GenerateKeys[T cli.AppConfig[any]]() cli.Command[T] {
 	return cli.Command[T]{
-		ArgumentsRequired: []string{
-			"encrypt-asymmetric, encrypt-symmetric, sign-verify",
-		},
 		ArgumentsOptional: []string{
 			"name",
 			"algorithm, default: best",
@@ -101,46 +98,28 @@ func GenerateKeys[T cli.AppConfig[any]]() cli.Command[T] {
 		Run: func(ctx context.Context, args []string, c T) errs.Err {
 			m := map[string]string{}
 
-			a := EncryptionBest
+			a := AlgorithmBest
 			n := newID()
 
+			if len(args) > 1 {
+				n = args[1]
+			}
+
 			if len(args) > 2 {
-				n = args[2]
+				a = Algorithm(args[2])
 			}
 
-			if len(args) > 3 {
-				a = Encryption(args[2])
+			prv, pub, err := NewKeysAsymmetric(a)
+			if err != nil {
+				return logger.Error(ctx, errs.ErrReceiver.Wrap(err))
 			}
 
-			var k string
+			prv.ID = n
+			pub.ID = n
 
-			var pu string
+			k := prv.String()
 
-			switch args[1] {
-			case "encrypt-symmetric":
-				key, err := NewKeyEncryptSymmetric(a)
-				if err != nil {
-					return logger.Error(ctx, errs.ErrReceiver.Wrap(err))
-				}
-
-				key.ID = n
-
-				k = key.String()
-			case "encrypt-asymmetric":
-				fallthrough
-			case "sign-verify":
-				prv, pub, err := NewKeysEncryptAsymmetric(a)
-				if err != nil {
-					return logger.Error(ctx, errs.ErrReceiver.Wrap(err))
-				}
-
-				prv.ID = n
-				pub.ID = n
-				k = prv.String()
-				pu = pub.String()
-			}
-
-			v, err := EncryptKDF(Argon2ID, n, []byte(k), EncryptionBest)
+			v, err := KDFSet(Argon2ID, n, []byte(k), EncryptionBest)
 			if err != nil {
 				return logger.Error(ctx, errs.ErrReceiver.Wrap(err))
 			}
@@ -149,12 +128,8 @@ func GenerateKeys[T cli.AppConfig[any]]() cli.Command[T] {
 				k = v.String()
 			}
 
-			if pu == "" {
-				m["key"] = k
-			} else {
-				m["privateKey"] = k
-				m["publicKey"] = pu
-			}
+			m["privateKey"] = k
+			m["publicKey"] = pub.String()
 
 			return cli.Print(m)
 		},
@@ -249,55 +224,137 @@ func (k *Key[T]) UnmarshalText(data []byte) error {
 	return err
 }
 
-func NewKeysEncryptAsymmetric(e Encryption) (Key[KeyProviderDecryptAsymmetric], Key[KeyProviderEncryptAsymmetric], error) {
-	var prv KeyProviderDecryptAsymmetric
-
-	var pub KeyProviderEncryptAsymmetric
+func NewKeySymmetric[T Algorithm | Encryption](t T) (Key[KeyProviderSymmetric], error) {
+	var k KeyProviderSymmetric
 
 	var err error
 
-	switch e { //nolint:exhaustive
-	case EncryptionBest:
+	switch string(t) {
+	case string(AlgorithmAES128):
+	case string(EncryptionAES128GCM):
+		k, err = NewAES128Key(rand.Reader)
+	case string(AlgorithmBest):
 		fallthrough
-	case Encryption(KDFECDHX25519):
+	case string(AlgorithmChaCha20):
+		fallthrough
+	case string(EncryptionChaCha20Poly1305):
+		k, err = NewChaCha20Key(rand.Reader)
+	default:
+		err = fmt.Errorf("%w: valid values are [%s]", ErrUnknownAlgorithm, strings.Join([]string{
+			string(AlgorithmBest),
+			string(AlgorithmAES128),
+			string(EncryptionAES128GCM),
+			string(AlgorithmChaCha20),
+			string(EncryptionChaCha20Poly1305),
+		}, ", "))
+	}
+
+	return Key[KeyProviderSymmetric]{
+		ID:  types.RandString(10),
+		Key: k,
+	}, err
+}
+
+func NewKeysAsymmetric[T Algorithm | Encryption](t T) (Key[KeyProviderPrivate], Key[KeyProviderPublic], error) {
+	var prv KeyProviderPrivate
+
+	var pub KeyProviderPublic
+
+	var err error
+
+	switch string(t) {
+	case string(AlgorithmBest):
+		fallthrough
+	case string(AlgorithmEd25519):
+		fallthrough
+	case string(KDFECDHX25519):
 		prv, pub, err = NewEd25519()
-	case Encryption(KDFECDHP256):
+	case string(AlgorithmECP256):
+		fallthrough
+	case string(KDFECDHP256):
 		prv, pub, err = NewECP256()
-	case EncryptionRSA2048OAEPSHA256:
+	case string(AlgorithmRSA2048):
+		fallthrough
+	case string(EncryptionRSA2048OAEPSHA256):
 		prv, pub, err = NewRSA2048()
 	default:
-		err = fmt.Errorf("%w: valid values are ed25519, ecp256, and rsa2048", ErrUnknownAlgorithm)
+		err = fmt.Errorf("%w: valid values are [%s]", ErrUnknownAlgorithm, strings.Join([]string{
+			string(AlgorithmBest),
+			string(AlgorithmEd25519),
+			string(KDFECDHX25519),
+			string(AlgorithmECP256),
+			string(KDFECDHP256),
+			string(AlgorithmRSA2048),
+			string(EncryptionRSA2048OAEPSHA256),
+		}, ", "))
 	}
 
 	id := newID()
 
-	return Key[KeyProviderDecryptAsymmetric]{
+	return Key[KeyProviderPrivate]{
 			ID:  id,
 			Key: prv,
 		},
-		Key[KeyProviderEncryptAsymmetric]{
+		Key[KeyProviderPublic]{
 			ID:  id,
 			Key: pub,
 		}, err
 }
-func NewKeyEncryptSymmetric(e Encryption) (Key[KeyProviderEncryptSymmetric], error) {
-	var k KeyProviderEncryptSymmetric
 
-	var err error
+// Keys is multiple Key.
+type Keys[T KeyProvider] []Key[T]
 
-	switch e { //nolint:exhaustive
-	case EncryptionAES128GCM:
-		k, err = NewAES128Key(rand.Reader)
-	case EncryptionBest:
-		fallthrough
-	case EncryptionChaCha20Poly1305:
-		k, err = NewChaCha20Key(rand.Reader)
-	default:
-		err = fmt.Errorf("%w: valid values are aes128 and chacha20", ErrUnknownAlgorithm)
+func (k Keys[T]) SliceString() types.SliceString {
+	s := types.SliceString{}
+
+	for i := range k {
+		s = append(s, k[i].String())
 	}
 
-	return Key[KeyProviderEncryptSymmetric]{
-		ID:  types.RandString(10),
-		Key: k,
-	}, err
+	return s
+}
+
+func (k Keys[T]) MarshalJSON() ([]byte, error) {
+	return k.SliceString().MarshalJSON()
+}
+
+func (k Keys[T]) Value() (driver.Value, error) {
+	return k.SliceString().Value()
+}
+
+func (k *Keys[T]) Scan(src any) error { //nolint:revive
+	if src != nil {
+		source := string(src.([]byte))
+		if source != "" && source != "{}" && source != "{NULL}" {
+			output := strings.TrimRight(strings.TrimLeft(source, "{"), "}")
+			array := strings.Split(output, ",")
+
+			slice := Keys[T]{}
+
+			for i := range array {
+				var s string
+
+				if array[i] != `""` && array[i][0] == '"' {
+					s = array[i][1 : len(array[i])-1]
+				} else {
+					s = array[i]
+				}
+
+				v, err := ParseKey[T](s)
+				if err != nil {
+					return err
+				}
+
+				slice = append(slice, v)
+			}
+
+			*k = slice
+
+			return nil
+		}
+	}
+
+	*k = Keys[T]{}
+
+	return nil
 }

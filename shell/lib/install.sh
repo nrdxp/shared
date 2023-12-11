@@ -96,6 +96,14 @@ rm rclone.zip"
 	fi
 }
 
+cmd install-rot, Install Rot
+install-rot () {
+	if ! ${EXEC_ROT} version 2>&1 | grep "$(curl -sL https://github.com/candiddev/rot/releases/latest/download/version)" > /dev/null; then
+		printf "Install Rot..."
+		try "curl -sL https://github.com/candiddev/rot/releases/latest/download/rot_${OSNAME}_${OSARCH}.tar.gz | tar -C .bin -xz rot"
+	fi
+}
+
 cmd install-shellcheck Install Shellcheck, a tool for linting shell code
 install-shellcheck () {
 	if ! ${EXEC_SHELLCHECK} --version 2>&1 | grep "${VERSION_SHELLCHECK}" > /dev/null; then
