@@ -231,6 +231,7 @@ func NewKeySymmetric[T Algorithm | Encryption](t T) (Key[KeyProviderSymmetric], 
 
 	switch string(t) {
 	case string(AlgorithmAES128):
+		fallthrough
 	case string(EncryptionAES128GCM):
 		k, err = NewAES128Key(rand.Reader)
 	case string(AlgorithmBest):

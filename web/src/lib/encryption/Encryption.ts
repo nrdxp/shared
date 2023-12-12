@@ -93,12 +93,7 @@ export class Key {
 	}
 
 	string (): string {
-		let out = `${this.type}:${this.key}`;
-		if (this.id !== "") {
-			out += `:${this.id}`;
-		}
-
-		return out;
+		return `${this.type}:${this.key}:${this.id}`;
 	}
 }
 
