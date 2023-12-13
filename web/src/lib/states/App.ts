@@ -169,19 +169,19 @@ interface AppPreferencesTranslationsFormItemSelectColorValue {
 
 export interface AppPreferences {
 	/** Accent color. */
-	colorAccent: ColorEnum,
+	colorAccent: string,
 
 	/** Negative color. */
-	colorNegative: ColorEnum,
+	colorNegative: string,
 
 	/** Positive color. */
-	colorPositive: ColorEnum,
+	colorPositive: string,
 
 	/** Primary color. */
-	colorPrimary: ColorEnum,
+	colorPrimary: string,
 
 	/** Secondary color. */
-	colorSecondary: ColorEnum,
+	colorSecondary: string,
 
 	/** Dark mode. */
 	darkMode: boolean,
@@ -277,14 +277,15 @@ function New (): App {
 			formItemNewPasswordTooltip: "",
 			formItemSelectColorName: "Color",
 			formItemSelectColorTooltip: "",
-			formItemSelectColorValues: Color.values.map((color, i) => {
-				return {
-					color: i,
-					id: `${i}`,
-					key: i,
-					name: color,
-				};
-			}),
+			formItemSelectColorValues: Object.keys(ColorEnum)
+				.map((color, i) => {
+					return {
+						color: i,
+						id: `${i}`,
+						key: i,
+						name: color,
+					};
+				}),
 			formItemSelectCurrencyFormat: "Currency Format",
 			formItemSelectCurrencyFormatTooltip: "",
 			formItemTextAreaScanText: "Scan Text From Picture",

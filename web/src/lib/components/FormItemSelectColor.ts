@@ -1,7 +1,6 @@
 import { AppState } from "@lib/states/App";
 import m from "mithril";
 
-import type { ColorEnum } from "../types/Color";
 import { FormItem } from "./FormItem";
 import { FormItemInput } from "./FormItemInput";
 
@@ -12,15 +11,13 @@ export interface FormItemSelectColorAttrs {
 	/** Override default name. */
 	name?: string,
 
-	oninput(e: ColorEnum): void,
+	oninput(e: string): void,
 
 	/** Value of the FormItem. */
-	value: ColorEnum,
+	value: string,
 }
 
 export function FormItemSelectColor (): m.Component<FormItemSelectColorAttrs> {
-	let custom = false;
-
 	return {
 		view: (vnode): m.Children => {
 			return [
