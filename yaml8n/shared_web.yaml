@@ -243,6 +243,9 @@ translations:
     hi: भूरा
     nl: Bruin
     zh: 棕色的
+  ColorCustom:
+    context: Custom color
+    en: Custom
   ColorGray:
     ar: رمادي
     context: Gray color

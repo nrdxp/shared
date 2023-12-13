@@ -3,6 +3,7 @@ import m from "mithril";
 
 import type { ColorEnum } from "../types/Color";
 import { FormItem } from "./FormItem";
+import { FormItemInput } from "./FormItemInput";
 
 export interface FormItemSelectColorAttrs {
 	/** Is the FormItem disabled? */
@@ -18,22 +19,48 @@ export interface FormItemSelectColorAttrs {
 }
 
 export function FormItemSelectColor (): m.Component<FormItemSelectColorAttrs> {
+	let custom = false;
+
 	return {
 		view: (vnode): m.Children => {
-			return m(FormItem, {
-				name: vnode.attrs.name === undefined ?
-					AppState.data.translations.formItemSelectColorName :
-					vnode.attrs.name,
-				select: {
-					disabled: vnode.attrs.disabled,
-					oninput: (e: string): void => {
-						vnode.attrs.oninput(parseInt(e, 10));
+			return [
+				m(FormItem, {
+					name: vnode.attrs.name === undefined ?
+						AppState.data.translations.formItemSelectColorName :
+						vnode.attrs.name,
+					select: {
+						disabled: vnode.attrs.disabled,
+						oninput: (e: string): void => {
+							if (e === "custom") {
+								custom = true;
+							} else {
+								custom = false;
+								vnode.attrs.oninput(parseInt(e, 10));
+							}
+						},
+						options: [
+							...AppState.data.translations.formItemSelectColorValues,
+							{
+								id: "custom",
+								name: AppState.data.translations.colorCustom,
+							},
+						],
+						value: custom ?
+							"custom" :
+							vnode.attrs.value,
 					},
-					options: AppState.data.translations.formItemSelectColorValues,
-					value: vnode.attrs.value,
-				},
-				tooltip: AppState.data.translations.formItemSelectColorTooltip,
-			});
+					tooltip: AppState.data.translations.formItemSelectColorTooltip,
+				}),
+				custom ?
+					m(FormItemInput, {
+						name: "",
+						oninput: (e: string): void => {
+							console.log(e);
+						},
+						type: "color",
+					}) :
+					[],
+			];
 		},
 	};
 }

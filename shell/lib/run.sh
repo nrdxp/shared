@@ -120,13 +120,9 @@ cmd run-postgresql-clean Run PostgreSQL clean
 run-postgresql-clean () {
 	# quoting this causes the command to break
 	# shellcheck disable=SC2086
-	echo -e "DROP OWNED BY homechart;" | ${CR} exec ${CR_EXEC_POSTGRESQL} homechart
+	echo -e "DROP OWNED BY homechart; GRANT ALL PRIVILEGES ON DATABASE homechart TO homechart; GRANT ALL ON SCHEMA public TO homechart" | ${CR} exec ${CR_EXEC_POSTGRESQL} homechart
 	# shellcheck disable=SC2086
-	echo -e "DROP OWNED BY homechart;" | ${CR} exec ${CR_EXEC_POSTGRESQL} homechart_self_hosted
-	# shellcheck disable=SC2086
-	echo -e "GRANT ALL PRIVILEGES ON DATABASE homechart TO homechart" | ${CR} exec ${CR_EXEC_POSTGRESQL} homechart
-	# shellcheck disable=SC2086
-	echo -e "GRANT ALL PRIVILEGES ON DATABASE homechart_self_hosted TO homechart" | ${CR} exec ${CR_EXEC_POSTGRESQL} homechart_self_hosted
+	echo -e "DROP OWNED BY homechart; GRANT ALL PRIVILEGES ON DATABASE homechart_self_hosted TO homechart; GRANT ALL ON SCHEMA public TO homechart" | ${CR} exec ${CR_EXEC_POSTGRESQL} homechart_self_hosted
 }
 
 cmd run-postgresql-cli,rpc Run PostgreSQL CLI

@@ -283,6 +283,10 @@ export const ColorBrown: Translation = {
 	zh: `棕色的`,
 };
 
+export const ColorCustom: Translation = {
+	en: `Custom`,
+};
+
 export const ColorGray: Translation = {
 	ar: `رمادي`,
 	de: `Grau`,

@@ -14,7 +14,7 @@ import { DisplayEnum } from "@lib/types/Display";
 import type { Timestamp } from "@lib/types/Timestamp";
 import { Clone } from "@lib/utilities/Clone";
 import type { ISO639Code } from "@lib/yaml8n";
-import { ActionAdd, ActionCancel, ActionClose, ActionConfirm, ActionDelete, ActionDeleteConfirm, ActionDeselectAll, ActionDismiss, ActionEdit, ActionImport, ActionKeepAwake, ActionNew, ActionNone, ActionPreview, ActionSearch, ActionShow, ActionUpdate, ActionView, AlertNewVersion, AppToolbarActionsOnThisPage, ColorBlack, ColorBlue, ColorBrown, ColorGray, ColorGreen, ColorIndigo, ColorOrange, ColorPink, ColorPurple, ColorRed, ColorTeal, ColorWhite, ColorYellow, Default, FormCreated, FormImageSelect, FormImportCSVField, FormImportCSVSelectCSV, FormImportCSVTooltip, FormItemDurationHour, FormItemDurationHours, FormItemDurationMinute, FormItemDurationMinutes, FormItemInputIconName, FormItemInputIconTooltip, FormItemNewPasswordPassword, FormItemNewPasswordTooltip, FormItemSelectColorName, FormItemSelectColorTooltip, FormItemSelectCurrencyFormat, FormItemSelectCurrencyFormatTooltip, FormItemTextAreaScanText, FormLastUpdated, FormRecurrenceDays, FormRecurrenceEnd, FormRecurrenceEndTooltip, FormRecurrenceFirst, FormRecurrenceFourth, FormRecurrenceFourthToLast, FormRecurrenceLabel, FormRecurrenceLast, FormRecurrenceMonths, FormRecurrenceNextDate, FormRecurrenceSecond, FormRecurrenceSecondToLast, FormRecurrenceSpecificDate, FormRecurrenceThird, FormRecurrenceThirdToLast, FormRecurrenceTooltip, FormRecurrenceWeeks, FormRecurrenceYears, Help, NoImage, Or, TableHeaderFilterTooltip, TableNothing, TableShowColumns, TooltipMarkdown, Translate,WeekdayFriday, WeekdayMonday, WeekdaySaturday, WeekdaySunday, WeekdayThursday, WeekdayTuesday, WeekdayWednesday } from "@lib/yaml8n";
+import { ActionAdd, ActionCancel, ActionClose, ActionConfirm, ActionDelete, ActionDeleteConfirm, ActionDeselectAll, ActionDismiss, ActionEdit, ActionImport, ActionKeepAwake, ActionNew, ActionNone, ActionPreview, ActionSearch, ActionShow, ActionUpdate, ActionView, AlertNewVersion, AppToolbarActionsOnThisPage, ColorBlack, ColorBlue, ColorBrown, ColorCustom, ColorGray, ColorGreen, ColorIndigo, ColorOrange, ColorPink, ColorPurple, ColorRed, ColorTeal, ColorWhite, ColorYellow, Default, FormCreated, FormImageSelect, FormImportCSVField, FormImportCSVSelectCSV, FormImportCSVTooltip, FormItemDurationHour, FormItemDurationHours, FormItemDurationMinute, FormItemDurationMinutes, FormItemInputIconName, FormItemInputIconTooltip, FormItemNewPasswordPassword, FormItemNewPasswordTooltip, FormItemSelectColorName, FormItemSelectColorTooltip, FormItemSelectCurrencyFormat, FormItemSelectCurrencyFormatTooltip, FormItemTextAreaScanText, FormLastUpdated, FormRecurrenceDays, FormRecurrenceEnd, FormRecurrenceEndTooltip, FormRecurrenceFirst, FormRecurrenceFourth, FormRecurrenceFourthToLast, FormRecurrenceLabel, FormRecurrenceLast, FormRecurrenceMonths, FormRecurrenceNextDate, FormRecurrenceSecond, FormRecurrenceSecondToLast, FormRecurrenceSpecificDate, FormRecurrenceThird, FormRecurrenceThirdToLast, FormRecurrenceTooltip, FormRecurrenceWeeks, FormRecurrenceYears, Help, NoImage, Or, TableHeaderFilterTooltip, TableNothing, TableShowColumns, TooltipMarkdown, Translate,WeekdayFriday, WeekdayMonday, WeekdaySaturday, WeekdaySunday, WeekdayThursday, WeekdayTuesday, WeekdayWednesday } from "@lib/yaml8n";
 import m from "mithril";
 import Stream from "mithril/stream";
 import nosleep from "nosleep.js";
@@ -108,6 +108,7 @@ export interface App {
 		actionUpdate: string,
 		alertNewVersion: string,
 		appToolbarActionsOnThisPage: string,
+		colorCustom: string,
 		formCreated: string,
 		formImageSelect: string,
 		formImportCSVField: string,
@@ -260,6 +261,7 @@ function New (): App {
 			actionUpdate: "Update",
 			alertNewVersion: "",
 			appToolbarActionsOnThisPage: "On this page",
+			colorCustom: "Custom",
 			formCreated: "Created",
 			formImageSelect: "Select",
 			formImportCSVField: "",
@@ -747,6 +749,7 @@ export const AppState = {
 				actionUpdate: Translate(code, ActionUpdate),
 				alertNewVersion: Translate(code, AlertNewVersion),
 				appToolbarActionsOnThisPage: Translate(code, AppToolbarActionsOnThisPage),
+				colorCustom: Translate(code, ColorCustom),
 				formCreated: Translate(code, FormCreated),
 				formImageSelect: Translate(code, FormImageSelect),
 				formImportCSVField: Translate(code, FormImportCSVField),
