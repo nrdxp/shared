@@ -1,4 +1,5 @@
 import { AppState } from "@lib/states/App";
+import { ColorEnum } from "@lib/types/Color";
 import m from "mithril";
 
 import { FormItem } from "./FormItem";
@@ -29,32 +30,40 @@ export function FormItemSelectColor (): m.Component<FormItemSelectColorAttrs> {
 						disabled: vnode.attrs.disabled,
 						oninput: (e: string): void => {
 							if (e === "custom") {
-								custom = true;
+								vnode.attrs.oninput("#000000");
 							} else {
-								custom = false;
-								vnode.attrs.oninput(parseInt(e, 10));
+								vnode.attrs.oninput(e);
 							}
 						},
 						options: [
-							...AppState.data.translations.formItemSelectColorValues,
+							...AppState.data.translations.formItemSelectColorValues.map((color) => {
+								return {
+									color: AppState.preferences().darkMode ?
+										ColorEnum[color.id].dark :
+										ColorEnum[color.id].light,
+									id: color.id,
+									name: color.name,
+								};
+							}),
 							{
 								id: "custom",
 								name: AppState.data.translations.colorCustom,
 							},
 						],
-						value: custom ?
+						value: vnode.attrs.value.startsWith("#") ?
 							"custom" :
 							vnode.attrs.value,
 					},
 					tooltip: AppState.data.translations.formItemSelectColorTooltip,
 				}),
-				custom ?
+				vnode.attrs.value.startsWith("#") ?
 					m(FormItemInput, {
 						name: "",
 						oninput: (e: string): void => {
-							console.log(e);
+							vnode.attrs.oninput(e);
 						},
 						type: "color",
+						value: vnode.attrs.value,
 					}) :
 					[],
 			];
