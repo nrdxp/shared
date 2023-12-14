@@ -26,8 +26,8 @@ export function AppAlerts (): m.Component {
 		view: (): m.Children => {
 			return m("div.AppAlerts", AppState.getLayoutAppAlerts()
 				.map((alert) => {
-					return m(`p.AppAlerts__alert.${Animate.class(Animation.FromTop)}`, {
-						onbeforeremove: Animate.onbeforeremove(Animation.FromTop),
+					return m(`p.AppAlerts__alert.${Animate.class(Animation.FromRight)}`, {
+						onbeforeremove: Animate.onbeforeremove(Animation.FromRight),
 					}, [
 						m("span", alert.message),
 						alert.actions === undefined ?

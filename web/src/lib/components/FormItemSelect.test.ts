@@ -13,7 +13,7 @@ describe("FormItemSelect", () => {
 			},
 			options: [
 				{
-					color: ColorEnum.Red,
+					color: "red",
 					id: "1",
 					name: "a",
 				},

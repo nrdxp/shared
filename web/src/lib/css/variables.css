@@ -4,14 +4,8 @@
 	--border_dark: 1px solid rgba(255, 255, 255, 0.2);
 	--border_light: 1px solid rgba(0, 0, 0, 0.2);
 	--border-radius: 8px;
-	--box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
-	--box-shadow-inset: inset 0 2px 4px 0 rgb(0 0 0 / 0.2);
-	--color_base-dark-1: #111827;
-	--color_base-dark-2: #1f2937;
-	--color_base-dark-3: #374151;
-	--color_base-light-1: #ffffff;
-	--color_base-light-2: #eceff1;
-	--color_base-light-3: #cfd8dc;
+	--box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+	--box-shadow-inset: inset 0 2px 4px 0 rgb(0, 0, 0, 0.2);
 	--display_AppHeaderAppLogo: flex;
 	--display_AppMenuAppLogo__toggles: none;
 	--display_CalendarDay__container--day: none;

@@ -3,7 +3,6 @@ import "./FormItem.css";
 import { AppState } from "@lib/states/App";
 import m from "mithril";
 
-import { Color } from "../types/Color";
 import { StringToID } from "../utilities/StringToID";
 
 interface OptionObject {

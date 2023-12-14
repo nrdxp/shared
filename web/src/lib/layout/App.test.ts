@@ -101,15 +101,9 @@ describe("App", () => {
 		expect(AppState.getComponentsDropdownMenu())
 			.toBe("");
 
-		AppState.preferences({
-			...AppState.preferences(),
-			...{
-				styleAccent: "_red",
-				styleMode: "-dark",
-			},
-		});
+		AppState.style["--color_accent"] = "#000000";
 		testing.redraw();
-		testing.hasStyle(app, "--color_accent: var(--color_red-dark)");
+		testing.hasStyle(app, "--color_accent: #000000");
 
 		testing.notFind("#app-header");
 		testing.notFind("#app-menu");

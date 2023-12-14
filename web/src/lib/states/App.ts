@@ -443,7 +443,7 @@ export const AppState = {
 				"--border": preferences.darkMode ?
 					"var(--border_dark)" :
 					"var(--border_light)",
-				"--color_accent": preferences.colorAccent,
+				"--color_accent": Color.toHex(preferences.colorAccent),
 				"--color_accent-content": Color.contentColor(preferences.colorAccent),
 				"--color_base-1": preferences.darkMode ?
 					"#111827" :
@@ -454,17 +454,17 @@ export const AppState = {
 				"--color_base-3": preferences.darkMode ?
 					"#374151" :
 					"#cfd8dc",
-				"--color_content": preferences.darkMode ?
+				"--color_content": Color.toHex(preferences.darkMode ?
 					Color.content.white :
-					Color.content.black,
-				"--color_content-invert": preferences.darkMode ?
+					Color.content.black),
+				"--color_content-invert": Color.toHex(preferences.darkMode ?
 					Color.content.black :
-					Color.content.white,
-				"--color_negative": preferences.colorNegative,
-				"--color_positive": preferences.colorPositive,
-				"--color_primary": preferences.colorPrimary,
+					Color.content.white),
+				"--color_negative": Color.toHex(preferences.colorNegative),
+				"--color_positive": Color.toHex(preferences.colorPositive),
+				"--color_primary": Color.toHex(preferences.colorPrimary),
 				"--color_primary-content": Color.contentColor(preferences.colorPrimary),
-				"--color_secondary": preferences.colorSecondary,
+				"--color_secondary": Color.toHex(preferences.colorSecondary),
 				"--color_secondary-content": Color.contentColor(preferences.colorSecondary),
 			};
 
@@ -662,7 +662,7 @@ export const AppState = {
 
 		alerts.push(alert);
 
-		if (alert.persist !== true) {
+		/*if (alert.persist !== true) {
 			setTimeout(
 				() => {
 					AppState.clearLayoutAppAlert(alert.message);
@@ -671,7 +671,7 @@ export const AppState = {
 					? 500
 					: 3000,
 			);
-		}
+		}*/
 
 		AppState.set({
 			layoutAppAlerts: alerts,

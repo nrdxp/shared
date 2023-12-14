@@ -1,5 +1,6 @@
 import "./FormItemSelectNested.css";
 
+import { Color } from "@lib/types/Color";
 import m from "mithril";
 
 import { StringToID } from "../utilities/StringToID";
@@ -71,8 +72,8 @@ export function FormItemSelectNested (): m.Component<FormItemSelectNestedAttrs> 
 								icon: option.icon,
 								style: {
 									color: option.color === undefined ?
-										"" :
-										option.color,
+										undefined :
+										Color.toHex(option.color),
 								},
 							}),
 						option.name,

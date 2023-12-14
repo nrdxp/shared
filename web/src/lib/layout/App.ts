@@ -8,7 +8,6 @@ import { Button } from "../components/Button";
 import { Markdown } from "../components/Markdown";
 import { Log } from "../services/Log";
 import { AppState } from "../states/App";
-import { DisplayEnum } from "../types/Display";
 import { Animate, Animation } from "../utilities/Animate";
 import { SetClass } from "../utilities/SetClass";
 import { AppAlerts } from "./AppAlerts";
@@ -103,12 +102,7 @@ export function App (): m.Component<AppAttrs> {
 				ondragover: (e: m.Event<DragEvent>) => {
 					Drag.setXY(e.clientX, e.clientY);
 				},
-				style: {
-					...AppState.style,
-					"--width_Alerts": vnode.attrs.hideHeader !== true && AppState.isLayoutAppMenuOpen() && AppState.getSessionDisplay() >= DisplayEnum.XLarge ?
-						"calc(100% + var(--width_AppMenu))" :
-						"100%",
-				},
+				style: AppState.style,
 			}, [
 				vnode.attrs.hideHeader === true || ! AppState.isSessionAuthenticated() ?
 					[] :
