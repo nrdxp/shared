@@ -41,7 +41,6 @@
 	width: 100%;
 }
 
-.AppAlerts__actions > span {
-	cursor: pointer;
-	font-weight: var(--font-weight_bold);
+.AppAlerts__actions > .Button {
+	padding: 4px;
 }

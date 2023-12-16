@@ -102,12 +102,6 @@
 	:root {
 		--border: 1px solid rgba(0, 0, 0, 0.3);
 		--box-shadow: none;
-		--color_black-1: white;
-		--color_black-2: white;
-		--color_blue-light: black;
-		--color_blue-dark: black;
-		--color_white-1: white;
-		--color_white-2: white;
 		--grid-columns_Calendar: 7;
 	}
 

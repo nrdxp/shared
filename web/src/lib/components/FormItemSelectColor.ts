@@ -31,6 +31,8 @@ export function FormItemSelectColor (): m.Component<FormItemSelectColorAttrs> {
 						oninput: (e: string): void => {
 							if (e === "custom") {
 								vnode.attrs.oninput("#000000");
+							} else if (e === "default") {
+								vnode.attrs.oninput("");
 							} else {
 								vnode.attrs.oninput(e);
 							}
@@ -52,7 +54,9 @@ export function FormItemSelectColor (): m.Component<FormItemSelectColorAttrs> {
 						],
 						value: vnode.attrs.value.startsWith("#") ?
 							"custom" :
-							vnode.attrs.value,
+							vnode.attrs.value === "" ?
+								"default" :
+								vnode.attrs.value,
 					},
 					tooltip: AppState.data.translations.formItemSelectColorTooltip,
 				}),

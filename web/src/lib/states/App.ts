@@ -439,12 +439,18 @@ export const AppState = {
 				AppState.setSessionISO639(preferences.iso639Code);
 			}
 
+			const colors = {
+				accent: Color.toHex(preferences.colorAccent, preferences.darkMode),
+				primary: Color.toHex(preferences.colorPrimary, preferences.darkMode),
+				secondary: Color.toHex(preferences.colorSecondary, preferences.darkMode),
+			};
+
 			AppState.style = {
 				"--border": preferences.darkMode ?
 					"var(--border_dark)" :
 					"var(--border_light)",
-				"--color_accent": Color.toHex(preferences.colorAccent),
-				"--color_accent-content": Color.contentColor(preferences.colorAccent),
+				"--color_accent": colors.accent,
+				"--color_accent-content": Color.contentColor(colors.accent),
 				"--color_base-1": preferences.darkMode ?
 					"#111827" :
 					"#ffffff",
@@ -460,11 +466,11 @@ export const AppState = {
 				"--color_content-invert": Color.toHex(preferences.darkMode ?
 					Color.content.black :
 					Color.content.white),
-				"--color_negative": Color.toHex(preferences.colorNegative),
-				"--color_positive": Color.toHex(preferences.colorPositive),
-				"--color_primary": Color.toHex(preferences.colorPrimary),
-				"--color_primary-content": Color.contentColor(preferences.colorPrimary),
-				"--color_secondary": Color.toHex(preferences.colorSecondary),
+				"--color_negative": Color.toHex(preferences.colorNegative, preferences.darkMode),
+				"--color_positive": Color.toHex(preferences.colorPositive, preferences.darkMode),
+				"--color_primary": colors.primary,
+				"--color_primary-content": Color.contentColor(colors.primary),
+				"--color_secondary": colors.secondary,
 				"--color_secondary-content": Color.contentColor(preferences.colorSecondary),
 			};
 
@@ -662,16 +668,16 @@ export const AppState = {
 
 		alerts.push(alert);
 
-		/*if (alert.persist !== true) {
+		if (alert.persist !== true) {
 			setTimeout(
 				() => {
 					AppState.clearLayoutAppAlert(alert.message);
 				},
 				process.env.NODE_ENV === "test"
-					? 500
-					: 3000,
+					? 300
+					: 1500,
 			);
-		}*/
+		}
 
 		AppState.set({
 			layoutAppAlerts: alerts,

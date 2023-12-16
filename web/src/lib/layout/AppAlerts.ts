@@ -1,10 +1,10 @@
 import "./AppAlerts.css";
 
+import { Button } from "@lib/components/Button";
 import m from "mithril";
 
 import { AppState } from "../states/App";
 import { Animate, Animation } from "../utilities/Animate";
-import { StringToID } from "../utilities/StringToID";
 
 export interface AppAlert {
 	/** Optional list of buttons to render with Alert. */
@@ -33,8 +33,8 @@ export function AppAlerts (): m.Component {
 						alert.actions === undefined ?
 							[] :
 							m("div.AppAlerts__actions", alert.actions.map((action) => {
-								return m("span", {
-									id: `button${StringToID(alert.message)}${StringToID(action.name)}`,
+								return m(Button, {
+									name: action.name,
 									onclick: async () => {
 										if (action.onclick === undefined) {
 											AppState.clearLayoutAppAlert(alert.message);
@@ -42,7 +42,10 @@ export function AppAlerts (): m.Component {
 											return action.onclick();
 										}
 									},
-								}, action.name);
+									permitted: true,
+									requireOnline: false,
+									secondary: true,
+								});
 							})),
 					]);
 				}));
