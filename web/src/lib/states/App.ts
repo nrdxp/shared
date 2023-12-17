@@ -471,7 +471,7 @@ export const AppState = {
 				"--color_primary": colors.primary,
 				"--color_primary-content": Color.contentColor(colors.primary),
 				"--color_secondary": colors.secondary,
-				"--color_secondary-content": Color.contentColor(preferences.colorSecondary),
+				"--color_secondary-content": Color.contentColor(colors.secondary),
 			};
 
 			return preferences;

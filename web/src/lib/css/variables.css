@@ -1,6 +1,6 @@
 /* X-Small-Phones */
 :root {
-	--animation: 200ms;
+	--animation: 300ms;
 	--border_dark: 1px solid rgba(255, 255, 255, 0.2);
 	--border_light: 1px solid rgba(0, 0, 0, 0.2);
 	--border-radius: 8px;

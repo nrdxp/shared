@@ -13,6 +13,7 @@
 .AppAlerts__alert {
 	align-items: center;
 	background-color: var(--color_base-3);
+	border: var(--border);
 	border-radius: var(--border-radius);
 	box-shadow: var(--box-shadow);
 	color: var(--color_content);
