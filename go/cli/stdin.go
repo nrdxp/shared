@@ -30,7 +30,7 @@ func Prompt(prompt string, eol string, noEcho bool) ([][]byte, error) {
 		}
 	}
 
-	fmt.Fprintf(logger.Stdout, "%s ", prompt) //nolint:forbidigo
+	fmt.Fprintf(logger.Stderr, "%s ", prompt) //nolint:forbidigo
 
 	if len(eol) > 1 {
 		return nil, fmt.Errorf("prompt delimiter must be 1 character")
@@ -46,7 +46,7 @@ func Prompt(prompt string, eol string, noEcho bool) ([][]byte, error) {
 		}
 	}
 
-	fmt.Fprintf(logger.Stdout, "\n") //nolint:forbidigo
+	fmt.Fprintf(logger.Stderr, "\n") //nolint:forbidigo
 
 	if err != nil {
 		return nil, fmt.Errorf("error reading value: %w", err)
